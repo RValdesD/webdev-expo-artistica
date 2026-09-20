@@ -9,12 +9,15 @@ desde art-expo
 TERMINAL 1
 
 npm install
+
 npm run seed
+
 npm run server
 
 
 
 TERMINAL 2
+
 npm run dev
 
 
@@ -25,6 +28,7 @@ Win + R -> services.msc -> cambiar estado a Running
 
 
 Para que aparezcan los elementos
+
 
 npm exec --workspace backend -- tsx src/seedWorkshops.ts
 
