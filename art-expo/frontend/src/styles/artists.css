@@ -1,0 +1,187 @@
+/* Artists only: inherits the Information page's theme variables.
+   Fallback colors allow use with an older or customized stylesheet. */
+.artists-page {
+  padding: 64px var(--page-gutter, 6%);
+  min-height: 65vh;
+}
+
+.artists-page h1 {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  overflow-wrap: anywhere;
+}
+
+.artists-heading {
+  margin-bottom: 36px;
+}
+
+.artists-heading > p:last-child,
+.artist-card__bio,
+.artist-biography {
+  color: var(--muted, #bcb3a3);
+}
+
+/* Search field and results counter. */
+.artists-search {
+  margin-bottom: 32px;
+}
+
+.artists-search label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.artists-search input {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  padding: 12px 14px;
+  font: inherit;
+  color: var(--text, #eee5d4);
+  background: var(--surface, #24221e);
+  border: 1px solid var(--border, #514a3d);
+  border-radius: 0;
+}
+
+.artists-search input::placeholder {
+  color: var(--muted, #bcb3a3);
+}
+
+.artists-search input:focus-visible {
+  outline: 2px solid var(--accent, #c3a777);
+  outline-offset: 3px;
+}
+
+.artists-search p {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--muted, #bcb3a3);
+}
+
+/* List: three columns on desktop, then two, then one. */
+.artists-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.artist-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--border, #514a3d);
+  background: var(--surface, #24221e);
+}
+
+.artist-portrait {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: center;
+}
+
+.artist-portrait--placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--accent, #c3a777);
+  background: var(--surface-raised, #302c24);
+  font-family: var(--heading-font, Georgia, serif);
+  font-size: 4rem;
+}
+
+.artist-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 24px;
+}
+
+.artist-card h2 {
+  font-size: 1.8rem;
+  margin-bottom: 14px;
+  overflow-wrap: anywhere;
+}
+
+.artist-discipline {
+  color: var(--accent, #c3a777);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-size: 11px;
+  margin-bottom: 12px;
+}
+
+.artist-sample {
+  color: var(--muted, #bcb3a3);
+  font-size: 12px;
+  border-left: 2px solid var(--accent, #c3a777);
+  padding-left: 10px;
+}
+
+.artist-card__bio {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.artist-profile-link {
+  margin-top: auto;
+  color: var(--accent, #c3a777);
+}
+
+/* Profile: portrait alongside full biography. */
+.artist-back {
+  display: inline-block;
+  margin-bottom: 32px;
+}
+
+.artist-profile {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  align-items: start;
+  gap: 48px;
+}
+
+.artist-profile h2 {
+  font-size: 1.6rem;
+  margin-top: 32px;
+}
+
+.artist-biography {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+/* Extra link text for screen readers. */
+.artist-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 1000px) {
+  .artists-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .artists-page {
+    padding-block: 40px;
+  }
+
+  .artists-grid,
+  .artist-profile {
+    grid-template-columns: 1fr;
+  }
+
+  .artist-profile {
+    gap: 28px;
+  }
+}

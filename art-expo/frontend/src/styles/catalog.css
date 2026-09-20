@@ -1,0 +1,140 @@
+/* 1. Page: inherits the existing theme, without changing global rules. */
+.catalog-page {
+  min-height: 65vh;
+  padding: 64px var(--page-gutter, 6%);
+}
+
+.catalog-heading {
+  margin-bottom: 36px;
+}
+
+.catalog-heading h1 {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  overflow-wrap: anywhere;
+}
+
+.catalog-heading > p:last-child,
+.catalog-count {
+  color: var(--muted, #bcb3a3);
+}
+
+/* 2. Search and medium filter. */
+.catalog-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 20px;
+}
+
+.catalog-filters label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.catalog-filters input,
+.catalog-filters select {
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  font: inherit;
+  color: var(--text, #eee5d4);
+  background: var(--surface, #24221e);
+  border: 1px solid var(--border, #514a3d);
+  border-radius: 0;
+}
+
+.catalog-filters input::placeholder {
+  color: var(--muted, #bcb3a3);
+}
+
+.catalog-filters input:focus-visible,
+.catalog-filters select:focus-visible {
+  outline: 2px solid var(--accent, #c3a777);
+  outline-offset: 3px;
+}
+
+.catalog-filters button:disabled {
+  opacity: .55;
+  cursor: default;
+}
+
+.catalog-count {
+  margin-block: 20px 28px;
+  font-size: 13px;
+}
+
+/* 3. Cards and images. contain shows the entire artwork without cropping. */
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.artwork-card {
+  min-width: 0;
+  border: 1px solid var(--border, #514a3d);
+  background: var(--surface, #24221e);
+}
+
+.artwork-card__image,
+.artwork-card__placeholder {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  background: var(--surface-raised, #302c24);
+}
+
+.artwork-card__placeholder {
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  color: var(--muted, #bcb3a3);
+  font-family: var(--heading-font, Georgia, serif);
+}
+
+.artwork-card__body {
+  padding: 24px;
+}
+
+.artwork-card h2 {
+  font-size: 1.8rem;
+  overflow-wrap: anywhere;
+}
+
+.artwork-card__medium {
+  color: var(--accent, #c3a777);
+  font-size: 12px;
+  letter-spacing: .1em;
+}
+
+.artwork-card__description {
+  color: var(--muted, #bcb3a3);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.artwork-card__sample {
+  color: var(--muted, #bcb3a3);
+  font-size: 12px;
+  border-left: 2px solid var(--accent, #c3a777);
+  padding-left: 10px;
+}
+
+/* 4. Responsive layout. */
+@media (max-width: 1000px) {
+  .catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .catalog-filters,
+  .catalog-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .catalog-page {
+    padding-block: 40px;
+  }
+}

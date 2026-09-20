@@ -1,0 +1,427 @@
+/* 01. THEME — edit these values first. No external fonts required. */
+:root {
+  --background: #000000;
+  --surface: #3c0e3d;
+  --surface-raised: #302c24;
+  --text: #d8d1cb;
+  --muted: #bcb3a3;
+  --accent: #00308a;
+  --accent-hover: #0d82f0;
+  --border: #ffffff;
+  --heading-font: Georgia, 'Times New Roman', serif;
+  --body-font: 'Segoe UI', Arial, sans-serif;
+  --page-width: 1980px;
+  --page-gutter: 6%;
+  --section-space: 64px;
+  font-family:var(--body-font);
+  color:var(--text);
+  background:var(--background);
+  font-synthesis:none;
+  line-height:1.6;
+  font-weight:400;
+}
+
+/* 02. GLOBAL DEFAULTS */
+
+* {
+  box-sizing:border-box;
+}
+
+body {
+  margin:0;
+}
+
+a {
+  color:inherit;
+}
+
+button {
+  font:inherit;
+  cursor:pointer;
+}
+
+a,button {
+  -webkit-tap-highlight-color:transparent;
+}
+
+a:focus-visible,button:focus-visible {
+  outline:3px solid var(--accent-hover);
+  outline-offset:5px;
+}
+
+h1,h2,h3,p {
+  margin-top:0;
+}
+
+h1,h2 {
+  font-family:var(--heading-font);
+  font-weight:500;
+  line-height:1.1;
+}
+
+h2 {
+  font-size:clamp(2rem,3.4vw,3rem);
+  letter-spacing:-.035em;
+}
+
+h3 {
+  font-size:1rem;
+}
+
+p {
+  max-width:62ch;
+}
+
+.site-header,.site-footer,main {
+  max-width:var(--page-width);
+  margin:auto;
+}
+
+/* 03. HEADER */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 30px;
+  padding:20px;
+  padding-left: 120px;
+  padding-right: 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+.site-header nav {
+  display:flex;
+  gap:30px;
+  font-size:13px;
+  align-items: center;
+  flex: 1;
+}
+
+.site-header nav a {
+  text-decoration:none;
+}
+
+.site-header nav a:hover {
+  text-decoration:underline;
+}
+
+/* 04. DEMONSTRATION NOTICE */
+.sample-notice {
+  padding:9px var(--page-gutter);
+  background:var(--surface);
+  font-size:12px;
+  color:var(--muted);
+}
+
+/* 05. HERO LAYOUT */
+.hero {
+  padding:65px var(--page-gutter);
+  display:grid;
+  grid-template-columns:1.1fr 1fr;
+  gap:65px;
+  align-items:center;
+}
+
+.eyebrow {
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.16em;
+  margin-bottom:50px;
+  color:#436fe9;
+}
+
+h1 {
+  font-size:clamp(3.3rem,6.5vw,6.4rem);
+  letter-spacing:-.055em;
+  margin-bottom:24px;
+}
+
+h1 em {
+  color:var(--accent);
+  font-weight:500;
+}
+
+.intro {
+  font-size:16px;
+  color:var(--muted);
+  max-width:40ch;
+  margin-bottom:30px;
+}
+
+/* 06. BUTTONS */
+.button {
+  display:inline-flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:32px;
+  background:var(--accent);
+  color:#ffffff;
+  padding:13px 22px;
+  text-decoration:none;
+  border:0;
+  font-size:13px;
+}
+
+.button:hover {
+  background:var(--accent-hover);
+}
+
+.hero-caption {
+  margin:28px 0 0;
+  font-size:11px;
+  color:var(--muted);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+}
+
+/* 08. VISIT INFORMATION */
+.section {
+  padding:var(--section-space) var(--page-gutter);
+  border-top:1px solid var(--border);
+  scroll-margin-top:20px;
+}
+
+.section-heading>p:last-child,.faq-section>div>p:last-child {
+  color:var(--muted);
+}
+
+.section-heading h2 {
+  margin-bottom:15px;
+}
+
+.info-grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  margin:36px 0 0;
+  gap:24px;
+}
+
+.info-grid>div {
+  border-top:2px solid var(--accent);
+  padding-top:16px;
+}
+
+.info-grid dt {
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.13em;
+  margin-bottom:10px;
+  color:var(--accent);
+}
+
+.info-grid dd {
+  margin:0;
+  font-size:16px;
+}
+
+.info-grid small {
+  display:block;
+  color:var(--muted);
+  margin-top:5px;
+}
+
+/* 10. FAQ */
+.faq-section {
+  display:grid;
+  grid-template-columns:1fr 1.3fr;
+  gap:65px;
+  padding-bottom:80px;
+}
+
+.faq-item {
+  border-bottom:1px solid var(--border);
+}
+
+.faq-item h3 {
+  margin:0;
+}
+
+.faq-item button {
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  width:100%;
+  text-align:left;
+  border:0;
+  background:none;
+  color:inherit;
+  padding:20px 0;
+  font-weight:500;
+}
+
+.faq-item button span {
+  font-size:23px;
+  line-height:1;
+}
+
+.faq-item p {
+  font-size:14px;
+  color:var(--muted);
+  padding-right:25px;
+}
+
+/* 11. FOOTER */
+.site-footer {
+  background:var(--surface);
+  color:#ffffff;
+  padding:30px var(--page-gutter);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:25px;
+}
+
+.site-footer span {
+  font-size:12px;
+  letter-spacing:.12em;
+}
+
+.site-footer p {
+  font-size:12px;
+  margin:0;
+}
+
+.site-footer small {
+  font-size:10px;
+  color:var(--muted);
+}
+
+/* 12. LOADING AND ERROR SCREENS */
+.status {
+  padding:100px var(--page-gutter);
+  min-height:65vh;
+}
+
+.status h1 {
+  font-size:3rem;
+}
+
+.skip-link {
+  position:absolute;
+  left:12px;
+  top:-80px;
+  z-index:5;
+  background:var(--text);
+  color:var(--background);
+  padding:12px;
+}
+
+.skip-link:focus {
+  top:10px;
+}
+
+/* 13. MOBILE LAYOUT */
+@media(max-width:750px) {
+  .site-header {
+    padding:20px var(--page-gutter);
+    flex-wrap:wrap;
+  }
+
+  .site-header nav {
+    gap:20px;
+  }
+
+  .hero {
+    grid-template-columns:1fr;
+    gap:35px;
+    padding-top:40px;
+  }
+
+  .art-panel {
+    height:350px;
+  }
+
+  .info-grid {
+    grid-template-columns:1fr 1fr;
+  }
+
+  .visit-details,.faq-section {
+    grid-template-columns:1fr;
+    gap:25px;
+  }
+
+  .section {
+    padding-top:40px;
+    padding-bottom:40px;
+  }
+
+  .site-footer {
+    align-items:flex-start;
+    flex-direction:column;
+    gap:12px;
+  }
+
+}
+
+@media(prefers-reduced-motion:no-preference) {
+  html {
+    scroll-behavior:smooth;
+  }
+
+}
+
+
+/* 14. FRAME AND IMAGE OPTIONS — see CUSTOMIZATION.md. */
+.accessibility {
+  border: 1px solid var(--border);
+}
+.faq-item button:hover,
+.faq-item button[aria-expanded="true"] {
+  color: var(--accent-hover);
+}
+.hero-figure {
+  margin: 0;
+  min-width: 0;
+}
+.hero-image {
+  display: block;
+  width: 100%;
+  height: 475px;
+  object-fit: cover;
+  object-position: center;
+  padding: 12px;
+    object-fit: contain;       
+  object-position: center;
+}
+
+.hero-figure figcaption {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.section-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-block: 24px;
+}
+@media (max-width: 750px) {
+  .hero-image {
+    height: 350px;
+  }
+}
+@media (max-width: 380px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.auth-link {
+  margin-left: auto;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}

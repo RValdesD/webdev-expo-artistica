@@ -1,0 +1,112 @@
+/* 1. Page and layout; inherits your existing theme. */
+.workshops-page {
+  min-height: 65vh;
+  padding: 64px var(--page-gutter, 6%);
+}
+
+.workshops-heading h1 {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.workshops-heading > p:last-child {
+  color: var(--muted, #bcb3a3);
+}
+
+.workshops-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 28px;
+  margin-top: 32px;
+}
+
+/* 2. Workshop card and availability. */
+.workshop-card {
+  min-width: 0;
+  padding: 28px;
+  border: 1px solid var(--border, #514a3d);
+  background: var(--surface, #24221e);
+  overflow-wrap: anywhere;
+}
+
+.workshop-card h2 {
+  font-size: 2rem;
+}
+
+.workshop-card__date,
+.workshop-card__success {
+  color: var(--accent, #c3a777);
+}
+
+.workshop-card__description {
+  color: var(--muted, #bcb3a3);
+  white-space: pre-line;
+}
+
+.workshop-card__details > div {
+  margin-bottom: 12px;
+}
+
+.workshop-card__details dt {
+  font-size: 12px;
+  color: var(--muted, #bcb3a3);
+}
+
+.workshop-card__details dd {
+  margin: 0;
+}
+
+.workshop-card__sample {
+  border-left: 2px solid var(--accent, #c3a777);
+  padding-left: 12px;
+  color: var(--muted, #bcb3a3);
+  font-size: 12px;
+}
+
+.workshops-page button:disabled {
+  opacity: .6;
+  cursor: default;
+}
+
+/* 3. Controlled registration form. */
+.workshop-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border, #514a3d);
+}
+
+.workshop-form input {
+  min-width: 0;
+  width: 100%;
+  padding: 12px;
+  font: inherit;
+  color: var(--text, #eee5d4);
+  background: var(--background, #181816);
+  border: 1px solid var(--border, #514a3d);
+}
+
+.workshop-form input:focus-visible {
+  outline: 2px solid var(--accent, #c3a777);
+  outline-offset: 3px;
+}
+
+.workshop-form p {
+  margin: 0;
+  font-size: 13px;
+}
+
+@media (max-width: 750px) {
+  .workshops-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .workshops-page {
+    padding-block: 40px;
+  }
+
+  .workshop-card {
+    padding: 22px;
+  }
+}
