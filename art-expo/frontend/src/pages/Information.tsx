@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import Faq from '../components/Faq';
-import expoService from '../services/expo';
-import type { ExpoInformation } from '../types/expo';
+import { useEffect, useState } from "react";
+import Faq from "../components/Faq";
+import expoService from "../services/expo";
+import type { ExpoInformation } from "../types/expo";
 
 export default function Information() {
   const [expo, setExpo] = useState<ExpoInformation | null>(null);
@@ -50,15 +50,28 @@ export default function Information() {
   return (
     <>
       <section className="hero" aria-labelledby="expo-title">
-        <div className="hero-copy">
-          <p className="eyebrow">Exposicion: Los Grandes Mares</p>
+        <div className="hero-text">
+          <p className="texti">Exposicion: Los Grandes Mares</p>
           <h1 id="expo-title">
-            Bienvenidos a un viaje <em>inagualable</em>
+            Un viaje in<em>agua</em>lable
           </h1>
           <p className="intro"></p>
+          <p></p>
+          <p>
+            A fish swam past the pond with a bit of bread. <br></br>
+            Another fish bonked his head. <br></br>
+            When they saw the fisherman, they looked shocked and swam away. <br></br>
+            This was another normal day.<br></br>
+            <br></br>
+            Hastily I threw a bait. <br></br>
+            The fishes then gobbled and ate. <br></br>
+            I reeled it up, eating was my wish. <br></br>
+            <em>The fish was delish and it made quite a dish. </em> <br></br>
+
+          </p>
           <a className="button" href="#visit">
             <span>Visitas</span>
-          </a>
+          </a>          
         </div>
 
         <figure className="hero-figure">

@@ -1,4 +1,19 @@
-/* 01. THEME — edit these values first. No external fonts required. */
+@font-face {
+  font-family: "Marxiana";
+  src: url("/fonts/MX1.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Marxiana2";
+  src: url("/fonts/MX2.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: #000000;
   --surface: #3c0e3d;
@@ -8,7 +23,7 @@
   --accent: #00308a;
   --accent-hover: #0d82f0;
   --border: #ffffff;
-  --heading-font: Georgia, 'Times New Roman', serif;
+  --heading-font: "Marxiana2", 'Times New Roman', serif;
   --body-font: 'Segoe UI', Arial, sans-serif;
   --page-width: 1980px;
   --page-gutter: 6%;
@@ -127,6 +142,15 @@ p {
   font-weight:700;
   letter-spacing:.16em;
   margin-bottom:50px;
+  color:#436fe9;
+}
+
+.texti {  
+  font-family: "Marxiana", Georgia, serif;
+  font-size:16px;
+  font-weight:1000;
+  letter-spacing:.16em;
+  margin-bottom:30px;
   color:#436fe9;
 }
 
@@ -424,4 +448,8 @@ h1 em {
 
 .auth-link:hover {
   text-decoration: underline;
+}
+
+.hero-text {
+  transform: translateY(-30px);
 }
