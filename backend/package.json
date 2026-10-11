@@ -1,0 +1,31 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "cross-env NODE_ENV=production node out/index.js",
+    "dev": "cross-env NODE_ENV=development node --watch src/index.ts",
+    "test": "cross-env NODE_ENV=test node --test --test-concurrency=1 \"tests/**/*.test.ts\"",
+    "start:test": "cross-env NODE_ENV=test node src/index.ts",
+    "seed": "cross-env NODE_ENV=development node src/seed.ts",
+    "build:ui": "rm -rf dist && cd ../frontend && npm run build && cp -r dist ../backend",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tests"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.3.0",
+    "mongoose": "^9.11.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.5",
+    "cross-env": "^10.1.0",
+    "typescript": "^7.0.2"
+  }
+}

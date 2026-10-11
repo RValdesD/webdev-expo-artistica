@@ -1,0 +1,36 @@
+# Peticiones de prueba para la extensión REST Client de VS Code.
+# Haz clic en "Send Request" sobre cada una.
+
+GET http://localhost:3001/api/expo
+
+###
+GET http://localhost:3001/api/artists
+
+###
+GET http://localhost:3001/api/artists/demo-elena-rios
+
+###
+GET http://localhost:3001/api/artworks
+
+###
+GET http://localhost:3001/api/workshops
+
+###
+POST http://localhost:3001/api/workshops/demo-acuarela/registrations
+Content-Type: application/json
+
+{
+  "name": "Juxin Xu",
+  "email": "juxin@test.cl"
+}
+
+###
+# Error: el cuerpo no es JSON válido → 400
+POST http://localhost:3001/api/workshops/demo-acuarela/registrations
+Content-Type: application/json
+
+{ "name":
+
+###
+# Error: ruta que no existe → 404
+GET http://localhost:3001/api/no-existe
