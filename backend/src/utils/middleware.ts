@@ -40,7 +40,14 @@ const errorHandler = (
     logger.error(error.name, error.message);
 
     if (error.name === "CastError") {
-        response.status(400).json({ error: "Identificador mal formado." });
+        // Mongoose no pudo convertir un valor: un id mal formado o, por ejemplo,
+        // year: "abc". Se indica el campo para que el mensaje sea útil.
+        const field = "path" in error && typeof error.path === "string" ? error.path : "";
+        response.status(400).json({
+            error: field && field !== "_id"
+                ? `Valor inválido para el campo "${field}".`
+                : "Identificador mal formado.",
+        });
     } else if (error.name === "ValidationError") {
         response.status(400).json({ error: error.message });
     } else if ("type" in error && error.type === "entity.parse.failed") {

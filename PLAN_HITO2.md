@@ -11,7 +11,7 @@ Base: la app de Rodrigo (`art-expo`), la que se presentó en el Hito 1. Estructu
 | # | Requisito | Parte del plan |
 |---|---|---|
 | 1 | Backend en TypeScript con Express y Mongoose; json-server deja de usarse | 0 |
-| 2 | Cada entidad con endpoints REST: listar, obtener por id, crear, actualizar, eliminar | C |
+| 2 | Cada entidad con endpoints REST: listar, obtener por id, crear, actualizar, eliminar | C ✅ (falta protegerlos con la Parte A) |
 | 3 | Errores consistentes: siempre JSON y el código correcto (400, 401, 404…) | 0 (base) + C |
 | 4 | Registro, login, logout y endpoint de sesión (`/me`) | A |
 | 5 | JWT en cookie `httpOnly` + información complementaria en `localStorage` (XSS y CSRF) | A + B |
@@ -80,11 +80,11 @@ Sigue el esquema de la clase 8 (`c08 - authentication/prompt-flujo-4.0-auth.md`)
 
 Para `artists`, `artworks` y `workshops`: `GET /` · `GET /:id` · `POST /` · `PUT /:id` · `DELETE /:id`. Expo es un solo documento: `GET` + `PUT`.
 
-- [ ] C.1 Completar los routers en `controllers/`. Crear, actualizar y eliminar llevan `withUser` (depende de A.5).
-- [ ] C.2 `findOneAndUpdate` siempre con `runValidators: true` (la lección del Lab 6).
-- [ ] C.3 404 cuando el recurso no existe; 201 al crear; 204 al eliminar.
-- [ ] C.4 Decidir qué pasa con las obras y talleres de un artista que se elimina.
-- [ ] C.5 Tests de integración por entidad, como en el Lab 6.
+- [x] C.1 Routers completos en `controllers/`. **Falta solo** agregar `withUser` a crear, actualizar y eliminar cuando esté A.5; cada controlador tiene un comentario donde va.
+- [x] C.2 Toda actualización con `runValidators: true` (la lección del Lab 6). Solo se aceptan campos permitidos: nadie puede escribir `isSample` ni las inscripciones.
+- [x] C.3 404 cuando el recurso no existe; 201 al crear; 204 al eliminar; 409 si el id ya existe; 400 si un campo no se puede convertir (indica cuál).
+- [x] C.4 Decidido: un artista con obras o talleres **no se elimina** (409). Además, una obra o taller no puede apuntar a un artista inexistente (400), y un taller no puede quedar con menos cupos que inscritos (400).
+- [x] C.5 Tests de integración en `backend/tests/controllers/`: 42 tests, más los 3 del modelo (`npm test` → 45).
 
 ### Parte D — Vista nueva 1: "Mi visita" (perfil del visitante)
 

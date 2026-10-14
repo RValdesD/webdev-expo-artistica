@@ -34,3 +34,85 @@ Content-Type: application/json
 ###
 # Error: ruta que no existe → 404
 GET http://localhost:3001/api/no-existe
+
+### ─────────────── CRUD (Parte C) ───────────────
+# Cuando esté la Parte A, crear, editar y eliminar van a pedir sesión.
+
+###
+# Crear un artista: el id se genera desde el nombre → "camila-reyes"
+POST http://localhost:3001/api/artists
+Content-Type: application/json
+
+{
+  "name": "Camila Reyes",
+  "bio": "Grabadora y dibujante.",
+  "discipline": "Grabado"
+}
+
+###
+PUT http://localhost:3001/api/artists/camila-reyes
+Content-Type: application/json
+
+{
+  "bio": "Grabadora, dibujante y docente."
+}
+
+###
+POST http://localhost:3001/api/artworks
+Content-Type: application/json
+
+{
+  "title": "Puerto de noche",
+  "artistId": "camila-reyes",
+  "medium": "Grabado",
+  "year": 2025
+}
+
+###
+GET http://localhost:3001/api/artworks/puerto-de-noche
+
+###
+# Error: el artista tiene una obra → 409
+DELETE http://localhost:3001/api/artists/camila-reyes
+
+###
+DELETE http://localhost:3001/api/artworks/puerto-de-noche
+
+###
+DELETE http://localhost:3001/api/artists/camila-reyes
+
+###
+POST http://localhost:3001/api/workshops
+Content-Type: application/json
+
+{
+  "title": "Grabado para principiantes",
+  "description": "Técnicas básicas de grabado en linóleo.",
+  "artistId": "demo-elena-rios",
+  "date": "2027-06-20T15:00:00.000Z",
+  "durationMinutes": 120,
+  "location": "Sala de demostración A",
+  "capacity": 10
+}
+
+###
+GET http://localhost:3001/api/workshops/grabado-para-principiantes
+
+###
+PUT http://localhost:3001/api/workshops/grabado-para-principiantes
+Content-Type: application/json
+
+{
+  "capacity": 12
+}
+
+###
+DELETE http://localhost:3001/api/workshops/grabado-para-principiantes
+
+###
+PUT http://localhost:3001/api/expo
+Content-Type: application/json
+
+{
+  "hours": "Martes a domingo, de 10:00 a 19:00"
+}
