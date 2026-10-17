@@ -30,7 +30,7 @@ export default function AuthNav() {
           </button>
         </>
       ) : (
-        <><Link to="/registro">Crear cuenta</Link><Link to="/login">Iniciar sesión</Link></>
+        <><Link to="/registro">Crear cuenta</Link>|<Link to="/login">Iniciar sesión</Link></>
       )}
       {error && <span role="alert">{error}</span>}
     </div>
