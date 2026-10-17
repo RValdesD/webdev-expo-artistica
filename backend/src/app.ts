@@ -6,6 +6,7 @@ import artistsRouter from './controllers/artistsController.js';
 import artworksRouter from './controllers/artworksController.js';
 import workshopsRouter from './controllers/workshopsController.js';
 import expoRouter from './controllers/expoController.js';
+import registrationsRouter from './controllers/registrations.js';
 import { errorHandler, requestLogger, unknownEndpoint } from './utils/middleware.js';
 
 const app = express();
@@ -18,6 +19,7 @@ app.use('/api/login', loginRouter);
 app.use('/api/artists', artistsRouter);
 app.use('/api/artworks', artworksRouter);
 app.use('/api/workshops', workshopsRouter);
+app.use('/api/registrations', registrationsRouter);
 app.use('/api/expo', expoRouter);
 app.use(unknownEndpoint);
 app.use(errorHandler);

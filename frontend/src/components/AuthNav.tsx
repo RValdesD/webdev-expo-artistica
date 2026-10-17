@@ -23,13 +23,14 @@ export default function AuthNav() {
     <div className="auth-nav">
       {user ? (
         <>
-          <Link to="/cuenta">{user.name}</Link>
+          <Link to="/mi-visita">Mi visita</Link>
+          <span>{user.name}</span>
           <button type="button" disabled={busy} onClick={handleLogout}>
             {busy ? 'Cerrando…' : 'Cerrar sesión'}
           </button>
         </>
       ) : (
-        <><Link to="/registro">Crear cuenta</Link>|<Link to="/login">Iniciar sesión</Link></>
+        <><Link to="/registro">Crear cuenta</Link><Link to="/login">Iniciar sesión</Link></>
       )}
       {error && <span role="alert">{error}</span>}
     </div>

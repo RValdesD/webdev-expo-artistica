@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { apiError } from '../services/auth';
 import '../styles/auth.css';
@@ -7,6 +7,7 @@ import '../styles/auth.css';
 export default function Login() {
   const { user, login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
@@ -20,7 +21,12 @@ export default function Login() {
     try {
       await login({ username: username.trim(), password });
       setPassword('');
-      navigate('/workshops');
+      const state = location.state;
+      const destination = typeof state === 'object' && state !== null && 'from' in state
+        && typeof (state as Record<'from', unknown>).from === 'string'
+        ? (state as Record<'from', string>).from
+        : '/workshops';
+      navigate(destination, { replace: true });
     } catch (reason: unknown) { setError(apiError(reason)); }
     finally { setBusy(false); }
   }

@@ -58,7 +58,10 @@ export default function WorkshopCard({ workshop, onRegistered }: Props) {
       ) : unavailable ? (
         <p>{started ? 'Inscripciones cerradas' : 'Sin cupos'}</p>
       ) : !user ? (
-        <p><Link to="/login">Inicia sesión</Link> o <Link to="/registro">crea una cuenta</Link> para inscribirte.</p>
+        <div>
+          <p>Necesitas una cuenta para guardar este taller en Mi visita.</p>
+          <Link className="button" to="/login" state={{ from: '/workshops' }}>Iniciar sesión para inscribirme</Link>
+        </div>
       ) : (
         <>
           <p>Inscribirme como {user.name}.</p>

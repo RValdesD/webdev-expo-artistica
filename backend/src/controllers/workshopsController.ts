@@ -115,4 +115,20 @@ workshopsRouter.post('/:id/registrations', withUser, async (req, res, next) => {
   }
 });
 
+workshopsRouter.delete('/:id/registrations', withUser, async (req, res, next) => {
+  try {
+    const workshop = await Workshop.findOneAndUpdate(
+      { id: req.params.id, 'registrations.userId': req.userId },
+      { $pull: { registrations: { userId: req.userId } } },
+      { new: true, runValidators: true },
+    );
+    if (!workshop) {
+      const exists = await Workshop.exists({ id: req.params.id });
+      res.status(404).json({ error: exists ? 'No estás inscrito en este taller.' : 'Taller no encontrado.' });
+      return;
+    }
+    res.status(204).end();
+  } catch (error: unknown) { next(error); }
+});
+
 export default workshopsRouter;

@@ -8,7 +8,7 @@ import Signup from './pages/Signup';
 import Login from './pages/Login';
 import AuthNav from './components/AuthNav';
 import ProtectedRoute from './components/ProtectedRoute';
-import Account from './pages/Account';
+import MyVisit from './pages/MyVisit';
 
 export default function App() {
   return (
@@ -38,7 +38,8 @@ export default function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/registro" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/cuenta" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+          <Route path="/mi-visita" element={<ProtectedRoute><MyVisit /></ProtectedRoute>} />
+          <Route path="/cuenta" element={<ProtectedRoute><MyVisit /></ProtectedRoute>} />
           <Route path="*" element={<section className="status"><h1>Página no encontrada</h1><Link to="/">Volver al inicio</Link></section>} />
         </Routes>
       </main>

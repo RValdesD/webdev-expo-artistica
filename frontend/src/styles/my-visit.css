@@ -1,0 +1,88 @@
+.my-visit {
+  padding: 64px var(--page-gutter) 90px;
+}
+
+.my-visit__heading {
+  padding-bottom: 36px;
+  border-bottom: 1px solid var(--border);
+}
+
+.my-visit__heading h1 {
+  max-width: 12ch;
+}
+
+.next-workshop {
+  margin-block: 40px;
+  padding: 28px 0;
+  border-block: 1px solid var(--accent);
+}
+
+.next-workshop__label,
+.visit-registration__date {
+  color: var(--accent-hover);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.next-workshop h2 {
+  margin-bottom: 12px;
+}
+
+.my-visit__list {
+  display: grid;
+  gap: 0;
+}
+
+.visit-registration {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 32px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+}
+
+.visit-registration h2 {
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  margin-bottom: 10px;
+}
+
+.visit-registration__cancel {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+}
+
+.visit-registration__cancel:hover:not(:disabled) {
+  color: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.visit-registration__cancel:disabled {
+  opacity: .55;
+  cursor: default;
+}
+
+.my-visit__empty {
+  padding-block: 50px;
+}
+
+.my-visit__error {
+  margin-top: 24px;
+  color: var(--accent-hover);
+}
+
+@media (max-width: 650px) {
+  .visit-registration {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .visit-registration__cancel {
+    justify-self: start;
+  }
+}
