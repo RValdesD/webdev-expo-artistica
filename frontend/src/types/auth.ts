@@ -1,9 +1,8 @@
-export interface Client {
+export interface User {
   id: string;
   name: string;
-  email: string;
-  role: 'client';
+  username: string;
 }
 
-export interface LoginInput { email: string; password: string }
-export interface SignupInput extends LoginInput { name: string }
+export interface LoginInput { username: string; password: string }
+export interface RegisterInput extends LoginInput { name: string }

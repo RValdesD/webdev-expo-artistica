@@ -1,11 +1,7 @@
-type Loggable = string | number | boolean | object | null | undefined | symbol;
+export function info(...values: unknown[]): void {
+  console.log(...values);
+}
 
-const info = (...params: Loggable[]) => {
-    if (process.env.NODE_ENV !== "test") console.log(...params);
-};
-
-const error = (...params: Loggable[]) => {
-    if (process.env.NODE_ENV !== "test") console.error(...params);
-};
-
-export default { info, error };
+export function error(...values: unknown[]): void {
+  console.error(...values);
+}

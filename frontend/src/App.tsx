@@ -7,6 +7,8 @@ import Workshops from './pages/Workshops';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import AuthNav from './components/AuthNav';
+import ProtectedRoute from './components/ProtectedRoute';
+import Account from './pages/Account';
 
 export default function App() {
   return (
@@ -32,10 +34,12 @@ export default function App() {
           <Route path="/artists" element={<ArtistList />} />
           <Route path="/artists/:id" element={<ArtistDetail />} />
           <Route path="/catalog" element={<Catalog />} />
-          <Route path="*" element={<section className="status"><h1>Página no encontrada</h1><Link to="/">Volver al inicio</Link></section>} />
           <Route path="/workshops" element={<Workshops />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/registro" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/cuenta" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+          <Route path="*" element={<section className="status"><h1>Página no encontrada</h1><Link to="/">Volver al inicio</Link></section>} />
         </Routes>
       </main>
       <footer className="site-footer"><span></span></footer>

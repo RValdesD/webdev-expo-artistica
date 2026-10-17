@@ -1,25 +1,12 @@
-import dotenv from "dotenv";
-dotenv.config({ quiet: true });
+import 'dotenv/config';
 
-const PORT = process.env.PORT;
-const MONGODB_URI = process.env.NODE_ENV === "test"
-    ? process.env.TEST_MONGODB_URI
-    : process.env.MONGODB_URI;
-const MONGODB_DB_NAME = process.env.NODE_ENV === "test"
-    ? process.env.TEST_MONGODB_DB_NAME
-    : process.env.MONGODB_DB_NAME;
-const JWT_SECRET = process.env.JWT_SECRET;
+export const MONGODB_URI = process.env.MONGODB_URI ?? 'mongodb://127.0.0.1:27017';
+export const MONGODB_DBNAME = process.env.MONGODB_DBNAME ?? 'art_expo';
+export const PORT = Number(process.env.PORT ?? 3001);
+export const HOST = process.env.HOST ?? '127.0.0.1';
+export const JWT_SECRET = process.env.JWT_SECRET ?? '';
+export const NODE_ENV = process.env.NODE_ENV ?? 'development';
 
-if (!PORT) {
-    throw new Error("PORT is not defined in the environment variables");
+export function assertRequiredConfig(): void {
+  if (!JWT_SECRET) throw new Error('Falta JWT_SECRET en backend/.env.');
 }
-
-if (!MONGODB_URI) {
-    throw new Error("MONGODB_URI is not defined in the environment variables");
-}
-
-if (!JWT_SECRET) {
-    throw new Error("JWT_SECRET is not defined in the environment variables");
-}
-
-export default { PORT, MONGODB_URI, MONGODB_DB_NAME, JWT_SECRET };

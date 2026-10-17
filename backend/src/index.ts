@@ -1,7 +1,13 @@
-import app from "./app.ts";
-import config from "./utils/config.ts";
-import logger from "./utils/logger.ts";
+import mongoose from 'mongoose';
+import app from './app.js';
+import { assertRequiredConfig, HOST, MONGODB_DBNAME, MONGODB_URI, PORT } from './utils/config.js';
+import * as logger from './utils/logger.js';
 
-app.listen(Number(config.PORT), () => {
-    logger.info(`Server running on port ${config.PORT}`);
-});
+try {
+  assertRequiredConfig();
+  await mongoose.connect(MONGODB_URI, { dbName: MONGODB_DBNAME, serverSelectionTimeoutMS: 5000 });
+  app.listen(PORT, HOST, () => logger.info(`Servidor: http://${HOST}:${PORT}`));
+} catch (error: unknown) {
+  logger.error('No se pudo iniciar el servidor. Comprueba MongoDB y backend/.env.', error);
+  process.exitCode = 1;
+}

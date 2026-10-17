@@ -269,7 +269,7 @@ h1 em {
 
 /* 11. FOOTER */
 .site-footer {
-  background:var(--surface);
+  background:#3c0e3d;
   color:#ffffff;
   padding:30px var(--page-gutter);
   display:flex;

@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
-import authService from '../services/auth';
-import type { Client, LoginInput } from '../types/auth';
+import loginService from '../services/login';
+import type { User, LoginInput } from '../types/auth';
 
 interface AuthState {
-  client: Client | null;
+  user: User | null;
   loading: boolean;
   unavailable: boolean;
   refresh: () => Promise<void>;
@@ -14,7 +14,7 @@ interface AuthState {
 const AuthContext = createContext<AuthState | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [client, setClient] = useState<Client | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [unavailable, setUnavailable] = useState(false);
   const request = useRef(0);
@@ -23,10 +23,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const version = ++request.current;
     setLoading(true);
     try {
-      const current = await authService.me();
-      if (version === request.current) { setClient(current); setUnavailable(false); }
+      const current = await loginService.restoreLogin();
+      if (version === request.current) { setUser(current); setUnavailable(false); }
     } catch {
-      if (version === request.current) { setClient(null); setUnavailable(true); }
+      if (version === request.current) { setUser(null); setUnavailable(true); }
     } finally {
       if (version === request.current) setLoading(false);
     }
@@ -38,23 +38,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   async function login(input: LoginInput) {
-    const current = await authService.login(input);
+    const current = await loginService.login(input);
     request.current += 1;
-    setClient(current);
+    setUser(current);
     setLoading(false);
     setUnavailable(false);
   }
 
   async function logout() {
-    await authService.logout();
+    await loginService.logout();
     request.current += 1;
-    setClient(null);
+    setUser(null);
     setLoading(false);
     setUnavailable(false);
   }
 
   return (
-    <AuthContext.Provider value={{ client, loading, unavailable, refresh, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, unavailable, refresh, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -10,9 +10,5 @@ export interface Workshop {
   capacity: number;
   availablePlaces: number;
   isSample: boolean;
-}
-
-export interface WorkshopRegistration {
-  name: string;
-  email: string;
+  isRegistered: boolean;
 }

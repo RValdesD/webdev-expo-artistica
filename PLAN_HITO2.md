@@ -1,12 +1,6 @@
 # Plan — Hito 2: backend real, autenticación y dos vistas nuevas
 
-Base: la app de Rodrigo (`art-expo`), la que se presentó en el Hito 1. Estructura y esquema de autenticación: los de los ejemplos del curso (clases 6 a 9).
-
-**Presentación:** semana del 20 de octubre, 10 minutos, demo en vivo con frontend + backend Express + MongoDB.
-
 ---
-
-## 1. Lo que pide el enunciado
 
 | # | Requisito | Parte del plan |
 |---|---|---|
@@ -25,7 +19,6 @@ Base: la app de Rodrigo (`art-expo`), la que se presentó en el Hito 1. Estructu
 
 ## 2. Punto de partida
 
-**Ya existe** (app de Rodrigo):
 - Backend Express + Mongoose + TypeScript.
 - Modelos: `Artist`, `Artwork`, `Workshop`, `Expo`.
 - Endpoints: `GET /api/expo`, `GET /api/artists`, `GET /api/artists/:id`, `GET /api/artworks`, `GET /api/workshops`, `POST /api/workshops/:id/registrations`.
@@ -41,7 +34,6 @@ Base: la app de Rodrigo (`art-expo`), la que se presentó en el Hito 1. Estructu
 ---
 
 ## 3. Las partes
-
 ### Parte 0 — Base del proyecto  (hecha antes de repartir)
 
 Para que todos partan del mismo lugar.
@@ -52,6 +44,7 @@ Para que todos partan del mismo lugar.
 - [x] 0.4 `.env.example` con todas las variables (incluida `JWT_SECRET`) y un `seed` que carga todo con un solo comando.
 - [x] 0.5 Mejoras de CSS del Hito 1: texto azul legible sobre fondos oscuros, contorno de foco visible en los inputs, botón deshabilitado que no parece roto y filtros del catálogo alineados.
 - [x] 0.6 README base.
+- Sistema de auth preliminar implementado, requiere cambios
 
 ### Parte A — Autenticación en el backend
 
@@ -110,15 +103,7 @@ Para crear, editar y eliminar obras y talleres desde la app.
 
 - [ ] F.1 Tests de autenticación (ver A.9).
 - [ ] F.2 Tests de CRUD por entidad (ver C.5).
-- [ ] F.3 Opcional: tests de componentes con Vitest, como en la clase 9.
-
-### Parte G — Entrega
-
-- [ ] G.1 README completo: variables de entorno, cómo correrlo y URL desplegada.
-- [ ] G.2 Despliegue en el servidor del curso con `npm run build:ui` (el frontend compilado lo sirve Express desde `dist/`).
-  **Ojo, comprobado:** servido desde el backend, `/` carga pero recargar o abrir directo `/artists` responde 404, porque esas rutas solo existen en React Router. Falta en `app.ts`, antes de `unknownEndpoint`, un `GET` para todo lo que no empiece con `/api` que responda `dist/index.html`. Con `npm run dev` del frontend no pasa: solo afecta a la versión desplegada.
-- [ ] G.3 Slides: tema, funcionalidades y cambios de prioridad, flujo de autenticación, vistas nuevas, **slide de endpoints** (ruta, método y uso), integrantes, reflexión.
-- [ ] G.4 Ensayo con cronómetro: 10 minutos exactos.
+- [ ] F.3 Opcional: tests de componentes con Vitest, como en la clase 9..
 
 ---
 
@@ -140,15 +125,6 @@ F: tests van junto con A y C, no al final.
 
 ---
 
-## 5. Reparto sugerido (5 personas)
-
-| Persona | Partes | Por qué juntas |
-|---|---|---|
-| 1 | A (auth backend) + F.1 | Lo más delicado: un error no se ve en la interfaz |
-| 2 | B (auth frontend) | Depende directo de A; conviene coordinar el formato de las respuestas |
-| 3 | C (CRUD) + F.2 | Mucho backend repetitivo; bien para avanzar en paralelo con A |
-| 4 | D (Mi visita) | Toca backend (inscripciones) y frontend |
-| 5 | E (Panel de gestión) + G.1 | Consume C; README en paralelo |
 
 G.2 a G.4 entre todos la última semana.
 
@@ -162,21 +138,3 @@ G.2 a G.4 entre todos la última semana.
 - **`runValidators: true`** en toda actualización.
 - **Sin `any`.** Si queda uno, se justifica en la presentación.
 
-## 7. Endpoints al final del hito (para la slide)
-
-| Método | Ruta | Uso | Sesión |
-|---|---|---|---|
-| POST | `/api/users` | Registro | — |
-| POST | `/api/login` | Login: cookie con JWT + header CSRF | — |
-| GET | `/api/login/me` | Restaurar sesión | ✔ |
-| POST | `/api/login/logout` | Logout | — |
-| GET | `/api/expo` | Información de la expo | — |
-| PUT | `/api/expo` | Editar la información | ✔ |
-| GET | `/api/artists` · `/api/artworks` · `/api/workshops` | Listar | — |
-| GET | `/api/artists/:id` · `/api/artworks/:id` · `/api/workshops/:id` | Obtener uno | — |
-| POST | `/api/artists` · `/api/artworks` · `/api/workshops` | Crear | ✔ |
-| PUT | `/api/artists/:id` · `/api/artworks/:id` · `/api/workshops/:id` | Actualizar | ✔ |
-| DELETE | `/api/artists/:id` · `/api/artworks/:id` · `/api/workshops/:id` | Eliminar | ✔ |
-| POST | `/api/workshops/:id/registrations` | Inscribirse | ✔ |
-| DELETE | `/api/workshops/:id/registrations` | Cancelar mi inscripción | ✔ |
-| GET | `/api/registrations/me` | Mis inscripciones | ✔ |

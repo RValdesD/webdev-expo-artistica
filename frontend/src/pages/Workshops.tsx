@@ -3,8 +3,16 @@ import WorkshopCard from '../components/WorkshopCard';
 import workshopsService from '../services/workshops';
 import type { Workshop } from '../types/workshop';
 import '../styles/workshops.css';
+import { useAuth } from '../auth/AuthContext';
 
 export default function Workshops() {
+  const { user, loading: sessionLoading, unavailable, refresh } = useAuth();
+  if (sessionLoading) return <section className="workshops-page" role="status">Cargando sesión…</section>;
+  if (unavailable) return <section className="workshops-page"><p role="alert">No pudimos comprobar tu sesión.</p><button className="button" onClick={() => void refresh()}>Reintentar</button></section>;
+  return <WorkshopList key={user?.id ?? 'guest'} />;
+}
+
+function WorkshopList() {
   const [workshops, setWorkshops] = useState<Workshop[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);

@@ -11,6 +11,10 @@
 
 .auth-nav {
   margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
 }
 
 .auth-form {

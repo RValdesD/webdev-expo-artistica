@@ -1,6 +1,2 @@
-import { Router } from 'express';
-import { getExpo } from '../controllers/expoController.js';
-
-const router = Router();
-router.get('/expo', getExpo);
-export default router;
+// Alias temporal para imports antiguos. La aplicación monta el router desde controllers/.
+export { default } from '../controllers/expoController.js';

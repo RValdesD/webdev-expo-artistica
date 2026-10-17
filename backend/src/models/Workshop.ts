@@ -10,12 +10,13 @@ export interface WorkshopData {
   location: string;
   capacity: number;
   isSample: boolean;
-  registrations: { name: string; email: string }[];
+  registrations: { userId: string; name: string; username: string }[];
 }
 
 const registrationSchema = new Schema({
+  userId: { type: String, required: true },
   name: { type: String, required: true, trim: true, maxlength: 120 },
-  email: { type: String, required: true, trim: true, lowercase: true, maxlength: 254 },
+  username: { type: String, required: true, trim: true, lowercase: true, maxlength: 40 },
 }, { _id: false });
 
 const workshopSchema = new Schema<WorkshopData>({
