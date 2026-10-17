@@ -8,7 +8,7 @@
   --accent: #00308a;
   --accent-hover: #0d82f0;
   --border: #ffffff;
-  --heading-font: Georgia, 'Times New Roman', serif;
+  --heading-font: 'MX1', 'Times New Roman', serif;
   --body-font: 'Segoe UI', Arial, sans-serif;
   --page-width: 1980px;
   --page-gutter: 6%;
@@ -368,7 +368,9 @@ h1 em {
 
 }
 
+.expo-title{
 
+}
 /* 14. FRAME AND IMAGE OPTIONS — see CUSTOMIZATION.md. */
 .accessibility {
   border: 1px solid var(--border);
