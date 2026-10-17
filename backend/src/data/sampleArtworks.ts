@@ -1,4 +1,4 @@
-import type { ArtworkData } from '../models/artworks.ts';
+import type { ArtworkData } from '../models/Artwork.js';
 
 // Fictional examples linked to the demonstration artists from step 2.
 export const sampleArtworks: ArtworkData[] = [

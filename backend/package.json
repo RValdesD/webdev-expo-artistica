@@ -1,33 +1,6 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "main": "src/index.ts",
-  "engines": {
-    "node": ">=22.18"
-  },
-  "scripts": {
-    "build": "tsc",
-    "start": "cross-env NODE_ENV=production node out/index.js",
-    "dev": "cross-env NODE_ENV=development node --watch src/index.ts",
-    "test": "cross-env NODE_ENV=test node --test --test-concurrency=1 \"tests/**/*.test.ts\"",
-    "start:test": "cross-env NODE_ENV=test node src/index.ts",
-    "seed": "cross-env NODE_ENV=development node src/seed.ts",
-    "build:ui": "rm -rf dist && cd ../frontend && npm run build && cp -r dist ../backend",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p tests"
-  },
-  "dependencies": {
-    "dotenv": "^17.4.2",
-    "express": "^5.3.0",
-    "mongoose": "^9.11.1"
-  },
-  "devDependencies": {
-    "@types/express": "^5.0.6",
-    "@types/node": "^26.6.5",
-    "@types/supertest": "^6.0.3",
-    "cross-env": "^10.1.0",
-    "supertest": "^7.3.1",
-    "typescript": "^7.0.2"
-  }
+  "name": "art-expo-backend", "version": "0.1.0", "private": true, "type": "module",
+  "scripts": { "dev": "tsx watch src/server.ts", "build": "tsc", "start": "node dist/server.js", "seed": "tsx src/seed.ts", "test": "tsx --test src/expo.test.ts" },
+  "dependencies": { "dotenv": "^16.4.5", "express": "^4.21.2", "mongoose": "^8.9.0" },
+  "devDependencies": { "@types/express": "^4.17.21", "@types/node": "^22.10.0", "tsx": "^4.19.2", "typescript": "^5.2.2" }
 }

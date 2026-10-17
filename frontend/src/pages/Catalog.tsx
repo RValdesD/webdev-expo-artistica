@@ -52,8 +52,8 @@ export default function Catalog() {
     <section className="catalog-page" aria-labelledby="catalog-title">
       <header className="catalog-heading">
         <p className="eyebrow">EXPO / CATÁLOGO</p>
-        <h1 id="catalog-title">Colección de obras</h1>
-        <p>Explora las obras de la muestra en nuestro catálogo.</p>
+        <h1 id="catalog-title">Coleccion de obras!</h1>
+        <p>Explora las obras maestras en nuestro catalogo</p>
       </header>
 
       {loading ? (
@@ -106,4 +106,3 @@ export default function Catalog() {
     </section>
   );
 }
-

@@ -47,7 +47,7 @@
 }
 
 .artists-search input:focus-visible {
-  outline: 2px solid var(--accent-text, #7fa0ff);
+  outline: 2px solid var(--accent, #c3a777);
   outline-offset: 3px;
 }
 
@@ -83,7 +83,7 @@
 .artist-portrait--placeholder {
   display: grid;
   place-items: center;
-  color: var(--accent-text, #7fa0ff);
+  color: var(--accent, #c3a777);
   background: var(--surface-raised, #302c24);
   font-family: var(--heading-font, Georgia, serif);
   font-size: 4rem;
@@ -103,7 +103,7 @@
 }
 
 .artist-discipline {
-  color: var(--accent-text, #7fa0ff);
+  color: var(--accent, #c3a777);
   text-transform: uppercase;
   letter-spacing: .12em;
   font-size: 11px;
@@ -113,7 +113,7 @@
 .artist-sample {
   color: var(--muted, #bcb3a3);
   font-size: 12px;
-  border-left: 2px solid var(--accent-text, #7fa0ff);
+  border-left: 2px solid var(--accent, #c3a777);
   padding-left: 10px;
 }
 
@@ -127,7 +127,7 @@
 
 .artist-profile-link {
   margin-top: auto;
-  color: var(--accent-text, #7fa0ff);
+  color: var(--accent, #c3a777);
 }
 
 /* Profile: portrait alongside full biography. */
@@ -151,51 +151,6 @@
 .artist-biography {
   white-space: pre-line;
   overflow-wrap: anywhere;
-}
-
-/* Obras y talleres del artista, debajo del perfil. */
-.artist-section {
-  margin-top: 64px;
-  padding-top: 40px;
-  border-top: 1px solid var(--border, #514a3d);
-}
-
-.artist-section > h2 {
-  font-size: clamp(1.8rem, 3vw, 2.4rem);
-  margin-bottom: 28px;
-}
-
-.artist-empty {
-  color: var(--muted, #bcb3a3);
-}
-
-.artist-workshops {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 28px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.artist-workshops li {
-  display: flex;
-  flex-direction: column;
-  padding: 24px;
-  border: 1px solid var(--border, #514a3d);
-  background: var(--surface, #24221e);
-}
-
-.artist-workshops h3 {
-  font-family: var(--heading-font, Georgia, serif);
-  font-size: 1.6rem;
-  font-weight: 500;
-  margin-bottom: 8px;
-}
-
-.artist-workshops__places {
-  color: var(--muted, #bcb3a3);
-  font-size: 14px;
 }
 
 /* Extra link text for screen readers. */
@@ -222,8 +177,7 @@
   }
 
   .artists-grid,
-  .artist-profile,
-  .artist-workshops {
+  .artist-profile {
     grid-template-columns: 1fr;
   }
 

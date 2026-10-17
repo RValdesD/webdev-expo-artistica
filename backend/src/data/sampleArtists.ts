@@ -1,4 +1,4 @@
-import type { ArtistData } from '../models/artists.ts';
+import type { ArtistData } from '../models/Artist.js';
 
 // Fictional demonstration profiles. Add local portrait paths when available.
 export const sampleArtists: ArtistData[] = [
@@ -24,6 +24,15 @@ export const sampleArtists: ArtistData[] = [
     discipline: 'Fotografía',
     bio: 'Perfil ficticio para explorar el sitio. Su trabajo fotográfico reúne detalles arquitectónicos, sombras y escenas silenciosas de la ciudad.',
     imageUrl: '',
+    isSample: true,
+  },
+  
+  {
+    id: 'demo-lucia-mora',
+    name: 'Lucía Mora',
+    discipline: 'Pintura e ilustración',
+    bio: 'Perfil ficticio. Explora paisajes y arquitectura mediante acuarela.\n\nSu trabajo combina observación y memoria.',
+    imageUrl: '/images/artists/lucia.jpg',
     isSample: true,
   },
 ];

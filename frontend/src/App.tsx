@@ -1,9 +1,12 @@
-import { BrowserRouter, Link, NavLink, Route, Routes } from "react-router-dom";
-import Information from "./pages/Information";
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import Information from './pages/Information';
 import ArtistList from "./pages/ArtistList";
 import ArtistDetail from "./pages/ArtistDetail";
 import Catalog from './pages/Catalog';
 import Workshops from './pages/Workshops';
+import Signup from './pages/Signup';
+import Login from './pages/Login';
+import AuthNav from './components/AuthNav';
 
 export default function App() {
   return (
@@ -12,21 +15,15 @@ export default function App() {
       <header className="site-header">
         <Link className="brand" to="/" aria-label="Expo Artística, inicio"> EXPO ARTÍSTICA SANTIAGO</Link>
         <nav aria-label="Navegación principal">
-          <NavLink to="/information">Información</NavLink>
-          <NavLink to="/artists">Artistas</NavLink>
-          <NavLink to="/catalog">Catálogo</NavLink>
-          <NavLink to="/workshops">Workshops</NavLink>
-          <Link to="/#visit">Planifica tu visita</Link>
-        </nav>
-
-          <a
-            className="auth-link"
-            href="#"
-            onClick={(event) => event.preventDefault()}
-          >
-            Crear cuenta / Iniciar sesión
+          <Link to="/information">Información</Link>
+          <Link to="/artists">Artistas</Link>
+          <Link to="/catalog">Catálogo</Link>
+          <Link to="/workshops">Workshops</Link>
+          <a href="/#visit">
+            Planifica tu visita
           </a>
-
+          <AuthNav />
+        </nav>
       </header>
       <main id="main">
         <Routes>
@@ -35,15 +32,13 @@ export default function App() {
           <Route path="/artists" element={<ArtistList />} />
           <Route path="/artists/:id" element={<ArtistDetail />} />
           <Route path="/catalog" element={<Catalog />} />
-          <Route path="/workshops" element={<Workshops />} />
           <Route path="*" element={<section className="status"><h1>Página no encontrada</h1><Link to="/">Volver al inicio</Link></section>} />
+          <Route path="/workshops" element={<Workshops />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </main>
-      <footer className="site-footer">
-        <span>EXPO ARTÍSTICA SANTIAGO</span>
-        <p>Proyecto CC5003 · Aplicaciones Web Reactivas · Equipo Los Patos Malos</p>
-      </footer>
+      <footer className="site-footer"><span></span></footer>
     </BrowserRouter>
   );
 }
-

@@ -1,38 +1,21 @@
-import express from "express";
-import mongoose from "mongoose";
-import config from "./utils/config.ts";
-import logger from "./utils/logger.ts";
-import middleware from "./utils/middleware.ts";
-import expoRouter from "./controllers/expo.ts";
-import artistsRouter from "./controllers/artists.ts";
-import artworksRouter from "./controllers/artworks.ts";
-import workshopsRouter from "./controllers/workshops.ts";
+import express from 'express';
+import expoRoute from './routes/expoRoute.js';
+import { errorHandler } from './middleware/errorHandler.js';
+import artistsRoute from './routes/artistsRoute.js';
+import artworksRoute from './routes/artworksRoute.js';
+import workshopsRoute from './routes/workshopsRoute.js';
+import authRoute from './routes/authRoute.js';
+
 
 const app = express();
+app.disable('x-powered-by');
+app.use(express.json({ limit: '20kb' }));
+app.use('/api', expoRoute);
+app.use('/api', artistsRoute);
+app.use('/api', artworksRoute);
+app.use('/api', workshopsRoute);
+app.use('/api', authRoute);
 
-mongoose.set("strictQuery", false);
-
-mongoose.connect(config.MONGODB_URI, {
-    dbName: config.MONGODB_DB_NAME || "expo_artistica",
-})
-    .catch((error: unknown) => {
-        logger.error(
-            "error connecting to MongoDB:",
-            error instanceof Error ? error.message : String(error),
-        );
-    });
-
-app.disable("x-powered-by");
-app.use(express.static("dist"));
-app.use(express.json({ limit: "20kb" }));
-app.use(middleware.requestLogger);
-
-app.use("/api/expo", expoRouter);
-app.use("/api/artists", artistsRouter);
-app.use("/api/artworks", artworksRouter);
-app.use("/api/workshops", workshopsRouter);
-
-app.use(middleware.unknownEndpoint);
-app.use(middleware.errorHandler);
-
+app.use((_req, res) => { res.status(404).json({ error: 'Ruta no encontrada.' }); });
+app.use(errorHandler);
 export default app;

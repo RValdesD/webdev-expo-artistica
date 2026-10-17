@@ -1,4 +1,4 @@
-import type { WorkshopData } from '../models/workshops.ts';
+import type { WorkshopData } from '../models/Workshop.js';
 
 export const sampleWorkshops: WorkshopData[] = [
   {
