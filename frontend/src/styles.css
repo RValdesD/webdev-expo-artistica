@@ -1,3 +1,24 @@
+/* 00. FUENTES — TT Marxiana, ya incluida en public/fonts. */
+@font-face {
+  font-family: 'Marxiana Antiqua';
+  src: url('/fonts/MX2.ttf') format('truetype');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Marxiana Antiqua';
+  src: url('/fonts/MX1.ttf') format('truetype');
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Marxiana Grotesque';
+  src: url('/fonts/MX4.ttf') format('truetype');
+  font-display: swap;
+}
+
 /* 01. THEME — edit these values first. No external fonts required. */
 :root {
   /* Paleta de contraste cómodo: nada de negro puro con blanco puro (21:1),
@@ -11,7 +32,8 @@
   --accent-hover: #3d66da;  /* fondo de botones al pasar el mouse */
   --accent-text: #93b1ff;   /* azul para TEXTO sobre fondos oscuros */
   --border: #6a6276;
-  --heading-font: 'MX1', 'Times New Roman', serif;
+  --heading-font: 'Marxiana Antiqua', 'Times New Roman', serif;
+  --brand-font: 'Marxiana Grotesque', 'Arial Narrow', Arial, sans-serif;
   --body-font: 'Segoe UI', Arial, sans-serif;
   --page-width: 1980px;
   --page-gutter: 6%;
@@ -58,7 +80,7 @@ h1,h2,h3,p {
 
 h1,h2 {
   font-family:var(--heading-font);
-  font-weight:500;
+  font-weight:400;
   line-height:1.1;
 }
 
@@ -160,13 +182,13 @@ p {
 
 h1 {
   font-size:clamp(3.3rem,6.5vw,6.4rem);
-  letter-spacing:-.055em;
+  letter-spacing:-.02em;
   margin-bottom:24px;
 }
 
 h1 em {
   color:var(--accent-text);
-  font-weight:500;
+  font-weight:400;
 }
 
 .intro {
@@ -205,9 +227,10 @@ h1 em {
   align-items: center;
   gap: 12px;
   text-decoration: none;
-  font-size: 13px;
-  letter-spacing: 0.12em;
-  font-weight: 700;
+  font-family: var(--brand-font);
+  font-size: 19px;
+  letter-spacing: 0.08em;
+  font-weight: 400;
   white-space: nowrap;
 }
 
