@@ -1,12 +1,16 @@
 /* 01. THEME — edit these values first. No external fonts required. */
 :root {
-  --background: #000000;
-  --surface-raised: #302c24;
-  --text: #d8d1cb;
-  --muted: #bcb3a3;
-  --accent: #00308a;
-  --accent-hover: #0d82f0;
-  --border: #ffffff;
+  /* Paleta de contraste cómodo: nada de negro puro con blanco puro (21:1),
+     y todo el texto sobre 4.5:1 para que se lea bien. */
+  --background: #14121a;
+  --surface: #221d29;
+  --surface-raised: #2b2533;
+  --text: #e4ddd6;
+  --muted: #b5aca2;
+  --accent: #2f56c6;        /* fondo de botones */
+  --accent-hover: #3d66da;  /* fondo de botones al pasar el mouse */
+  --accent-text: #93b1ff;   /* azul para TEXTO sobre fondos oscuros */
+  --border: #6a6276;
   --heading-font: 'MX1', 'Times New Roman', serif;
   --body-font: 'Segoe UI', Arial, sans-serif;
   --page-width: 1980px;
@@ -44,7 +48,7 @@ a,button {
 }
 
 a:focus-visible,button:focus-visible {
-  outline:3px solid var(--accent-hover);
+  outline:3px solid var(--accent-text);
   outline-offset:5px;
 }
 
@@ -126,7 +130,7 @@ p {
   font-weight:700;
   letter-spacing:.16em;
   margin-bottom:50px;
-  color:#436fe9;
+  color:var(--accent-text);
 }
 
 h1 {
@@ -136,7 +140,7 @@ h1 {
 }
 
 h1 em {
-  color:var(--accent);
+  color:var(--accent-text);
   font-weight:500;
 }
 
@@ -213,7 +217,7 @@ h1 em {
   text-transform:uppercase;
   letter-spacing:.13em;
   margin-bottom:10px;
-  color:var(--accent);
+  color:var(--accent-text);
 }
 
 .info-grid dd {
@@ -270,7 +274,7 @@ h1 em {
 /* 11. FOOTER */
 .site-footer {
   background:var(--surface);
-  color:#ffffff;
+  color:var(--text);
   padding:30px var(--page-gutter);
   display:flex;
   align-items:center;
@@ -376,7 +380,7 @@ h1 em {
 }
 .faq-item button:hover,
 .faq-item button[aria-expanded="true"] {
-  color: var(--accent-hover);
+  color: var(--accent-text);
 }
 .hero-figure {
   margin: 0;
@@ -414,5 +418,64 @@ h1 em {
 @media (max-width: 380px) {
   .info-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* BOTONES INTERACTIVOS
+   Cada botón muestra que se puede usar: cambia al pasar el mouse,
+   se hunde al hacer clic y marca el foco al navegar con teclado. */
+button,
+.button,
+.site-header nav a {
+  transition: background-color .15s ease, color .15s ease,
+    border-color .15s ease, transform .1s ease;
+}
+
+button:not(:disabled):active,
+.button:active {
+  transform: translateY(1px) scale(.98);
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Botones con borde (Editar, Eliminar, Cerrar sesión, Cancelar...) */
+.auth-nav button:hover:not(:disabled),
+.management-item__actions button:hover:not(:disabled),
+.management-form__heading button:hover,
+.visit-registration__cancel:hover:not(:disabled) {
+  color: var(--accent-text);
+  border-color: var(--accent-text);
+  background: rgba(147, 177, 255, .08);
+}
+
+/* Pestañas de Gestión */
+.management-tabs button:hover:not([aria-selected="true"]) {
+  color: var(--text);
+  border-bottom-color: var(--border);
+}
+
+/* Preguntas frecuentes */
+.faq-item button:hover {
+  color: var(--accent-text);
+}
+
+/* Menú */
+.site-header nav a:hover {
+  color: var(--accent-text);
+}
+
+/* Quien prefiere menos movimiento no ve animaciones. */
+@media (prefers-reduced-motion: reduce) {
+  button,
+  .button,
+  .site-header nav a {
+    transition: none;
+  }
+
+  button:not(:disabled):active,
+  .button:active {
+    transform: none;
   }
 }

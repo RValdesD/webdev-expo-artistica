@@ -47,7 +47,7 @@
 }
 
 .artists-search input:focus-visible {
-  outline: 2px solid var(--accent, #c3a777);
+  outline: 2px solid var(--accent-text, #93b1ff);
   outline-offset: 3px;
 }
 
@@ -83,7 +83,7 @@
 .artist-portrait--placeholder {
   display: grid;
   place-items: center;
-  color: var(--accent, #c3a777);
+  color: var(--accent-text, #93b1ff);
   background: var(--surface-raised, #302c24);
   font-family: var(--heading-font, Georgia, serif);
   font-size: 4rem;
@@ -103,7 +103,7 @@
 }
 
 .artist-discipline {
-  color: var(--accent, #c3a777);
+  color: var(--accent-text, #93b1ff);
   text-transform: uppercase;
   letter-spacing: .12em;
   font-size: 11px;
@@ -113,7 +113,7 @@
 .artist-sample {
   color: var(--muted, #bcb3a3);
   font-size: 12px;
-  border-left: 2px solid var(--accent, #c3a777);
+  border-left: 2px solid var(--accent-text, #93b1ff);
   padding-left: 10px;
 }
 
@@ -127,7 +127,7 @@
 
 .artist-profile-link {
   margin-top: auto;
-  color: var(--accent, #c3a777);
+  color: var(--accent-text, #93b1ff);
 }
 
 /* Profile: portrait alongside full biography. */

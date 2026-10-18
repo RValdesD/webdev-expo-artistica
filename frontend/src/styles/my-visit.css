@@ -19,7 +19,7 @@
 
 .next-workshop__label,
 .visit-registration__date {
-  color: var(--accent-hover);
+  color: var(--accent-text);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: .14em;
@@ -58,8 +58,8 @@
 }
 
 .visit-registration__cancel:hover:not(:disabled) {
-  color: var(--accent-hover);
-  border-color: var(--accent-hover);
+  color: var(--accent-text);
+  border-color: var(--accent-text);
 }
 
 .visit-registration__cancel:disabled {
@@ -73,7 +73,7 @@
 
 .my-visit__error {
   margin-top: 24px;
-  color: var(--accent-hover);
+  color: var(--accent-text);
 }
 
 @media (max-width: 650px) {

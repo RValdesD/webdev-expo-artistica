@@ -24,7 +24,7 @@
 
 .management-tabs button[aria-selected="true"] {
   color: var(--text);
-  border-bottom-color: var(--accent-hover);
+  border-bottom-color: var(--accent-text);
 }
 
 .manager {
@@ -146,8 +146,8 @@
 
 .management-item__actions button:hover:not(:disabled),
 .management-form__heading button:hover {
-  color: var(--accent-hover);
-  border-color: var(--accent-hover);
+  color: var(--accent-text);
+  border-color: var(--accent-text);
 }
 
 .management-item__actions button:disabled {
