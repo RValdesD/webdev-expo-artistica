@@ -5,7 +5,7 @@
 }
 
 .catalog-heading {
-  margin-bottom: 36px;
+  margin-bottom: 40px;
 }
 
 .catalog-heading h1 {
@@ -24,6 +24,9 @@
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
   align-items: end;
   gap: 20px;
+  padding: 24px;
+  background: var(--surface, #221d29);
+  border: 1px solid var(--border, #6a6276);
 }
 
 .catalog-filters label {
@@ -137,4 +140,27 @@
   .catalog-page {
     padding-block: 40px;
   }
+}
+
+.catalog-filters input,
+.catalog-filters select {
+  background-color: var(--background, #14121a);
+}
+
+.catalog-filters label {
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+/* Obras dentro del perfil de un artista */
+.artist-works {
+  margin-top: 72px;
+  padding-top: 48px;
+  border-top: 1px solid var(--border, #6a6276);
+}
+
+.artist-works h2 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin-bottom: 24px;
 }

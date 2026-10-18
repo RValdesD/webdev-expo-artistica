@@ -33,6 +33,7 @@ export default function Signup() {
     <section className="auth-page">
       <p className="eyebrow">EXPO / CLIENTES</p>
       <h1>Crear cuenta</h1>
+      <p className="auth-page__intro">Con tu cuenta puedes inscribirte en talleres y armar tu visita.</p>
       {created ? (
         <div role="status"><p>Tu cuenta está creada.</p><Link className="button" to="/login">Iniciar sesión</Link></div>
       ) : (

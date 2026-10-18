@@ -1,12 +1,22 @@
 .auth-page {
-  max-width: 650px;
+  max-width: 560px;
   min-height: 65vh;
   margin-inline: auto;
-  padding: 48px 24px;
+  padding: 64px 24px 80px;
+}
+
+.auth-page .eyebrow {
+  margin-bottom: 24px;
 }
 
 .auth-page h1 {
   font-size: clamp(2.5rem, 5vw, 4rem);
+  margin-bottom: 12px;
+}
+
+.auth-page__intro {
+  color: var(--muted, #b5aca2);
+  margin-bottom: 32px;
 }
 
 .auth-nav {
@@ -37,7 +47,36 @@
 
 .auth-form {
   display: grid;
-  gap: 12px;
+  gap: 8px;
+  padding: 32px;
+  background: var(--surface, #221d29);
+  border: 1px solid var(--border, #6a6276);
+  border-top: 3px solid var(--accent, #2f56c6);
+}
+
+.auth-form label {
+  margin-top: 10px;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.auth-form label:first-of-type {
+  margin-top: 0;
+}
+
+.auth-form .button {
+  justify-content: center;
+  margin-top: 18px;
+  padding-block: 14px;
+}
+
+.auth-form > p:last-child {
+  margin: 12px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--border, #6a6276);
+  color: var(--muted, #b5aca2);
+  text-align: center;
 }
 
 .auth-form input {
@@ -45,7 +84,7 @@
   min-width: 0;
   padding: 12px;
   font: inherit;
-  background: var(--surface, #24221e);
+  background: var(--background, #14121a);
   color: var(--text, #eee5d4);
   border: 1px solid var(--border, #514a3d);
 }

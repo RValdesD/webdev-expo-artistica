@@ -2,9 +2,13 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import ArtistPortrait from '../components/ArtistPortrait';
+import ArtworkCard from '../components/ArtworkCard';
 import artistsService from '../services/artists';
+import artworksService from '../services/artworks';
 import type { Artist } from '../types/artist';
+import type { Artwork } from '../types/artwork';
 import '../styles/artists.css';
+import '../styles/catalog.css';
 
 type Result =
   | { status: 'loading' }
@@ -21,6 +25,7 @@ export default function ArtistDetail() {
 function ArtistProfile({ id }: { id: string | undefined }) {
   const [result, setResult] = useState<Result>({ status: 'loading' });
   const [attempt, setAttempt] = useState(0);
+  const [artworks, setArtworks] = useState<Artwork[]>([]);
 
   useEffect(() => {
     if (!id) {
@@ -43,6 +48,18 @@ function ArtistProfile({ id }: { id: string | undefined }) {
 
     return () => controller.abort();
   }, [id, attempt]);
+
+  // Obras del artista: si fallan, el perfil se muestra igual, sin esa sección.
+  useEffect(() => {
+    if (!id) return;
+    const controller = new AbortController();
+    artworksService.getAll(controller.signal)
+      .then(all => {
+        if (!controller.signal.aborted) setArtworks(all.filter(artwork => artwork.artistId === id));
+      })
+      .catch(() => undefined);
+    return () => controller.abort();
+  }, [id]);
 
   return (
     <section className="artists-page">
@@ -67,16 +84,31 @@ function ArtistProfile({ id }: { id: string | undefined }) {
       )}
 
       {result.status === 'ready' && (
-        <article className="artist-profile">
-          <ArtistPortrait name={result.artist.name} imageUrl={result.artist.imageUrl} />
-          <div>
-            <p className="artist-discipline">{result.artist.discipline}</p>
-            <h1>{result.artist.name}</h1>
-            {result.artist.isSample && <p className="artist-sample">Perfil ficticio de demostración</p>}
-            <h2>Sobre el artista</h2>
-            <p className="artist-biography">{result.artist.bio}</p>
-          </div>
-        </article>
+        <>
+          <article className="artist-profile">
+            <ArtistPortrait name={result.artist.name} imageUrl={result.artist.imageUrl} />
+            <div className="artist-profile__info">
+              <p className="artist-discipline">{result.artist.discipline}</p>
+              <h1>{result.artist.name}</h1>
+              {result.artist.isSample && <p className="artist-sample">Perfil ficticio de demostración</p>}
+              <h2>Sobre el artista</h2>
+              <p className="artist-biography">{result.artist.bio}</p>
+              <dl className="artist-profile__facts">
+                <div><dt>Disciplina</dt><dd>{result.artist.discipline}</dd></div>
+                <div><dt>Obras en la expo</dt><dd>{artworks.length}</dd></div>
+              </dl>
+            </div>
+          </article>
+
+          {artworks.length > 0 && (
+            <section className="artist-works" aria-labelledby="artist-works-title">
+              <h2 id="artist-works-title">Obras en la expo</h2>
+              <div className="catalog-grid">
+                {artworks.map(artwork => <ArtworkCard key={artwork.id} artwork={artwork} />)}
+              </div>
+            </section>
+          )}
+        </>
       )}
     </section>
   );

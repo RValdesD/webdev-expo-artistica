@@ -8,6 +8,10 @@
   font-size: clamp(2.5rem, 5vw, 4.5rem);
 }
 
+.workshops-heading {
+  margin-bottom: 24px;
+}
+
 .workshops-heading > p:last-child {
   color: var(--muted, #bcb3a3);
 }

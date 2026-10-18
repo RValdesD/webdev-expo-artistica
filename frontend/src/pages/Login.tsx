@@ -35,6 +35,7 @@ export default function Login() {
     <section className="auth-page">
       <p className="eyebrow">EXPO / CLIENTES</p>
       <h1>Iniciar sesión</h1>
+      <p className="auth-page__intro">Entra para inscribirte en talleres y revisar tu visita.</p>
       {user ? (
         <p>Sesión iniciada como {user.name}. <Link to="/workshops">Ver talleres</Link>.</p>
       ) : (

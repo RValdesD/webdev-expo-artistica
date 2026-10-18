@@ -3,14 +3,17 @@
 }
 
 .management-heading {
-  padding-bottom: 32px;
-  border-bottom: 1px solid var(--border);
+  margin-bottom: 40px;
+}
+
+.management-heading > p:last-child {
+  color: var(--muted);
 }
 
 .management-tabs {
   display: flex;
   gap: 0;
-  margin: 32px 0;
+  margin: 0 0 32px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -30,15 +33,28 @@
 .manager {
   display: grid;
   grid-template-columns: minmax(280px, .85fr) minmax(340px, 1.15fr);
-  gap: clamp(36px, 6vw, 90px);
+  gap: 24px;
   align-items: start;
+}
+
+/* Formulario y lista en tarjetas, igual que el resto del sitio. */
+.management-form,
+.management-list {
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
 }
 
 .management-form {
   display: grid;
   gap: 10px;
-  padding-top: 22px;
-  border-top: 2px solid var(--accent);
+  border-top: 3px solid var(--accent);
+}
+
+.manager .management-form input,
+.manager .management-form textarea,
+.manager .management-form select {
+  background-color: var(--background);
 }
 
 .management-form__heading {
@@ -119,13 +135,22 @@
   min-width: 0;
 }
 
+.management-list > h2 {
+  margin-bottom: 8px;
+}
+
 .management-item {
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
   gap: 24px;
-  padding: 22px 0;
+  padding: 20px 0;
   border-bottom: 1px solid var(--border);
+}
+
+.management-item:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
 }
 
 .management-item h3 {
