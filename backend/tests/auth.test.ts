@@ -23,8 +23,13 @@ const user = {
   toJSON: () => ({ id: '507f1f77bcf86cd799439011', username: 'ana', name: 'Ana' }),
 };
 
+let lastQuery: unknown;
+
 before(() => {
-  User.findOne = (() => ({ select: async () => user })) as typeof User.findOne;
+  User.findOne = ((query: unknown) => {
+    lastQuery = query;
+    return { select: async () => user };
+  }) as typeof User.findOne;
   User.findById = (async () => user) as unknown as typeof User.findById;
   Artist.create = (async input => input) as typeof Artist.create;
 });
@@ -33,6 +38,12 @@ after(() => {
   User.findOne = originalFindOne;
   User.findById = originalFindById;
   Artist.create = originalArtistCreate;
+});
+
+test('inicia sesión con el correo en vez del usuario', async () => {
+  const response = await request(app).post('/api/login').send({ username: ' Ana@Example.com ', password: 'correct-password' });
+  assert.equal(response.status, 200);
+  assert.deepEqual(lastQuery, { email: 'ana@example.com' });
 });
 
 test('rechaza credenciales incorrectas', async () => {

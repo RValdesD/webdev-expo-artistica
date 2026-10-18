@@ -17,12 +17,14 @@ const cookieSecurity = {
 loginRouter.post('/', async (req, res, next) => {
   try {
     const body = req.body as Record<string, unknown>;
-    const username = typeof body.username === 'string' ? body.username.trim().toLowerCase() : '';
+    // El mismo campo acepta el nombre de usuario o el correo.
+    const identifier = typeof body.username === 'string' ? body.username.trim().toLowerCase() : '';
     const password = typeof body.password === 'string' ? body.password : '';
-    const user = await User.findOne({ username }).select('+passwordHash');
+    const query = identifier.includes('@') ? { email: identifier } : { username: identifier };
+    const user = await User.findOne(query).select('+passwordHash');
     const valid = user && await bcrypt.compare(password, user.passwordHash);
     if (!valid || !user) {
-      res.status(401).json({ error: 'Usuario o contraseña incorrectos.' });
+      res.status(401).json({ error: 'Usuario, correo o contraseña incorrectos.' });
       return;
     }
 

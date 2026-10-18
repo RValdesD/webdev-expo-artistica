@@ -7,6 +7,7 @@ import '../styles/auth.css';
 export default function Signup() {
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmation, setConfirmation] = useState('');
   const [busy, setBusy] = useState(false);
@@ -20,7 +21,7 @@ export default function Signup() {
     setBusy(true);
     setError('');
     try {
-      await usersService.register({ name: name.trim(), username: username.trim(), password });
+      await usersService.register({ name: name.trim(), username: username.trim(), email: email.trim(), password });
       setPassword('');
       setConfirmation('');
       setCreated(true);
@@ -40,6 +41,8 @@ export default function Signup() {
           <input id="signup-name" autoComplete="name" required maxLength={120} value={name} onChange={event => setName(event.target.value)} disabled={busy} />
           <label htmlFor="signup-username">Usuario</label>
           <input id="signup-username" autoComplete="username" required minLength={3} maxLength={40} pattern="[a-zA-Z0-9._-]+" value={username} onChange={event => setUsername(event.target.value)} disabled={busy} />
+          <label htmlFor="signup-email">Correo</label>
+          <input id="signup-email" type="email" autoComplete="email" required maxLength={254} value={email} onChange={event => setEmail(event.target.value)} disabled={busy} />
           <label htmlFor="signup-password">Contraseña</label>
           <input id="signup-password" type="password" autoComplete="new-password" required minLength={8} maxLength={128} value={password} onChange={event => setPassword(event.target.value)} disabled={busy} aria-describedby="password-help" />
           <small id="password-help">Entre 8 y 128 caracteres.</small>

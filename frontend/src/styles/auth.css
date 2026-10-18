@@ -12,9 +12,27 @@
 .auth-nav {
   margin-left: auto;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 14px;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.auth-nav__user {
+  padding: 0 8px;
+  color: var(--muted, #b5aca2);
+  font-size: 12px;
+}
+
+.site-header nav a.auth-nav__login {
+  margin-left: 4px;
+  color: var(--text, #e4ddd6);
+  border: 1px solid var(--accent-text, #93b1ff);
+}
+
+.site-header nav a.auth-nav__login:hover {
+  background: var(--accent, #2f56c6);
+  border-color: var(--accent, #2f56c6);
+  color: #ffffff;
 }
 
 .auth-form {
@@ -51,6 +69,9 @@
 .auth-nav button {
   background: transparent;
   color: inherit;
-  border: 1px solid var(--border, #514a3d);
-  padding: 5px 10px;
+  border: 1px solid var(--border, #6a6276);
+  border-radius: 4px;
+  padding: 7px 12px;
+  font: inherit;
+  cursor: pointer;
 }

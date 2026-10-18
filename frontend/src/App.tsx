@@ -1,4 +1,4 @@
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Link, NavLink, Route, Routes } from 'react-router-dom';
 import Information from './pages/Information';
 import Visits from './pages/Visits';
 import ArtistList from "./pages/ArtistList";
@@ -19,13 +19,11 @@ export default function App() {
       <header className="site-header">
         <Link className="brand" to="/" aria-label="Expo Artística, inicio"> EXPO ARTÍSTICA SANTIAGO</Link>
         <nav aria-label="Navegación principal">
-          <Link to="/information">Información</Link>
-          <Link to="/artists">Artistas</Link>
-          <Link to="/catalog">Catálogo</Link>
-          <Link to="/workshops">Workshops</Link>
-          <Link to="/visitas">
-            Planifica tu visita
-          </Link>
+          <NavLink to="/" end>Información</NavLink>
+          <NavLink to="/artists">Artistas</NavLink>
+          <NavLink to="/catalog">Catálogo</NavLink>
+          <NavLink to="/workshops">Workshops</NavLink>
+          <NavLink to="/visitas">Planifica tu visita</NavLink>
           <AuthNav />
         </nav>
       </header>

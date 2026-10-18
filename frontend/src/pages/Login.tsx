@@ -39,8 +39,8 @@ export default function Login() {
         <p>Sesión iniciada como {user.name}. <Link to="/workshops">Ver talleres</Link>.</p>
       ) : (
         <form className="auth-form" onSubmit={handleSubmit}>
-          <label htmlFor="login-username">Usuario</label>
-          <input id="login-username" autoComplete="username" required minLength={3} maxLength={40} value={username} onChange={event => setUsername(event.target.value)} disabled={busy} />
+          <label htmlFor="login-username">Usuario o correo</label>
+          <input id="login-username" autoComplete="username" required minLength={3} maxLength={254} value={username} onChange={event => setUsername(event.target.value)} disabled={busy} />
           <label htmlFor="login-password">Contraseña</label>
           <input id="login-password" type="password" autoComplete="current-password" required maxLength={128} value={password} onChange={event => setPassword(event.target.value)} disabled={busy} />
           {error && <p role="alert">{error}</p>}

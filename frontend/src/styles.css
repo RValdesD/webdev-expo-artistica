@@ -81,31 +81,56 @@ p {
 }
 
 /* 03. HEADER */
+/* Fijo arriba al hacer scroll, con fondo semitransparente para no tapar de golpe el contenido. */
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 30px;
-  padding:20px;
-  padding-left: 120px;
-  padding-right: 40px;
+  gap: 40px;
+  padding: 16px var(--page-gutter);
+  background: rgba(20, 18, 26, .88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
 }
 
 .site-header nav {
-  display:flex;
-  gap:30px;
-  font-size:13px;
-  align-items: center;
+  display: flex;
   flex: 1;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
 }
 
+/* Cada enlace es una "pastilla": se ilumina al pasar el mouse y marca la página actual. */
 .site-header nav a {
-  text-decoration:none;
+  position: relative;
+  padding: 8px 12px;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: 4px;
 }
 
 .site-header nav a:hover {
-  text-decoration:underline;
+  color: var(--text);
+  background: rgba(147, 177, 255, .08);
+}
+
+.site-header nav a.active {
+  color: var(--text);
+}
+
+.site-header nav a.active::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 2px;
+  height: 2px;
+  background: var(--accent-text);
 }
 
 /* 04. DEMONSTRATION NOTICE */
@@ -183,6 +208,11 @@ h1 em {
   font-size: 13px;
   letter-spacing: 0.12em;
   font-weight: 700;
+  white-space: nowrap;
+}
+
+.brand:hover {
+  color: var(--accent-text);
 }
 
 /* 08. VISIT INFORMATION */
@@ -323,14 +353,6 @@ h1 em {
 
 /* 13. MOBILE LAYOUT */
 @media(max-width:750px) {
-  .site-header {
-    padding:20px var(--page-gutter);
-    flex-wrap:wrap;
-  }
-
-  .site-header nav {
-    gap:20px;
-  }
 
   .hero {
     grid-template-columns:1fr;
@@ -461,10 +483,6 @@ button:disabled {
   color: var(--accent-text);
 }
 
-/* Menú */
-.site-header nav a:hover {
-  color: var(--accent-text);
-}
 
 /* Quien prefiere menos movimiento no ve animaciones. */
 @media (prefers-reduced-motion: reduce) {
@@ -477,5 +495,156 @@ button:disabled {
   button:not(:disabled):active,
   .button:active {
     transform: none;
+  }
+}
+
+/* Selects: sin la apariencia del sistema, con flecha propia en azul y menú oscuro. */
+.catalog-filters select,
+.management-form select {
+  appearance: none;
+  -webkit-appearance: none;
+  color-scheme: dark;
+  padding-right: 40px;
+  border-radius: 0;
+  background-color: var(--surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2393b1ff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 12px 8px;
+  cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+
+.catalog-filters select:hover:not(:disabled),
+.management-form select:hover:not(:disabled) {
+  border-color: var(--accent-text);
+  background-color: var(--surface-raised);
+}
+
+.catalog-filters select:disabled,
+.management-form select:disabled {
+  opacity: .65;
+  cursor: not-allowed;
+}
+
+.catalog-filters select option,
+.management-form select option {
+  background: var(--surface);
+  color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .catalog-filters select,
+  .management-form select { transition: none; }
+}
+
+/* Inicio: otras exposiciones */
+.exhibitions {
+  padding: 24px var(--page-gutter) 72px;
+  border-top: 1px solid var(--border);
+}
+
+.exhibitions .eyebrow {
+  margin: 40px 0 16px;
+}
+
+.exhibitions h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 12px;
+}
+
+.exhibitions__heading > p:last-child {
+  color: var(--muted);
+  margin-bottom: 32px;
+}
+
+.exhibitions__grid {
+  list-style: none;
+  margin: 0 0 36px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.exhibition-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+  transition: border-color .15s ease, background-color .15s ease, transform .15s ease;
+}
+
+.exhibition-card:hover {
+  background: var(--surface-raised);
+  border-color: var(--accent-text);
+  transform: translateY(-2px);
+}
+
+.exhibition-card h3 {
+  font-family: var(--heading-font);
+  font-weight: 400;
+  font-size: 1.7rem;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.exhibition-card p {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.exhibition-card__meta {
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+
+.exhibition-card__dates {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.exhibition-card__link {
+  margin-top: auto;
+  padding-top: 8px;
+  color: var(--accent-text);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.exhibition-card__link:hover {
+  text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exhibition-card { transition: none; }
+  .exhibition-card:hover { transform: none; }
+}
+
+/* Menú en pantallas medianas y celulares: la marca arriba y los enlaces debajo, con scroll lateral. */
+@media (max-width: 1100px) {
+  .site-header {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-block: 12px 6px;
+  }
+
+  .site-header nav {
+    flex-basis: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-inline: -12px;
+    /* Difuminado a la derecha: indica que hay más enlaces al deslizar. */
+    -webkit-mask-image: linear-gradient(to right, #000 85%, transparent);
+    mask-image: linear-gradient(to right, #000 85%, transparent);
+  }
+
+  .site-header nav::-webkit-scrollbar {
+    display: none;
   }
 }

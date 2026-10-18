@@ -94,12 +94,23 @@ test('signup ignores a supplied organizer role and stores a visitor', async () =
     return new User(data);
   }) as unknown as typeof User.create;
   const response = await request(app).post('/api/users').send({
-    username: 'visitor', name: 'Visitante', password: 'long-password-example', role: 'organizador',
+    username: 'visitor', email: 'Visitor@Example.com', name: 'Visitante', password: 'long-password-example', role: 'organizador',
   });
   assert.equal(response.status, 201);
   assert.equal(saved.role, 'visitante');
+  assert.equal(saved.email, 'visitor@example.com');
   assert.equal(response.body.user.role, 'visitante');
   assert.equal(response.body.user.passwordHash, undefined);
+});
+
+test('signup requires a valid email', async () => {
+  for (const email of [undefined, '', 'sin-arroba', 'a@b']) {
+    const response = await request(app).post('/api/users').send({
+      username: 'visitor', email, name: 'Visitante', password: 'long-password-example',
+    });
+    assert.equal(response.status, 400);
+    assert.match(response.body.error, /correo/i);
+  }
 });
 
 test('schema defaults to visitor and rejects unsupported roles', async () => {
