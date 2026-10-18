@@ -48,38 +48,17 @@ export default function Visits() {
     );
 
   return (
-      <section id="visit" className="section visit-page" aria-labelledby="visit-title">
-        <header className="visit-page__heading">
-          <p className="eyebrow">EXPO / VISITA</p>
-          <h1 id="visit-title">Planifica tu visita</h1>
-          <p className="intro">{expo.introduction}</p>
-        </header>
-
+      <section id="visit" className="section" aria-labelledby="visit-title">
+        <h1 id="visit-title">Planifica tu visita</h1>
         <dl className="info-grid">
           <div><dt>Fecha</dt><dd>{expo.dateLabel}</dd></div>
           <div><dt>Horario</dt><dd>{expo.hours}</dd></div>
           <div><dt>Lugar</dt><dd>{expo.venue}<small>{expo.address}</small></dd></div>
           <div><dt>Acceso</dt><dd>{expo.admission}</dd></div>
         </dl>
-
-        <div className="visit-details">
-          <section className="visit-block" aria-labelledby="visit-transport">
-            <h2 id="visit-transport">Cómo llegar</h2>
-            <p>{expo.transport}</p>
-          </section>
-          <section className="visit-block" aria-labelledby="visit-accessibility">
-            <h2 id="visit-accessibility">Accesibilidad</h2>
-            <ul>{expo.accessibility.map(item => <li key={item}>{item}</li>)}</ul>
-          </section>
-        </div>
-
-        <section className="faq-section" aria-labelledby="visit-faq">
-          <div>
-            <h2 id="visit-faq">Preguntas frecuentes</h2>
-            <p>Lo que más nos preguntan antes de venir. Toca una pregunta para ver la respuesta.</p>
-          </div>
-          <Faq items={expo.faqs} />
-        </section>
+        <p>{expo.transport}</p>
+        <ul>{expo.accessibility.map(item => <li key={item}>{item}</li>)}</ul>
+        <Faq items={expo.faqs} />
       </section>
   );
 }

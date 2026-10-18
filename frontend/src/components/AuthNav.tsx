@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { apiError } from '../services/auth';
 import '../styles/auth.css';
@@ -23,15 +23,15 @@ export default function AuthNav() {
     <div className="auth-nav">
       {user ? (
         <>
-          <NavLink to="/mi-visita">Mi visita</NavLink>
-          {user.role === 'organizador' && <NavLink to="/gestion">Gestión</NavLink>}
-          <span className="auth-nav__user">{user.name}</span>
+          <Link to="/mi-visita">Mi visita</Link>
+          {user.role === 'organizador' && <Link to="/gestion">Gestión</Link>}
+          <span>{user.name}</span>
           <button type="button" disabled={busy} onClick={handleLogout}>
             {busy ? 'Cerrando…' : 'Cerrar sesión'}
           </button>
         </>
       ) : (
-        <><NavLink to="/registro">Crear cuenta</NavLink><Link className="auth-nav__login" to="/login">Iniciar sesión</Link></>
+        <><Link to="/registro">Crear cuenta</Link>|<Link to="/login">Iniciar sesión</Link></>
       )}
       {error && <span role="alert">{error}</span>}
     </div>

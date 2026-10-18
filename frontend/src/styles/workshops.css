@@ -8,10 +8,6 @@
   font-size: clamp(2.5rem, 5vw, 4.5rem);
 }
 
-.workshops-heading {
-  margin-bottom: 24px;
-}
-
 .workshops-heading > p:last-child {
   color: var(--muted, #bcb3a3);
 }
@@ -39,7 +35,7 @@
 
 .workshop-card__date,
 .workshop-card__success {
-  color: var(--accent-text, #93b1ff);
+  color: var(--accent, #c3a777);
 }
 
 .workshop-card__description {
@@ -61,7 +57,7 @@
 }
 
 .workshop-card__sample {
-  border-left: 2px solid var(--accent-text, #93b1ff);
+  border-left: 2px solid var(--accent, #c3a777);
   padding-left: 12px;
   color: var(--muted, #bcb3a3);
   font-size: 12px;
@@ -92,7 +88,7 @@
 }
 
 .workshop-form input:focus-visible {
-  outline: 2px solid var(--accent-text, #93b1ff);
+  outline: 2px solid var(--accent, #c3a777);
   outline-offset: 3px;
 }
 

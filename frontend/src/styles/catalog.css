@@ -5,7 +5,7 @@
 }
 
 .catalog-heading {
-  margin-bottom: 40px;
+  margin-bottom: 36px;
 }
 
 .catalog-heading h1 {
@@ -24,9 +24,6 @@
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
   align-items: end;
   gap: 20px;
-  padding: 24px;
-  background: var(--surface, #221d29);
-  border: 1px solid var(--border, #6a6276);
 }
 
 .catalog-filters label {
@@ -52,7 +49,7 @@
 
 .catalog-filters input:focus-visible,
 .catalog-filters select:focus-visible {
-  outline: 2px solid var(--accent-text, #93b1ff);
+  outline: 2px solid var(--accent, #c3a777);
   outline-offset: 3px;
 }
 
@@ -106,7 +103,7 @@
 }
 
 .artwork-card__medium {
-  color: var(--accent-text, #93b1ff);
+  color: var(--accent, #c3a777);
   font-size: 12px;
   letter-spacing: .1em;
 }
@@ -120,7 +117,7 @@
 .artwork-card__sample {
   color: var(--muted, #bcb3a3);
   font-size: 12px;
-  border-left: 2px solid var(--accent-text, #93b1ff);
+  border-left: 2px solid var(--accent, #c3a777);
   padding-left: 10px;
 }
 
@@ -140,27 +137,4 @@
   .catalog-page {
     padding-block: 40px;
   }
-}
-
-.catalog-filters input,
-.catalog-filters select {
-  background-color: var(--background, #14121a);
-}
-
-.catalog-filters label {
-  font-size: 12px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-
-/* Obras dentro del perfil de un artista */
-.artist-works {
-  margin-top: 72px;
-  padding-top: 48px;
-  border-top: 1px solid var(--border, #6a6276);
-}
-
-.artist-works h2 {
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
-  margin-bottom: 24px;
 }

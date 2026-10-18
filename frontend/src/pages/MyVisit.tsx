@@ -77,21 +77,18 @@ export default function MyVisit() {
                 <h2 id="next-workshop-title">{nextWorkshop.title}</h2>
                 <p><time dateTime={nextWorkshop.date}>{dateFormatter.format(new Date(nextWorkshop.date))}</time></p>
                 <p>{nextWorkshop.location}</p>
-                <Link className="next-workshop__link" to="/workshops">Ver todos los talleres →</Link>
               </>
             ) : (
               <><h2 id="next-workshop-title">Sin próximos talleres</h2><p>Tus inscripciones restantes corresponden a talleres anteriores.</p></>
             )}
           </section>
 
-          <section className="my-visit__registrations" aria-labelledby="my-registrations-title">
-          <h2 id="my-registrations-title" className="my-visit__section-title">Mis inscripciones <span>({registrations.length})</span></h2>
-          <div className="my-visit__list">
+          <div className="my-visit__list" aria-label="Todas mis inscripciones">
             {registrations.map(workshop => (
               <article className="visit-registration" key={workshop.id}>
                 <div>
                   <p className="visit-registration__date"><time dateTime={workshop.date}>{dateFormatter.format(new Date(workshop.date))}</time></p>
-                  <h3>{workshop.title}</h3>
+                  <h2>{workshop.title}</h2>
                   <p>{workshop.artist ? `Con ${workshop.artist.name}` : 'Artista no disponible'} · {workshop.location}</p>
                 </div>
                 <button
@@ -105,7 +102,6 @@ export default function MyVisit() {
               </article>
             ))}
           </div>
-          </section>
           {error && <p role="alert" className="my-visit__error">{error}</p>}
         </>
       )}

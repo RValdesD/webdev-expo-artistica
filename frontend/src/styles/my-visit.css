@@ -3,12 +3,8 @@
 }
 
 .my-visit__heading {
-  margin-bottom: 48px;
-}
-
-.my-visit__heading > p:last-child {
-  color: var(--muted);
-  max-width: 60ch;
+  padding-bottom: 36px;
+  border-bottom: 1px solid var(--border);
 }
 
 .my-visit__heading h1 {
@@ -16,42 +12,14 @@
 }
 
 .next-workshop {
-  margin-bottom: 56px;
-  padding: 32px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--accent-text);
-}
-
-.next-workshop p {
-  margin-bottom: 6px;
-  color: var(--muted);
-}
-
-.next-workshop__link {
-  display: inline-block;
-  margin-top: 14px;
-  color: var(--accent-text);
-  text-decoration: none;
-}
-
-.next-workshop__link:hover {
-  text-decoration: underline;
-}
-
-.my-visit__section-title {
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
-  margin-bottom: 20px;
-}
-
-.my-visit__section-title span {
-  color: var(--muted);
-  font-size: .6em;
+  margin-block: 40px;
+  padding: 28px 0;
+  border-block: 1px solid var(--accent);
 }
 
 .next-workshop__label,
 .visit-registration__date {
-  color: var(--accent-text);
+  color: var(--accent-hover);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: .14em;
@@ -64,7 +32,7 @@
 
 .my-visit__list {
   display: grid;
-  gap: 12px;
+  gap: 0;
 }
 
 .visit-registration {
@@ -72,22 +40,14 @@
   grid-template-columns: 1fr auto;
   align-items: center;
   gap: 32px;
-  padding: 24px 28px;
-  background: var(--surface);
-  border: 1px solid var(--border);
+  padding: 28px 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
 }
 
-.visit-registration h3 {
-  font-family: var(--heading-font);
-  font-weight: 400;
-  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
-  line-height: 1.15;
-  margin: 6px 0 8px;
-}
-
-.visit-registration p:last-child {
-  margin: 0;
-  color: var(--muted);
+.visit-registration h2 {
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  margin-bottom: 10px;
 }
 
 .visit-registration__cancel {
@@ -98,8 +58,8 @@
 }
 
 .visit-registration__cancel:hover:not(:disabled) {
-  color: var(--accent-text);
-  border-color: var(--accent-text);
+  color: var(--accent-hover);
+  border-color: var(--accent-hover);
 }
 
 .visit-registration__cancel:disabled {
@@ -108,18 +68,12 @@
 }
 
 .my-visit__empty {
-  padding: 40px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-}
-
-.my-visit__empty p {
-  color: var(--muted);
+  padding-block: 50px;
 }
 
 .my-visit__error {
   margin-top: 24px;
-  color: var(--accent-text);
+  color: var(--accent-hover);
 }
 
 @media (max-width: 650px) {

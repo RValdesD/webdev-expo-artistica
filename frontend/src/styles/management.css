@@ -3,17 +3,14 @@
 }
 
 .management-heading {
-  margin-bottom: 40px;
-}
-
-.management-heading > p:last-child {
-  color: var(--muted);
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
 }
 
 .management-tabs {
   display: flex;
   gap: 0;
-  margin: 0 0 32px;
+  margin: 32px 0;
   border-bottom: 1px solid var(--border);
 }
 
@@ -27,34 +24,21 @@
 
 .management-tabs button[aria-selected="true"] {
   color: var(--text);
-  border-bottom-color: var(--accent-text);
+  border-bottom-color: var(--accent-hover);
 }
 
 .manager {
   display: grid;
   grid-template-columns: minmax(280px, .85fr) minmax(340px, 1.15fr);
-  gap: 24px;
+  gap: clamp(36px, 6vw, 90px);
   align-items: start;
-}
-
-/* Formulario y lista en tarjetas, igual que el resto del sitio. */
-.management-form,
-.management-list {
-  padding: 28px;
-  background: var(--surface);
-  border: 1px solid var(--border);
 }
 
 .management-form {
   display: grid;
   gap: 10px;
-  border-top: 3px solid var(--accent);
-}
-
-.manager .management-form input,
-.manager .management-form textarea,
-.manager .management-form select {
-  background-color: var(--background);
+  padding-top: 22px;
+  border-top: 2px solid var(--accent);
 }
 
 .management-form__heading {
@@ -112,7 +96,7 @@
 .management-form input:focus-visible,
 .management-form select:focus-visible,
 .management-form textarea:focus-visible {
-  outline: 2px solid var(--accent-text);
+  outline: 2px solid var(--accent-hover);
   outline-offset: 2px;
 }
 
@@ -135,22 +119,13 @@
   min-width: 0;
 }
 
-.management-list > h2 {
-  margin-bottom: 8px;
-}
-
 .management-item {
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
   gap: 24px;
-  padding: 20px 0;
+  padding: 22px 0;
   border-bottom: 1px solid var(--border);
-}
-
-.management-item:last-child {
-  border-bottom: 0;
-  padding-bottom: 0;
 }
 
 .management-item h3 {
@@ -171,8 +146,8 @@
 
 .management-item__actions button:hover:not(:disabled),
 .management-form__heading button:hover {
-  color: var(--accent-text);
-  border-color: var(--accent-text);
+  color: var(--accent-hover);
+  border-color: var(--accent-hover);
 }
 
 .management-item__actions button:disabled {
