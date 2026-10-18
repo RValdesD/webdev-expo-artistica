@@ -1,6 +1,7 @@
 import type { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import { User } from '../models/User.js';
 import { JWT_SECRET } from './config.js';
 import * as logger from './logger.js';
 
@@ -43,11 +44,38 @@ export function withUser(req: Request, res: Response, next: NextFunction): void 
 }
 
 export function optionalUser(req: Request, res: Response, next: NextFunction): void {
-  if (!req.cookies?.token) {
-    next();
-    return;
+  // Public reads remain available when an optional session has expired.
+  const token = req.cookies?.token as unknown;
+  if (typeof token === 'string' && JWT_SECRET) {
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      if (isTokenPayload(decoded) && decoded.csrf === req.get('x-csrf-token')) req.userId = decoded.id;
+    } catch (error: unknown) {
+      if (!(error instanceof jwt.JsonWebTokenError)) { next(error); return; }
+    }
   }
-  withUser(req, res, next);
+  next();
+}
+
+// Run after withUser. Read the current database role on every management request,
+// so demotion takes effect even when an old JWT is still valid.
+export async function requireOrganizer(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    if (!req.userId) {
+      res.status(401).json({ error: 'Sesión requerida.' });
+      return;
+    }
+    const user = await User.findById(req.userId);
+    if (!user) {
+      res.status(401).json({ error: 'La sesión ya no es válida.' });
+      return;
+    }
+    if (user.role !== 'organizador') {
+      res.status(403).json({ error: 'Solo los organizadores pueden gestionar el contenido.' });
+      return;
+    }
+    next();
+  } catch (error: unknown) { next(error); }
 }
 
 export function unknownEndpoint(_req: Request, res: Response): void {

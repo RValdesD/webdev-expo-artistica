@@ -12,3 +12,8 @@ export interface Workshop {
   isSample: boolean;
   isRegistered: boolean;
 }
+
+export type WorkshopInput = Pick<
+  Workshop,
+  'id' | 'title' | 'description' | 'artistId' | 'date' | 'durationMinutes' | 'location' | 'capacity'
+>;

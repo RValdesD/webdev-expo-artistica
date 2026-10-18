@@ -4,12 +4,14 @@ export interface UserData {
   username: string;
   name: string;
   passwordHash: string;
+  role: 'visitante' | 'organizador';
 }
 
 const userSchema = new Schema<UserData>({
   username: { type: String, required: true, unique: true, trim: true, lowercase: true, minlength: 3, maxlength: 40 },
   name: { type: String, required: true, trim: true, maxlength: 120 },
   passwordHash: { type: String, required: true, select: false },
+  role: { type: String, enum: ['visitante', 'organizador'], default: 'visitante', required: true },
 }, { timestamps: true });
 
 userSchema.set('toJSON', {

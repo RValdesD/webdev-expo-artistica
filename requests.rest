@@ -1,0 +1,135 @@
+@base = http://localhost:3001
+@username = replace-me
+@password = replace-me
+# Copy token cookie and X-CSRF-Token from login response below.
+@token = replace-after-login
+@csrf = replace-after-login
+
+### Register (always creates a visitor)
+POST {{base}}/api/users
+Content-Type: application/json
+
+{"username":"{{username}}","name":"Demo User","password":"{{password}}"}
+
+### Login
+POST {{base}}/api/login
+Content-Type: application/json
+
+{"username":"{{username}}","password":"{{password}}"}
+
+### Current user
+GET {{base}}/api/login/me
+Cookie: token={{token}}
+X-CSRF-Token: {{csrf}}
+
+### List artists
+GET {{base}}/api/artists
+
+### Read artists
+GET {{base}}/api/artists/rest-artist
+
+### POST artists (organizer only; delete children before artist)
+POST {{base}}/api/artists
+Cookie: token={{token}}
+X-CSRF-Token: {{csrf}}
+Content-Type: application/json
+
+{"id":"rest-artist","name":"Demo Artist","bio":"Biography","discipline":"Painting"}
+
+### PUT artists (organizer only; delete children before artist)
+PUT {{base}}/api/artists/rest-artist
+Cookie: token={{token}}
+X-CSRF-Token: {{csrf}}
+Content-Type: application/json
+
+{"name":"Updated"}
+
+### DELETE artists (organizer only; delete children before artist)
+DELETE {{base}}/api/artists/rest-artist
+Cookie: token={{token}}
+X-CSRF-Token: {{csrf}}
+
+### List artworks
+GET {{base}}/api/artworks
+
+### Read artworks
+GET {{base}}/api/artworks/rest-artwork
+
+### POST artworks (organizer only; delete children before artist)
+POST {{base}}/api/artworks
+Cookie: token={{token}}
+X-CSRF-Token: {{csrf}}
+Content-Type: application/json
+
+{"id":"rest-artwork","title":"Demo Artwork","artistId":"rest-artist","medium":"Oil","year":2026}
+
+### PUT artworks (organizer only; delete children before artist)
+PUT {{base}}/api/artworks/rest-artwork
+Cookie: token={{token}}
+X-CSRF-Token: {{csrf}}
+Content-Type: application/json
+
+{"title":"Updated"}
+
+### DELETE artworks (organizer only; delete children before artist)
+DELETE {{base}}/api/artworks/rest-artwork
+Cookie: token={{token}}
+X-CSRF-Token: {{csrf}}
+
+### List workshops
+GET {{base}}/api/workshops
+
+### Read workshops
+GET {{base}}/api/workshops/rest-workshop
+
+### POST workshops (organizer only; delete children before artist)
+POST {{base}}/api/workshops
+Cookie: token={{token}}
+X-CSRF-Token: {{csrf}}
+Content-Type: application/json
+
+{"id":"rest-workshop","title":"Demo Workshop","artistId":"rest-artist","description":"Painting workshop","date":"2099-01-01T12:00:00Z","durationMinutes":60,"location":"Gallery","capacity":10}
+
+### PUT workshops (organizer only; delete children before artist)
+PUT {{base}}/api/workshops/rest-workshop
+Cookie: token={{token}}
+X-CSRF-Token: {{csrf}}
+Content-Type: application/json
+
+{"title":"Updated"}
+
+### DELETE workshops (organizer only; delete children before artist)
+DELETE {{base}}/api/workshops/rest-workshop
+Cookie: token={{token}}
+X-CSRF-Token: {{csrf}}
+
+### Expo
+GET {{base}}/api/expo
+
+### Update expo (organizer only)
+PUT {{base}}/api/expo
+Cookie: token={{token}}
+X-CSRF-Token: {{csrf}}
+Content-Type: application/json
+
+{"hours":"10:00–18:00"}
+
+### Register attendance
+POST {{base}}/api/workshops/rest-workshop/registrations
+Cookie: token={{token}}
+X-CSRF-Token: {{csrf}}
+
+### My registrations
+GET {{base}}/api/registrations/me
+Cookie: token={{token}}
+X-CSRF-Token: {{csrf}}
+
+### Cancel attendance
+DELETE {{base}}/api/workshops/rest-workshop/registrations
+Cookie: token={{token}}
+X-CSRF-Token: {{csrf}}
+
+### Logout
+POST {{base}}/api/login/logout
+Cookie: token={{token}}
+X-CSRF-Token: {{csrf}}

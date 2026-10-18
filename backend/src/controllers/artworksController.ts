@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { Artwork } from '../models/Artwork.js';
 import { Artist } from '../models/Artist.js';
-import { withUser } from '../utils/middleware.js';
+import { withUser, requireOrganizer } from '../utils/middleware.js';
 
 const artworksRouter = Router();
 const allowed = ['id', 'title', 'artistId', 'medium', 'imageUrl', 'year', 'description'] as const;
@@ -32,7 +32,7 @@ artworksRouter.get('/:id', async (req, res, next) => {
   } catch (error: unknown) { next(error); }
 });
 
-artworksRouter.post('/', withUser, async (req, res, next) => {
+artworksRouter.post('/', withUser, requireOrganizer, async (req, res, next) => {
   try {
     const input = artworkBody(req.body);
     if (typeof input.artistId !== 'string' || !await Artist.exists({ id: input.artistId })) {
@@ -42,7 +42,7 @@ artworksRouter.post('/', withUser, async (req, res, next) => {
   } catch (error: unknown) { next(error); }
 });
 
-artworksRouter.put('/:id', withUser, async (req, res, next) => {
+artworksRouter.put('/:id', withUser, requireOrganizer, async (req, res, next) => {
   try {
     const input = artworkBody(req.body);
     delete input.id;
@@ -55,7 +55,7 @@ artworksRouter.put('/:id', withUser, async (req, res, next) => {
   } catch (error: unknown) { next(error); }
 });
 
-artworksRouter.delete('/:id', withUser, async (req, res, next) => {
+artworksRouter.delete('/:id', withUser, requireOrganizer, async (req, res, next) => {
   try {
     if (!await Artwork.findOneAndDelete({ id: req.params.id })) { res.status(404).json({ error: 'Obra no encontrada.' }); return; }
     res.status(204).end();

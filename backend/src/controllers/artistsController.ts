@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { Artist } from '../models/Artist.js';
 import { Artwork } from '../models/Artwork.js';
 import { Workshop } from '../models/Workshop.js';
-import { withUser } from '../utils/middleware.js';
+import { withUser, requireOrganizer } from '../utils/middleware.js';
 
 const artistsRouter = Router();
 const publicFields = 'id name bio discipline imageUrl isSample -_id';
@@ -26,12 +26,12 @@ artistsRouter.get('/:id', async (req, res, next) => {
   } catch (error: unknown) { next(error); }
 });
 
-artistsRouter.post('/', withUser, async (req, res, next) => {
+artistsRouter.post('/', withUser, requireOrganizer, async (req, res, next) => {
   try { res.status(201).json(await Artist.create(artistBody(req.body))); }
   catch (error: unknown) { next(error); }
 });
 
-artistsRouter.put('/:id', withUser, async (req, res, next) => {
+artistsRouter.put('/:id', withUser, requireOrganizer, async (req, res, next) => {
   try {
     const changes = artistBody(req.body);
     delete changes.id;
@@ -41,7 +41,7 @@ artistsRouter.put('/:id', withUser, async (req, res, next) => {
   } catch (error: unknown) { next(error); }
 });
 
-artistsRouter.delete('/:id', withUser, async (req, res, next) => {
+artistsRouter.delete('/:id', withUser, requireOrganizer, async (req, res, next) => {
   try {
     const referenced = await Promise.all([Artwork.exists({ artistId: req.params.id }), Workshop.exists({ artistId: req.params.id })]);
     if (referenced.some(Boolean)) { res.status(409).json({ error: 'No puedes eliminar un artista que todavía tiene obras o talleres.' }); return; }

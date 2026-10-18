@@ -15,7 +15,8 @@ usersRouter.post('/', async (req, res, next) => {
       return;
     }
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = await User.create({ username, name, passwordHash });
+    // Public registration never accepts a role supplied by the browser.
+    const user = await User.create({ username, name, passwordHash, role: 'visitante' });
     res.status(201).json({ user });
   } catch (error: unknown) { next(error); }
 });

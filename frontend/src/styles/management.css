@@ -1,0 +1,187 @@
+.management-page {
+  padding: 64px var(--page-gutter) 100px;
+}
+
+.management-heading {
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.management-tabs {
+  display: flex;
+  gap: 0;
+  margin: 32px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.management-tabs button {
+  padding: 14px 28px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--muted);
+}
+
+.management-tabs button[aria-selected="true"] {
+  color: var(--text);
+  border-bottom-color: var(--accent-hover);
+}
+
+.manager {
+  display: grid;
+  grid-template-columns: minmax(280px, .85fr) minmax(340px, 1.15fr);
+  gap: clamp(36px, 6vw, 90px);
+  align-items: start;
+}
+
+.management-form {
+  display: grid;
+  gap: 10px;
+  padding-top: 22px;
+  border-top: 2px solid var(--accent);
+}
+
+.management-form__heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 20px;
+  margin-bottom: 12px;
+}
+
+.management-form__heading h2,
+.management-list > h2 {
+  font-family: var(--heading-font);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 500;
+}
+
+.management-form__heading button,
+.management-item__actions button {
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--text);
+}
+
+.management-form label,
+.management-form__row label {
+  display: block;
+  margin-top: 7px;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.management-form input,
+.management-form select,
+.management-form textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+}
+
+.management-form select option {
+  background: var(--background);
+}
+
+.management-form textarea {
+  resize: vertical;
+}
+
+.management-form input:focus-visible,
+.management-form select:focus-visible,
+.management-form textarea:focus-visible {
+  outline: 2px solid var(--accent-hover);
+  outline-offset: 2px;
+}
+
+.management-form input:disabled {
+  opacity: .65;
+}
+
+.management-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.management-form .button {
+  margin-top: 16px;
+  justify-content: center;
+}
+
+.management-list {
+  min-width: 0;
+}
+
+.management-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 24px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.management-item h3 {
+  margin-bottom: 7px;
+  font-size: 1.1rem;
+}
+
+.management-item p {
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.management-item__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.management-item__actions button:hover:not(:disabled),
+.management-form__heading button:hover {
+  color: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.management-item__actions button:disabled {
+  opacity: .55;
+}
+
+.management-message {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  max-width: min(430px, calc(100vw - 48px));
+  padding: 14px 18px;
+  border: 1px solid var(--accent-hover);
+  background: var(--background);
+  z-index: 10;
+}
+
+.management-message--error {
+  border-color: var(--border);
+}
+
+@media (max-width: 850px) {
+  .manager {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 540px) {
+  .management-form__row,
+  .management-item {
+    grid-template-columns: 1fr;
+  }
+
+  .management-item__actions {
+    justify-content: flex-start;
+  }
+}

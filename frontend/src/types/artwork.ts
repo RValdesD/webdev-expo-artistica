@@ -9,3 +9,8 @@ export interface Artwork {
   isSample: boolean;
   artist: { id: string; name: string } | null;
 }
+
+export type ArtworkInput = Pick<
+  Artwork,
+  'id' | 'title' | 'artistId' | 'medium' | 'imageUrl' | 'year' | 'description'
+>;

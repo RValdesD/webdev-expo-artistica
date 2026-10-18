@@ -1,76 +1,168 @@
-# Expo Artística Santiago
+# Art Expo — Hito 2
 
-Aplicación web para una exposición de arte: los visitantes exploran los artistas y las obras que se presentan y se inscriben a talleres prácticos.
+Aplicación React + TypeScript con una API Express + TypeScript y MongoDB/Mongoose. Esta versión adapta el proyecto existente al plan de Hito 2 sin reemplazar su diseño visual personalizado.
 
-Proyecto del curso CC5003 — Aplicaciones Web Reactivas. Equipo **Los Patos Malos**.
+Se conservaron el encabezado **EXPO ARTÍSTICA SANTIAGO**, el tema **Los Grandes Mares**, la paleta oscura, la composición de la página de información y la imagen `frontend/public/images/FISH.png` del proyecto entregado.
 
-## Estructura
+## Qué incluye este checkpoint
 
+- Información, artistas, catálogo y talleres públicos.
+- Registro e inicio de sesión por nombre de usuario.
+- Sesión JWT en una cookie `httpOnly`, `SameSite=Strict` y `Secure` en producción.
+- Protección CSRF mediante un valor independiente enviado en `X-CSRF-Token`.
+- Restauración y cierre de sesión en React.
+- Inscripción autenticada a talleres, sin confiar en datos de identidad enviados por el navegador.
+- Vista protegida **Mi visita** con próximo taller, todas las inscripciones del usuario y cancelación.
+- Panel protegido **Gestión** con pestañas para crear, editar y eliminar obras y talleres.
+- CRUD de exposición, artistas, obras y talleres en la API. Las escrituras requieren autenticación.
+- Validación de relaciones entre artistas, obras y talleres.
+- Seed consolidado e idempotente: agrega muestras ausentes sin sobrescribir documentos existentes.
+- Manejo centralizado de errores y pruebas de autenticación.
+
+Las dos vistas nuevas del Hito 2 están implementadas. Gestión y todas las escrituras de contenido requieren el rol `organizador`; las cuentas nuevas son `visitante`.
+
+## Roles y primer organizador
+
+| Acción | Visitante | Organizador |
+|---|---|---|
+| Ver exposición, artistas, obras y talleres | Sí | Sí |
+| Inscribirse, ver Mi visita y cancelar su inscripción | Sí | Sí |
+| Abrir Gestión y crear/editar/eliminar contenido | No | Sí |
+
+Crea primero una cuenta desde /registro. Desde la raíz, con MongoDB funcionando y backend/.env configurado, ejecuta (reemplaza ana por el usuario real):
+
+```sh
+npm run user:role --workspace backend -- ana organizador
 ```
-frontend/   React + TypeScript + Vite (SPA con React Router)
-backend/    Express + Mongoose + TypeScript sobre MongoDB
+
+Desde la carpeta backend el equivalente es:
+
+```sh
+npm run user:role -- ana organizador
 ```
+
+Recarga la página para restaurar la sesión y mostrar Gestión. No hay nuevas variables de entorno ni contraseñas predeterminadas. Para retirar el permiso:
+
+```sh
+npm run user:role --workspace backend -- ana visitante
+```
+
+Este comando actualiza únicamente el rol de una cuenta existente. Las cuentas anteriores sin role se tratan como visitantes; no hace falta borrar usuarios ni volver a ejecutar el seed. El registro público ignora cualquier role enviado por el navegador.
+
+El servidor consulta el rol actual en MongoDB en cada escritura administrativa. Cambiar localStorage o falsificar un campo role no concede permisos; al degradar un organizador, su JWT anterior deja de autorizar escrituras inmediatamente. El menú refleja el cambio al recargar.
 
 ## Requisitos
 
-- **Node.js 22.18 o superior.** El backend ejecuta TypeScript directamente con `node`. Con nvm: `nvm use` (lee el `.nvmrc`).
-- **MongoDB** corriendo en local (`mongodb://127.0.0.1:27017`).
+- Node.js 22 o posterior.
+- npm.
+- MongoDB Community instalado y ejecutándose, o una URI de MongoDB Atlas.
+- MongoDB Compass es opcional: sirve para inspeccionar y editar datos, pero no inicia ni reemplaza el servidor de MongoDB.
 
-## Variables de entorno
+## Preparación
 
-El backend lee `backend/.env`, que **no se sube al repositorio**. Copia el ejemplo y completa los valores:
+Desde la carpeta raíz del proyecto:
 
-```bash
-cd backend
-cp .env.example .env
+```sh
+npm install
 ```
 
-| Variable | Para qué sirve |
-|---|---|
-| `MONGODB_URI` | Dirección de MongoDB |
-| `MONGODB_DB_NAME` | Base de datos de desarrollo |
-| `PORT` | Puerto del backend (3001) |
-| `TEST_MONGODB_URI` | Dirección de MongoDB para los tests |
-| `TEST_MONGODB_DB_NAME` | Base de datos de los tests (se vacía en cada ejecución) |
-| `JWT_SECRET` | Secreto para firmar los JWT. Genera uno con `openssl rand -hex 32` |
+Copia `backend/.env.example` como `backend/.env`. Genera un secreto; por ejemplo:
 
-## Ejecutar en local
+```sh
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
 
-**Terminal 1: backend** (queda en `http://localhost:3001`)
+Pega el resultado en `JWT_SECRET`. Una configuración local típica es:
 
-```bash
-cd backend
-npm install
-npm run seed     # carga los datos de ejemplo; se puede repetir sin duplicar
+```env
+MONGODB_URI=mongodb://127.0.0.1:27017
+MONGODB_DBNAME=art_expo
+PORT=3001
+HOST=127.0.0.1
+JWT_SECRET=pega-aqui-un-secreto-largo-y-aleatorio
+```
+
+Con MongoDB activo, carga los datos de demostración:
+
+```sh
+npm run seed
+```
+
+El seed puede ejecutarse de nuevo: conserva los documentos que ya existen.
+
+## Desarrollo
+
+Terminal 1, API:
+
+```sh
+npm run server
+```
+
+Terminal 2, React:
+
+```sh
 npm run dev
 ```
 
-**Terminal 2: frontend** (queda en `http://localhost:5173`; las rutas `/api` van al backend)
+Abre la URL mostrada por Vite, normalmente `http://localhost:5173`. Vite reenvía `/api` a `http://127.0.0.1:3001` mediante `frontend/vite.config.ts`.
 
-```bash
-cd frontend
-npm install
-npm run dev
+Rutas nuevas del frontend:
+
+- `/mi-visita`: perfil protegido del visitante y sus inscripciones.
+- `/gestion`: panel exclusivo para organizadores para administrar obras y talleres.
+
+## Rutas principales
+
+| Método | Ruta | Acceso | Función |
+|---|---|---|---|
+| POST | `/api/users` | Público | Crear usuario |
+| POST | `/api/login` | Público | Iniciar sesión y recibir CSRF |
+| GET | `/api/login/me` | Sesión + CSRF | Restaurar sesión |
+| POST | `/api/login/logout` | Sesión + CSRF | Cerrar sesión |
+| GET | `/api/expo` | Público | Información de la exposición |
+| PUT | `/api/expo` | Organizador + CSRF | Editar la exposición |
+| GET | `/api/artists`, `/api/artworks`, `/api/workshops` | Público | Listados y detalles |
+| POST/PUT/DELETE | recursos anteriores | Organizador + CSRF | Gestión CRUD |
+| POST | `/api/workshops/:id/registrations` | Sesión + CSRF | Inscribirse a un taller |
+| GET | `/api/registrations/me` | Sesión + CSRF | Listar mis inscripciones |
+| DELETE | `/api/workshops/:id/registrations` | Sesión + CSRF | Cancelar mi inscripción |
+
+El frontend guarda únicamente el valor CSRF en `localStorage`. El JWT permanece dentro de la cookie `httpOnly` y no puede ser leído por JavaScript.
+
+## Estructura importante
+
+```text
+backend/src/
+  app.ts                 middleware y rutas
+  index.ts               conexión y arranque
+  controllers/           routers por recurso
+  models/                esquemas Mongoose
+  utils/                 configuración, logger y middleware
+  seed.ts                seed único
+frontend/src/
+  auth/AuthContext.tsx   estado global de sesión
+  components/            UI y ProtectedRoute
+  pages/                 vistas del Router
+  services/              solicitudes HTTP por recurso
+  utils/axiosSecure.ts   cookie + encabezado CSRF
 ```
 
-## Scripts del backend
+## Verificación
 
-| Script | Qué hace |
-|---|---|
-| `npm run dev` | Servidor en desarrollo, se reinicia al guardar |
-| `npm run seed` | Carga expo, artistas, obras y talleres de ejemplo |
-| `npm test` | Corre los tests de `tests/` sobre la base de tests |
-| `npm run typecheck` | Revisa los tipos de `src/` y `tests/` |
-| `npm run build:ui` | Compila el frontend y lo copia a `backend/dist` para desplegar |
+```sh
+npm run build
+npm test
+```
 
-## Aplicación desplegada
+Las pruebas no necesitan una instancia real de MongoDB. Para comprobar el recorrido completo, inicia MongoDB, ejecuta el seed, levanta ambos procesos, crea una cuenta en `/registro`, inicia sesión en `/login`, inscríbete desde `/workshops`, revisa la inscripción en `/mi-visita` y prueba el CRUD desde `/gestion`.
 
-_Pendiente (Parte G del plan)._
+## Códigos y errores
 
-## Integrantes
+- `400`: datos o JSON inválidos.
+- `401`: sesión ausente, vencida o CSRF incorrecto.
+- `403`: usuario autenticado sin permisos de organizador.
+- `404`: recurso inexistente.
+- `409`: identificador duplicado, relación que impide borrar o inscripción incompatible.
+- `500`: error interno no previsto.
 
-- Diego Alonso Cornejo Santibáñez
-- Igor Assis Passos de Souza
-- Juxin Xu
-- Rodrigo Sebastián Valdés Delanghe
-- Vicente Salvador Arturo Valdebenito Acuña
+La API responde errores con la forma `{ "error": "mensaje" }`.

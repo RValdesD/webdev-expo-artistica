@@ -24,6 +24,7 @@ export default function AuthNav() {
       {user ? (
         <>
           <Link to="/mi-visita">Mi visita</Link>
+          {user.role === 'organizador' && <Link to="/gestion">Gestión</Link>}
           <span>{user.name}</span>
           <button type="button" disabled={busy} onClick={handleLogout}>
             {busy ? 'Cerrando…' : 'Cerrar sesión'}

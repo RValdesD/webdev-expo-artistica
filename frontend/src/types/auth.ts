@@ -2,6 +2,7 @@ export interface User {
   id: string;
   name: string;
   username: string;
+  role: 'visitante' | 'organizador';
 }
 
 export interface LoginInput { username: string; password: string }

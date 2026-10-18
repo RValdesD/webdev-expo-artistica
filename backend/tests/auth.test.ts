@@ -18,6 +18,7 @@ const user = {
   id: '507f1f77bcf86cd799439011',
   username: 'ana',
   name: 'Ana',
+  role: 'organizador',
   passwordHash,
   toJSON: () => ({ id: '507f1f77bcf86cd799439011', username: 'ana', name: 'Ana' }),
 };

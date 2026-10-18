@@ -25,7 +25,12 @@ export async function restoreLogin(): Promise<User | null> {
 
 export async function logout(): Promise<void> {
   try { await axiosSecure.post('/api/login/logout'); }
-  finally { localStorage.removeItem(CSRF_STORAGE_KEY); }
+  catch (error: unknown) {
+    // A rejected/expired session is already logged out locally. On network or
+    // server failure retain both credentials and UI state so logout can retry.
+    if (!axios.isAxiosError(error) || error.response?.status !== 401) throw error;
+  }
+  localStorage.removeItem(CSRF_STORAGE_KEY);
 }
 
 export default { login, restoreLogin, logout };

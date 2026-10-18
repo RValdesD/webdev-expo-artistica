@@ -1,5 +1,6 @@
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import Information from './pages/Information';
+import Visits from './pages/Visits';
 import ArtistList from "./pages/ArtistList";
 import ArtistDetail from "./pages/ArtistDetail";
 import Catalog from './pages/Catalog';
@@ -9,6 +10,7 @@ import Login from './pages/Login';
 import AuthNav from './components/AuthNav';
 import ProtectedRoute from './components/ProtectedRoute';
 import MyVisit from './pages/MyVisit';
+import Management from './pages/Management';
 
 export default function App() {
   return (
@@ -21,9 +23,9 @@ export default function App() {
           <Link to="/artists">Artistas</Link>
           <Link to="/catalog">Catálogo</Link>
           <Link to="/workshops">Workshops</Link>
-          <a href="/#visit">
+          <Link to="/visitas">
             Planifica tu visita
-          </a>
+          </Link>
           <AuthNav />
         </nav>
       </header>
@@ -31,6 +33,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Information />} />
           <Route path="/information" element={<Information />} />
+          <Route path="/visitas" element={<Visits />} />
           <Route path="/artists" element={<ArtistList />} />
           <Route path="/artists/:id" element={<ArtistDetail />} />
           <Route path="/catalog" element={<Catalog />} />
@@ -40,6 +43,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/mi-visita" element={<ProtectedRoute><MyVisit /></ProtectedRoute>} />
           <Route path="/cuenta" element={<ProtectedRoute><MyVisit /></ProtectedRoute>} />
+          <Route path="/gestion" element={<ProtectedRoute organizerOnly><Management /></ProtectedRoute>} />
           <Route path="*" element={<section className="status"><h1>Página no encontrada</h1><Link to="/">Volver al inicio</Link></section>} />
         </Routes>
       </main>

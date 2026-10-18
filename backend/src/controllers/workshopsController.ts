@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { Workshop, type WorkshopData } from '../models/Workshop.js';
 import { Artist } from '../models/Artist.js';
 import { User } from '../models/User.js';
-import { optionalUser, withUser } from '../utils/middleware.js';
+import { optionalUser, withUser, requireOrganizer } from '../utils/middleware.js';
 
 const workshopsRouter = Router();
 const allowed = ['id', 'title', 'description', 'artistId', 'date', 'durationMinutes', 'location', 'capacity'] as const;
@@ -49,7 +49,7 @@ workshopsRouter.get('/:id', optionalUser, async (req, res, next) => {
   } catch (error: unknown) { next(error); }
 });
 
-workshopsRouter.post('/', withUser, async (req, res, next) => {
+workshopsRouter.post('/', withUser, requireOrganizer, async (req, res, next) => {
   try {
     const input = workshopBody(req.body);
     if (typeof input.artistId !== 'string' || !await Artist.exists({ id: input.artistId })) {
@@ -59,24 +59,33 @@ workshopsRouter.post('/', withUser, async (req, res, next) => {
   } catch (error: unknown) { next(error); }
 });
 
-workshopsRouter.put('/:id', withUser, async (req, res, next) => {
+workshopsRouter.put('/:id', withUser, requireOrganizer, async (req, res, next) => {
   try {
     const input = workshopBody(req.body);
     delete input.id;
     if (input.artistId !== undefined && (typeof input.artistId !== 'string' || !await Artist.exists({ id: input.artistId }))) {
       res.status(400).json({ error: 'El artista indicado no existe.' }); return;
     }
-    const current = await Workshop.findOne({ id: req.params.id }).select('+registrations').lean();
-    if (!current) { res.status(404).json({ error: 'Taller no encontrado.' }); return; }
-    if (typeof input.capacity === 'number' && input.capacity < current.registrations.length) {
-      res.status(409).json({ error: 'La capacidad no puede ser menor que las inscripciones existentes.' }); return;
+    if (input.capacity !== undefined && (typeof input.capacity !== 'number' || !Number.isInteger(input.capacity) || input.capacity < 1 || input.capacity > 200)) {
+      res.status(400).json({ error: 'capacity debe ser un número entero entre 1 y 200.' }); return;
     }
-    const workshop = await Workshop.findOneAndUpdate({ id: req.params.id }, input, { new: true, runValidators: true });
+    // Check capacity and write in the same MongoDB operation. Registration uses
+    // an atomic capacity predicate too, so concurrent writes cannot overbook.
+    const filter = input.capacity === undefined ? { id: req.params.id } : {
+      id: req.params.id,
+      $expr: { $lte: [{ $size: '$registrations' }, input.capacity] },
+    };
+    const workshop = await Workshop.findOneAndUpdate(filter, { $set: input }, { new: true, runValidators: true });
+    if (!workshop) {
+      const exists = await Workshop.exists({ id: req.params.id });
+      res.status(exists ? 400 : 404).json({ error: exists ? 'La capacidad no puede ser menor que las inscripciones existentes.' : 'Taller no encontrado.' });
+      return;
+    }
     res.json(workshop);
   } catch (error: unknown) { next(error); }
 });
 
-workshopsRouter.delete('/:id', withUser, async (req, res, next) => {
+workshopsRouter.delete('/:id', withUser, requireOrganizer, async (req, res, next) => {
   try {
     if (!await Workshop.findOneAndDelete({ id: req.params.id })) { res.status(404).json({ error: 'Taller no encontrado.' }); return; }
     res.status(204).end();
