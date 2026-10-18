@@ -671,3 +671,124 @@ button:disabled {
     display: none;
   }
 }
+
+/* Planifica tu visita: bloques separados con aire entre secciones. */
+.visit-page {
+  border-top: 0;
+}
+
+.visit-page__heading {
+  margin-bottom: 48px;
+}
+
+.visit-page__heading .eyebrow {
+  margin-bottom: 24px;
+}
+
+.visit-page__heading .intro {
+  max-width: 60ch;
+  margin-bottom: 0;
+}
+
+.visit-page .info-grid {
+  margin: 0 0 56px;
+  gap: 16px;
+}
+
+.visit-page .info-grid > div {
+  padding: 20px 22px 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+}
+
+.visit-page .info-grid dd {
+  line-height: 1.4;
+}
+
+.visit-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 72px;
+}
+
+.visit-block {
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.visit-block h2,
+.faq-section h2 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin-bottom: 14px;
+}
+
+.visit-block p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.visit-block ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.visit-block li {
+  position: relative;
+  padding-left: 22px;
+  color: var(--muted);
+}
+
+.visit-block li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .65em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-text);
+}
+
+.visit-page .faq-section {
+  padding: 48px 0 0;
+  border-top: 1px solid var(--border);
+}
+
+.visit-page .faq-section > div > p {
+  color: var(--muted);
+  max-width: 34ch;
+}
+
+.visit-page .faq-item:first-child {
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 900px) {
+  .visit-page .info-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 750px) {
+  .visit-details {
+    grid-template-columns: 1fr;
+    margin-bottom: 48px;
+  }
+
+  .visit-page .faq-section {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 380px) {
+  .visit-page .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
