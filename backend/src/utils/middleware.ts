@@ -2,7 +2,7 @@ import type { ErrorRequestHandler, NextFunction, Request, Response } from 'expre
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { User } from '../models/User.js';
-import { JWT_SECRET } from './config.js';
+import { ALLOWED_ORIGINS, JWT_SECRET } from './config.js';
 import * as logger from './logger.js';
 
 interface TokenPayload extends jwt.JwtPayload {
@@ -41,6 +41,19 @@ export function withUser(req: Request, res: Response, next: NextFunction): void 
   } catch (error: unknown) {
     next(error);
   }
+}
+
+// Login CSRF: impide que un formulario de otro sitio inicie sesión o cree cuentas
+// a nombre del visitante. Los navegadores siempre envían Origin (o Referer) en un
+// POST entre sitios; si no viene ninguno, la solicitud no es de un navegador.
+export function requireSameOrigin(req: Request, res: Response, next: NextFunction): void {
+  const source = req.get('origin') ?? req.get('referer');
+  if (!source) { next(); return; }
+  let url: URL;
+  try { url = new URL(source); }
+  catch { res.status(403).json({ error: 'Solicitud bloqueada: origen no válido.' }); return; }
+  if (url.host === req.get('host') || ALLOWED_ORIGINS.includes(url.origin)) { next(); return; }
+  res.status(403).json({ error: 'Solicitud bloqueada: el formulario no viene de este sitio.' });
 }
 
 export function optionalUser(req: Request, res: Response, next: NextFunction): void {

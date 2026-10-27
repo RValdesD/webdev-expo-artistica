@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import { User } from '../models/User.js';
+import { ADMIN_EMAIL_DOMAIN, isAdminEmail } from '../utils/config.js';
+import { requireSameOrigin } from '../utils/middleware.js';
 
 const usersRouter = Router();
 
-usersRouter.post('/', async (req, res, next) => {
+usersRouter.post('/', requireSameOrigin, async (req, res, next) => {
   try {
     const body = req.body as Record<string, unknown>;
     const username = typeof body.username === 'string' ? body.username.trim().toLowerCase() : '';
@@ -17,6 +19,12 @@ usersRouter.post('/', async (req, res, next) => {
     }
     if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       res.status(400).json({ error: 'Ingresa un correo válido.' });
+      return;
+    }
+    // Los correos de organizador no se registran desde el sitio: los crea el equipo
+    // con `npm run user:create-admin`. Así nadie se vuelve organizador solo por el correo.
+    if (isAdminEmail(email)) {
+      res.status(403).json({ error: `Los correos @${ADMIN_EMAIL_DOMAIN} son solo para organizadores. Pide tu cuenta al equipo de la expo.` });
       return;
     }
     const passwordHash = await bcrypt.hash(password, 10);
