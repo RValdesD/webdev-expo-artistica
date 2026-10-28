@@ -1,10 +1,11 @@
 /* 01. THEME — edit these values first. No external fonts required. */
 :root {
+  --footer-surface: #3c0e3d;
   --background: #000000;
-  --surface-raised: #302c24;
+  --surface-raised: #0f0f0e;
   --text: #d8d1cb;
-  --muted: #bcb3a3;
-  --accent: #00308a;
+  --muted: #ffffff;
+  --accent: #d400ff;
   --accent-hover: #0d82f0;
   --border: #ffffff;
   --heading-font: 'MX1', 'Times New Roman', serif;
@@ -269,7 +270,7 @@ h1 em {
 
 /* 11. FOOTER */
 .site-footer {
-  background:var(--surface);
+  background:var(--footer-surface);
   color:#ffffff;
   padding:30px var(--page-gutter);
   display:flex;

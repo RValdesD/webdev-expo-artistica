@@ -8,6 +8,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "seed": "node --import tsx src/seed.ts",
+    "seed:exhibitions": "node --import tsx src/seedExhibitions.ts",
     "user:role": "node --import tsx src/setUserRole.ts",
     "user:create-admin": "node --import tsx src/createAdmin.ts",
     "test": "node --import tsx --test tests/*.test.ts",

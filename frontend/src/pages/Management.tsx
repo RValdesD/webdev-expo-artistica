@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import ArtworkManager from '../components/ArtworkManager';
 import WorkshopManager from '../components/WorkshopManager';
 import artistsService from '../services/artists';
@@ -29,6 +30,7 @@ export default function Management() {
         <p className="eyebrow">EXPO / GESTIÓN</p>
         <h1 id="management-title">Panel de gestión</h1>
         <p>Crea, edita y elimina el contenido publicado de la exposición.</p>
+        <Link className="button" to="/gestion/exposiciones">Gestionar exposiciones del inicio</Link>
       </header>
 
       <div className="management-tabs" role="tablist" aria-label="Tipo de contenido">

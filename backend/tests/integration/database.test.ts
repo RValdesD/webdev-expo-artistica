@@ -11,7 +11,7 @@ const { Artist } = await import('../../src/models/Artist.js');
 const { Artwork } = await import('../../src/models/Artwork.js');
 const { Workshop } = await import('../../src/models/Workshop.js');
 const { User } = await import('../../src/models/User.js');
-const { Expo } = await import('../../src/models/Expo.js');
+const { Expo } = await import('../../src/models/expo.js');
 const { sampleExpo } = await import('../../src/data/sampleExpo.js');
 let mongo: MongoMemoryServer;
 let organizer: string;

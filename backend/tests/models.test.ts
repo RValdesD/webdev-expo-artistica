@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { Expo } from '../src/models/Expo.js';
+import { Expo } from '../src/models/expo.js';
 import { User } from '../src/models/User.js';
 import { sampleExpo } from '../src/data/sampleExpo.js';
 

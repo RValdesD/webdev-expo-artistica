@@ -9,7 +9,7 @@ const { User } = await import('../src/models/User.js');
 const { Artwork } = await import('../src/models/Artwork.js');
 const { Workshop } = await import('../src/models/Workshop.js');
 const { Artist } = await import('../src/models/Artist.js');
-const { Expo } = await import('../src/models/Expo.js');
+const { Expo } = await import('../src/models/expo.js');
 const originals = {
   findUser: User.findById, createUser: User.create,
   createArtwork: Artwork.create, updateArtwork: Artwork.findOneAndUpdate, deleteArtwork: Artwork.findOneAndDelete,

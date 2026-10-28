@@ -73,7 +73,7 @@
 .artwork-card {
   min-width: 0;
   border: 1px solid var(--border, #514a3d);
-  background: var(--surface, #24221e);
+  background: #000000;
 }
 
 .artwork-card__image,
@@ -109,7 +109,7 @@
 }
 
 .artwork-card__description {
-  color: var(--muted, #bcb3a3);
+  color: #ffffff;
   white-space: pre-line;
   overflow-wrap: anywhere;
 }

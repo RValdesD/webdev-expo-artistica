@@ -1,4 +1,5 @@
 import express from 'express';
+import exhibitionsRouter from './controllers/exhibitions.js';
 import { fileURLToPath } from 'node:url';
 import cookieParser from 'cookie-parser';
 import usersRouter from './controllers/users.js';
@@ -22,6 +23,7 @@ app.use('/api/artworks', artworksRouter);
 app.use('/api/workshops', workshopsRouter);
 app.use('/api/registrations', registrationsRouter);
 app.use('/api/expo', expoRouter);
+app.use('/api/exhibitions', exhibitionsRouter);
 // Production serves the built React application and API on the same origin.
 // Keep unknown API URLs as JSON errors rather than returning the SPA.
 app.use('/api', unknownEndpoint);

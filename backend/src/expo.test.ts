@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { Expo } from './models/Expo.js';
+import { Expo } from './models/expo.js';
 import { sampleExpo } from './data/sampleExpo.js';
 
 test('sample expo satisfies the Mongoose schema', async () => {
