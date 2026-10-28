@@ -12,6 +12,7 @@
   --body-font: 'Segoe UI', Arial, sans-serif;
   --page-width: 1980px;
   --page-gutter: 6%;
+  --agua: #0d21cf;
   --section-space: 64px;
   font-family:var(--body-font);
   color:var(--text);
@@ -137,7 +138,7 @@ h1 {
 }
 
 h1 em {
-  color:var(--accent);
+  color:var(--agua);
   font-weight:500;
 }
 
@@ -154,7 +155,7 @@ h1 em {
   justify-content:space-between;
   align-items:center;
   gap:32px;
-  background:var(--accent);
+  background:var(--agua);
   color:#ffffff;
   padding:13px 22px;
   text-decoration:none;
