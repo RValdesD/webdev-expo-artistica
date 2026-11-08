@@ -43,3 +43,20 @@ test('el esquema de artista valida correctamente las redes sociales', async () =
   });
   await assert.rejects(invalidArtist.validate());
 });
+
+test('el esquema de artista descarta enlaces vacíos y recorta espacios', async () => {
+  const artist = new Artist({
+    id: 'test-artist-3',
+    name: 'Test Artist 3',
+    bio: 'Biografía',
+    discipline: 'Pintura',
+    socials: { instagram: '  https://instagram.com/test  ', website: '', twitter: '   ' },
+  });
+  await artist.validate();
+  assert.deepEqual(artist.toObject().socials, { instagram: 'https://instagram.com/test' });
+});
+
+test('el mensaje de error de redes nombra el campo inválido', async () => {
+  const artist = new Artist({ id: 'test-artist-4', name: 'X', bio: 'Y', discipline: 'Z', socials: { behance: 'nope' } });
+  await assert.rejects(artist.validate(), /behance/);
+});
