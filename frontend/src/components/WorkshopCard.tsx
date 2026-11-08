@@ -9,7 +9,7 @@ import { useAuth } from '../auth/AuthContext';
 
 interface Props {
   workshop: Workshop;
-  onRegistered: (updated: Workshop) => void;
+  onChange: (updated: Workshop) => void;
 }
 
 type PendingAction = 'register' | 'cancel';
@@ -18,7 +18,7 @@ const dateFormatter = new Intl.DateTimeFormat('es-CL', {
   dateStyle: 'long', timeStyle: 'short', timeZone: 'America/Santiago',
 });
 
-export default function WorkshopCard({ workshop, onRegistered }: Props) {
+export default function WorkshopCard({ workshop, onChange }: Props) {
   const { user, refresh } = useAuth();
   const [pending, setPending] = useState<PendingAction | null>(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -30,16 +30,14 @@ export default function WorkshopCard({ workshop, onRegistered }: Props) {
   const unavailable = started || isFull;
   const isLowPlaces = !isFull && workshop.availablePlaces <= 3;
   const percentFilled = Math.min(100, Math.max(0, Math.round(((workshop.capacity - workshop.availablePlaces) / workshop.capacity) * 100)));
-  const submitting = pending === 'register';
-  const cancelling = pending === 'cancel';
 
-  async function run(action: PendingAction, request: () => Promise<Workshop>, success: string) {
+  async function runRegistrationAction(action: PendingAction, request: () => Promise<Workshop>, success: string) {
     if (pending || !user) return;
     setPending(action);
     setError('');
     setSuccessMsg('');
     try {
-      onRegistered(await request());
+      onChange(await request());
       setShowConfirmModal(false);
       setSuccessMsg(success);
     } catch (reason: unknown) {
@@ -50,11 +48,11 @@ export default function WorkshopCard({ workshop, onRegistered }: Props) {
     }
   }
 
-  const handleRegister = () => run('register', () => workshopsService.register(workshop.id),
-    '¡Inscripción confirmada con éxito! Puedes revisarla en Mi visita.');
+  const handleRegister = () => runRegistrationAction('register', () => workshopsService.register(workshop.id),
+    '¡Inscripción confirmada con éxito!');
 
   // The cancel endpoint returns no body, so the card applies the freed place locally.
-  const handleCancel = () => run('cancel', async () => {
+  const handleCancel = () => runRegistrationAction('cancel', async () => {
     await registrationsService.cancel(workshop.id);
     return { ...workshop, isRegistered: false, availablePlaces: workshop.availablePlaces + 1 };
   }, 'Tu inscripción ha sido cancelada.');
@@ -97,21 +95,24 @@ export default function WorkshopCard({ workshop, onRegistered }: Props) {
       {workshop.isSample && <p className="workshop-card__sample">Demostración: usa datos ficticios. No es una reserva para un evento real.</p>}
 
       {successMsg && (
-        <p className="workshop-alert workshop-alert--success" role="status">{successMsg}</p>
+        <div className="workshop-alert workshop-alert--success" role="status">
+          <p>{successMsg}</p>
+          <Link to="/mi-visita" className="workshop-alert__link">Ver en Mi visita →</Link>
+        </div>
       )}
 
       {workshop.isRegistered && user ? (
         <div className="workshop-card__registered-box">
           <p className="workshop-card__success" role="status">✓ Estás inscrito en este taller.</p>
           <div className="workshop-registered-actions">
-            <Link to="/mi-visita" className="button button--secondary">Ir a Mi visita</Link>
+            {!successMsg && <Link to="/mi-visita" className="button button--secondary">Ir a Mi visita</Link>}
             <button 
               type="button" 
               className="button button--outline-danger" 
               disabled={pending !== null}
               onClick={handleCancel}
             >
-              {cancelling ? 'Cancelando…' : 'Cancelar inscripción'}
+              {pending === 'cancel' ? 'Cancelando…' : 'Cancelar inscripción'}
             </button>
           </div>
         </div>
@@ -149,7 +150,7 @@ export default function WorkshopCard({ workshop, onRegistered }: Props) {
               <button 
                 type="button" 
                 className="button button--secondary" 
-                disabled={submitting} 
+                disabled={pending !== null} 
                 onClick={() => setShowConfirmModal(false)}
               >
                 Volver
@@ -157,10 +158,10 @@ export default function WorkshopCard({ workshop, onRegistered }: Props) {
               <button 
                 type="button" 
                 className="button" 
-                disabled={submitting} 
+                disabled={pending !== null} 
                 onClick={handleRegister}
               >
-                {submitting ? 'Confirmando…' : 'Confirmar asistencia'}
+                {pending === 'register' ? 'Confirmando…' : 'Confirmar asistencia'}
               </button>
             </div>
           </div>
