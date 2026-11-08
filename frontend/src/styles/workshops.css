@@ -70,19 +70,19 @@
 }
 
 .badge--low {
-  background: #d46b08;
-  color: #fff;
+  background: var(--warning);
+  color: var(--background);
 }
 
 .badge--full {
-  background: #cf1322;
-  color: #fff;
+  background: var(--danger);
+  color: var(--background);
 }
 
 .workshop-capacity-bar {
   width: 100%;
   height: 8px;
-  background: var(--surface-raised, #24221e);
+  background: var(--surface-raised);
   border: 1px solid var(--border, #514a3d);
   overflow: hidden;
   margin-top: 4px;
@@ -95,11 +95,11 @@
 }
 
 .workshop-capacity-fill.low {
-  background: #fa8c16;
+  background: var(--warning);
 }
 
 .workshop-capacity-fill.full {
-  background: #f5222d;
+  background: var(--danger);
 }
 
 /* Status alerts and links */
@@ -109,16 +109,26 @@
   border: 1px solid;
 }
 
+.workshop-alert p {
+  margin: 0;
+}
+
 .workshop-alert--success {
-  background: rgba(38, 80, 50, 0.2);
-  border-color: #52c41a;
-  color: #95de64;
+  border-color: var(--success);
+  color: var(--success);
 }
 
 .workshop-alert--error {
-  background: rgba(120, 20, 20, 0.2);
-  border-color: #ff4d4f;
-  color: #ff7875;
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.workshop-alert__link {
+  display: inline-block;
+  margin-top: 8px;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: underline;
 }
 
 .workshop-card__registered-box {
