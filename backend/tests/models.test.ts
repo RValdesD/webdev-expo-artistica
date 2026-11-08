@@ -56,7 +56,15 @@ test('el esquema de artista descarta enlaces vacíos y recorta espacios', async 
   assert.deepEqual(artist.toObject().socials, { instagram: 'https://instagram.com/test' });
 });
 
-test('el mensaje de error de redes nombra el campo inválido', async () => {
-  const artist = new Artist({ id: 'test-artist-4', name: 'X', bio: 'Y', discipline: 'Z', socials: { behance: 'nope' } });
-  await assert.rejects(artist.validate(), /behance/);
+test('el mensaje de error de redes nombra la plataforma en español', async () => {
+  const artist = new Artist({ id: 'test-artist-4', name: 'X', bio: 'Y', discipline: 'Z', socials: { website: 'nope' } });
+  await assert.rejects(artist.validate(), (error: Error & { errors: Record<string, { message: string }> }) => {
+    assert.equal(error.errors['socials.website'].message, 'El enlace de sitio web debe ser una URL segura (https://...).');
+    return true;
+  });
+});
+
+test('el esquema de artista rechaza enlaces http sin cifrar', async () => {
+  const artist = new Artist({ id: 'test-artist-5', name: 'X', bio: 'Y', discipline: 'Z', socials: { instagram: 'http://instagram.com/x' } });
+  await assert.rejects(artist.validate());
 });
