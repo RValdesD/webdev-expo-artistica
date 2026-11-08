@@ -13,17 +13,23 @@ type ManagementTab = 'artworks' | 'workshops' | 'artists';
 export default function Management() {
   const [activeTab, setActiveTab] = useState<ManagementTab>('artworks');
   const [artists, setArtists] = useState<Artist[]>([]);
-  const [loading, setLoading] = useState(true);
+  // True once the first list arrives; later reload failures keep the managers visible.
+  const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState('');
   // Bumped after artist changes; the server owns the list and its order.
   const [artistsVersion, setArtistsVersion] = useState(0);
+  const reloadArtists = () => setArtistsVersion(value => value + 1);
 
   useEffect(() => {
     const controller = new AbortController();
     artistsService.getAll(controller.signal)
-      .then(data => { if (!controller.signal.aborted) setArtists(data); })
-      .catch(reason => { if (!controller.signal.aborted) setError(apiError(reason)); })
-      .finally(() => { if (!controller.signal.aborted) setLoading(false); });
+      .then(data => {
+        if (controller.signal.aborted) return;
+        setArtists(data);
+        setLoaded(true);
+        setError('');
+      })
+      .catch(reason => { if (!controller.signal.aborted) setError(apiError(reason)); });
     return () => controller.abort();
   }, [artistsVersion]);
 
@@ -45,9 +51,18 @@ export default function Management() {
           onClick={() => setActiveTab('artists')}>Artistas y Redes</button>
       </div>
 
-      {loading ? <p role="status">Cargando artistas…</p> : error ? <p role="alert">{error}</p> : (
+      {error && (
+        <p role="alert">
+          {error}{' '}
+          <button className="button button--secondary" type="button" onClick={reloadArtists}>
+            Reintentar
+          </button>
+        </p>
+      )}
+
+      {!loaded ? (!error && <p role="status">Cargando artistas…</p>) : (
         activeTab === 'artists' ? (
-          <ArtistManager artists={artists} onChanged={() => setArtistsVersion(value => value + 1)} />
+          <ArtistManager artists={artists} onChanged={reloadArtists} />
         ) : artists.length === 0 ? (
           <p role="alert">Necesitas al menos un artista antes de crear obras o talleres.</p>
         ) : activeTab === 'artworks' ? (
