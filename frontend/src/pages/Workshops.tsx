@@ -48,7 +48,7 @@ function WorkshopList() {
         <p role="alert">No pudimos cargar los talleres. Usa Actualizar cupos para reintentar.</p>
       ) : workshops.length === 0 ? <p>Aún no hay talleres publicados.</p> : (
         <div className="workshops-grid">
-          {workshops.map(workshop => <WorkshopCard key={workshop.id} workshop={workshop} onRegistered={updateWorkshop} />)}
+          {workshops.map(workshop => <WorkshopCard key={workshop.id} workshop={workshop} onChange={updateWorkshop} />)}
         </div>
       )}
     </section>
