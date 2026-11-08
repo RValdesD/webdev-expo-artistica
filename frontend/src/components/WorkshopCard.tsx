@@ -12,62 +12,52 @@ interface Props {
   onRegistered: (updated: Workshop) => void;
 }
 
+type PendingAction = 'register' | 'cancel';
+
 const dateFormatter = new Intl.DateTimeFormat('es-CL', {
   dateStyle: 'long', timeStyle: 'short', timeZone: 'America/Santiago',
 });
 
 export default function WorkshopCard({ workshop, onRegistered }: Props) {
   const { user, refresh } = useAuth();
-  const [submitting, setSubmitting] = useState(false);
-  const [cancelling, setCancelling] = useState(false);
+  const [pending, setPending] = useState<PendingAction | null>(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const [error, setError] = useState('');
 
   const started = new Date(workshop.date).getTime() <= Date.now();
-  const unavailable = started || workshop.availablePlaces === 0;
-  const percentFilled = Math.min(100, Math.max(0, Math.round(((workshop.capacity - workshop.availablePlaces) / workshop.capacity) * 100)));
   const isFull = workshop.availablePlaces === 0;
+  const unavailable = started || isFull;
   const isLowPlaces = !isFull && workshop.availablePlaces <= 3;
+  const percentFilled = Math.min(100, Math.max(0, Math.round(((workshop.capacity - workshop.availablePlaces) / workshop.capacity) * 100)));
+  const submitting = pending === 'register';
+  const cancelling = pending === 'cancel';
 
-  async function handleRegister() {
-    if (submitting || !user) return;
-    setSubmitting(true);
+  async function run(action: PendingAction, request: () => Promise<Workshop>, success: string) {
+    if (pending || !user) return;
+    setPending(action);
     setError('');
     setSuccessMsg('');
     try {
-      const updated = await workshopsService.register(workshop.id);
-      onRegistered(updated);
+      onRegistered(await request());
       setShowConfirmModal(false);
-      setSuccessMsg('¡Inscripción confirmada con éxito! Puedes revisarla en tu perfil.');
+      setSuccessMsg(success);
     } catch (reason: unknown) {
       setError(apiError(reason));
       if (axios.isAxiosError(reason) && reason.response?.status === 401) await refresh();
     } finally {
-      setSubmitting(false);
+      setPending(null);
     }
   }
 
-  async function handleCancel() {
-    if (cancelling || !user) return;
-    setCancelling(true);
-    setError('');
-    setSuccessMsg('');
-    try {
-      await registrationsService.cancel(workshop.id);
-      onRegistered({
-        ...workshop,
-        isRegistered: false,
-        availablePlaces: workshop.availablePlaces + 1,
-      });
-      setSuccessMsg('Tu inscripción ha sido cancelada.');
-    } catch (reason: unknown) {
-      setError(apiError(reason));
-      if (axios.isAxiosError(reason) && reason.response?.status === 401) await refresh();
-    } finally {
-      setCancelling(false);
-    }
-  }
+  const handleRegister = () => run('register', () => workshopsService.register(workshop.id),
+    '¡Inscripción confirmada con éxito! Puedes revisarla en Mi visita.');
+
+  // The cancel endpoint returns no body, so the card applies the freed place locally.
+  const handleCancel = () => run('cancel', async () => {
+    await registrationsService.cancel(workshop.id);
+    return { ...workshop, isRegistered: false, availablePlaces: workshop.availablePlaces + 1 };
+  }, 'Tu inscripción ha sido cancelada.');
 
   return (
     <article className="workshop-card">
@@ -107,10 +97,7 @@ export default function WorkshopCard({ workshop, onRegistered }: Props) {
       {workshop.isSample && <p className="workshop-card__sample">Demostración: usa datos ficticios. No es una reserva para un evento real.</p>}
 
       {successMsg && (
-        <div className="workshop-alert workshop-alert--success" role="status">
-          <p>{successMsg}</p>
-          <Link to="/mi-visita" className="workshop-visit-link">Ver en Mi visita →</Link>
-        </div>
+        <p className="workshop-alert workshop-alert--success" role="status">{successMsg}</p>
       )}
 
       {workshop.isRegistered && user ? (
@@ -121,7 +108,7 @@ export default function WorkshopCard({ workshop, onRegistered }: Props) {
             <button 
               type="button" 
               className="button button--outline-danger" 
-              disabled={cancelling}
+              disabled={pending !== null}
               onClick={handleCancel}
             >
               {cancelling ? 'Cancelando…' : 'Cancelar inscripción'}
@@ -129,7 +116,7 @@ export default function WorkshopCard({ workshop, onRegistered }: Props) {
           </div>
         </div>
       ) : unavailable ? (
-        <p className="workshop-card__unavailable">{started ? 'Inscripciones cerradas (evento iniciado)' : 'Sin cupos disponibles'}</p>
+        <p>{started ? 'Inscripciones cerradas (evento iniciado)' : 'Sin cupos disponibles'}</p>
       ) : !user ? (
         <div>
           <p>Necesitas una cuenta para guardar este taller en Mi visita.</p>
