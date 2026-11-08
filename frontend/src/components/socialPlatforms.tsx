@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react';
-import type { SocialKey } from '../types/artist';
+import { socialKeys, type SocialKey } from '../types/artist';
 
 interface SocialPlatform {
-  key: SocialKey;
   label: string;
   inputLabel: string;
   placeholder: string;
@@ -14,10 +13,10 @@ const iconProps = {
   strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true,
 } as const;
 
-// Single source for every place that lists an artist's social links.
-export const socialPlatforms: SocialPlatform[] = [
-  {
-    key: 'instagram', label: 'Instagram', inputLabel: 'Instagram URL', placeholder: 'https://instagram.com/...',
+// Typed as a full Record so adding a key to socialKeys fails to compile until it is described here.
+const platforms: Record<SocialKey, SocialPlatform> = {
+  instagram: {
+    label: 'Instagram', inputLabel: 'Instagram URL', placeholder: 'https://instagram.com/...',
     icon: (
       <svg {...iconProps}>
         <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
@@ -26,8 +25,8 @@ export const socialPlatforms: SocialPlatform[] = [
       </svg>
     ),
   },
-  {
-    key: 'website', label: 'Sitio web', inputLabel: 'Sitio web personal', placeholder: 'https://...',
+  website: {
+    label: 'Sitio web', inputLabel: 'Sitio web personal', placeholder: 'https://...',
     icon: (
       <svg {...iconProps}>
         <circle cx="12" cy="12" r="10" />
@@ -36,8 +35,8 @@ export const socialPlatforms: SocialPlatform[] = [
       </svg>
     ),
   },
-  {
-    key: 'twitter', label: 'X / Twitter', inputLabel: 'X / Twitter URL', placeholder: 'https://x.com/...',
+  twitter: {
+    label: 'X / Twitter', inputLabel: 'X / Twitter URL', placeholder: 'https://x.com/...',
     icon: (
       <svg {...iconProps}>
         <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
@@ -45,8 +44,8 @@ export const socialPlatforms: SocialPlatform[] = [
       </svg>
     ),
   },
-  {
-    key: 'behance', label: 'Behance', inputLabel: 'Behance URL', placeholder: 'https://behance.net/...',
+  behance: {
+    label: 'Behance', inputLabel: 'Behance URL', placeholder: 'https://behance.net/...',
     icon: (
       <svg {...iconProps}>
         <path d="M3 8h5a3 3 0 0 1 0 6H3V8z" />
@@ -56,4 +55,7 @@ export const socialPlatforms: SocialPlatform[] = [
       </svg>
     ),
   },
-];
+};
+
+// Every place that lists an artist's social links iterates this, in display order.
+export const socialPlatforms = socialKeys.map(key => ({ key, ...platforms[key] }));
