@@ -20,6 +20,46 @@
   color: var(--muted, #bcb3a3);
 }
 
+.artist-socials {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border, #514a3d);
+}
+
+.artist-socials h2 {
+  font-size: 1.25rem;
+  margin-bottom: 16px;
+}
+
+.artist-socials-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.artist-social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--surface-raised, #181613);
+  border: 1px solid var(--border, #514a3d);
+  color: var(--text, #eee5d4);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.artist-social-link:hover {
+  background: var(--surface, #24221e);
+  border-color: var(--accent, #c3a777);
+  color: #ffffff;
+}
+
+.artist-social-link svg {
+  flex-shrink: 0;
+}
+
 /* Search field and results counter. */
 .artists-search {
   margin-bottom: 32px;

@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Expo } from '../src/models/expo.js';
 import { User } from '../src/models/User.js';
+import { Artist } from '../src/models/Artist.js';
 import { sampleExpo } from '../src/data/sampleExpo.js';
 
 test('la exposición de muestra satisface el esquema', async () => {
@@ -16,4 +17,29 @@ test('el hash de contraseña no aparece en JSON', () => {
   const result = new User({ username: 'ana', name: 'Ana', passwordHash: 'secret-hash' }).toJSON();
   assert.equal('passwordHash' in result, false);
   assert.equal(typeof result.id, 'string');
+});
+
+test('el esquema de artista valida correctamente las redes sociales', async () => {
+  const validArtist = new Artist({
+    id: 'test-artist',
+    name: 'Test Artist',
+    bio: 'Biografía de prueba',
+    discipline: 'Pintura',
+    socials: {
+      instagram: 'https://instagram.com/test',
+      website: 'https://test.com',
+    },
+  });
+  await validArtist.validate();
+
+  const invalidArtist = new Artist({
+    id: 'test-artist-2',
+    name: 'Test Artist 2',
+    bio: 'Biografía',
+    discipline: 'Escultura',
+    socials: {
+      instagram: 'not-a-valid-url',
+    },
+  });
+  await assert.rejects(invalidArtist.validate());
 });

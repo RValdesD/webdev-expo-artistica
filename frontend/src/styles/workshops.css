@@ -52,6 +52,175 @@
   color: #ffffff;
 }
 
+/* Workshop Places & Capacity Bar */
+.workshop-places-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.badge--low {
+  background: #d46b08;
+  color: #fff;
+}
+
+.badge--full {
+  background: #cf1322;
+  color: #fff;
+}
+
+.workshop-capacity-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--surface-raised, #24221e);
+  border: 1px solid var(--border, #514a3d);
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.workshop-capacity-fill {
+  height: 100%;
+  background: var(--accent, #c3a777);
+  transition: width 0.3s ease;
+}
+
+.workshop-capacity-fill.low {
+  background: #fa8c16;
+}
+
+.workshop-capacity-fill.full {
+  background: #f5222d;
+}
+
+/* Status alerts and links */
+.workshop-alert {
+  margin: 16px 0;
+  padding: 12px 16px;
+  border: 1px solid;
+}
+
+.workshop-alert--success {
+  background: rgba(38, 80, 50, 0.2);
+  border-color: #52c41a;
+  color: #95de64;
+}
+
+.workshop-alert--error {
+  background: rgba(120, 20, 20, 0.2);
+  border-color: #ff4d4f;
+  color: #ff7875;
+}
+
+.workshop-visit-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: underline;
+}
+
+.workshop-card__registered-box {
+  background: var(--surface-raised, #181613);
+  padding: 16px;
+  border: 1px solid var(--accent, #c3a777);
+  margin-top: 16px;
+}
+
+.workshop-registered-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.button--secondary {
+  background: transparent;
+  border: 1px solid var(--border, #514a3d);
+  color: var(--text, #eee5d4);
+}
+
+.button--secondary:hover {
+  background: var(--surface, #24221e);
+  border-color: var(--text, #eee5d4);
+}
+
+.button--outline-danger {
+  background: transparent;
+  border: 1px solid #ff4d4f;
+  color: #ff7875;
+}
+
+.button--outline-danger:hover {
+  background: rgba(255, 77, 79, 0.15);
+  color: #fff;
+}
+
+/* Modal confirmation dialog */
+.workshop-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.workshop-modal {
+  background: var(--background, #0f0f0e);
+  border: 1px solid var(--border, #514a3d);
+  max-width: 520px;
+  width: 100%;
+  padding: 28px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+.workshop-modal h3 {
+  font-size: 1.5rem;
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.workshop-modal-details {
+  list-style: none;
+  padding: 12px 16px;
+  background: var(--surface-raised, #181613);
+  border: 1px solid var(--border, #514a3d);
+  margin: 16px 0;
+}
+
+.workshop-modal-details li {
+  margin-bottom: 8px;
+}
+
+.workshop-modal-details li:last-child {
+  margin-bottom: 0;
+}
+
+.workshop-modal-user {
+  font-size: 0.95rem;
+  color: var(--muted, #bcb3a3);
+  margin-bottom: 24px;
+}
+
+.workshop-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
 .workshop-card__details dd {
   margin: 0;
 }

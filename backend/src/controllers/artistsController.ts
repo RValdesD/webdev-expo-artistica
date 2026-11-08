@@ -5,8 +5,8 @@ import { Workshop } from '../models/Workshop.js';
 import { withUser, requireOrganizer } from '../utils/middleware.js';
 
 const artistsRouter = Router();
-const publicFields = 'id name bio discipline imageUrl isSample -_id';
-const allowed = ['id', 'name', 'bio', 'discipline', 'imageUrl'] as const;
+const publicFields = 'id name bio discipline imageUrl socials isSample -_id';
+const allowed = ['id', 'name', 'bio', 'discipline', 'imageUrl', 'socials'] as const;
 
 function artistBody(body: unknown): Record<string, unknown> {
   const source = body && typeof body === 'object' ? body as Record<string, unknown> : {};

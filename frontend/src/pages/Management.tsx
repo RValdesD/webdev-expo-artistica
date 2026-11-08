@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import ArtistManager from '../components/ArtistManager';
 import ArtworkManager from '../components/ArtworkManager';
 import WorkshopManager from '../components/WorkshopManager';
 import artistsService from '../services/artists';
@@ -7,7 +8,7 @@ import { apiError } from '../services/auth';
 import type { Artist } from '../types/artist';
 import '../styles/management.css';
 
-type ManagementTab = 'artworks' | 'workshops';
+type ManagementTab = 'artworks' | 'workshops' | 'artists';
 
 export default function Management() {
   const [activeTab, setActiveTab] = useState<ManagementTab>('artworks');
@@ -24,6 +25,18 @@ export default function Management() {
     return () => controller.abort();
   }, []);
 
+  function handleArtistCreated(newArtist: Artist) {
+    setArtists(prev => [...prev, newArtist].sort((a, b) => a.name.localeCompare(b.name, 'es')));
+  }
+
+  function handleArtistUpdated(updatedArtist: Artist) {
+    setArtists(prev => prev.map(a => a.id === updatedArtist.id ? updatedArtist : a));
+  }
+
+  function handleArtistDeleted(id: string) {
+    setArtists(prev => prev.filter(a => a.id !== id));
+  }
+
   return (
     <section className="management-page" aria-labelledby="management-title">
       <header className="management-heading">
@@ -38,11 +51,26 @@ export default function Management() {
           onClick={() => setActiveTab('artworks')}>Obras</button>
         <button type="button" role="tab" aria-selected={activeTab === 'workshops'}
           onClick={() => setActiveTab('workshops')}>Talleres</button>
+        <button type="button" role="tab" aria-selected={activeTab === 'artists'}
+          onClick={() => setActiveTab('artists')}>Artistas y Redes</button>
       </div>
 
-      {loading ? <p role="status">Cargando artistas…</p> : error ? <p role="alert">{error}</p> : artists.length === 0 ? (
-        <p role="alert">Necesitas al menos un artista antes de crear obras o talleres.</p>
-      ) : activeTab === 'artworks' ? <ArtworkManager artists={artists} /> : <WorkshopManager artists={artists} />}
+      {loading ? <p role="status">Cargando artistas…</p> : error ? <p role="alert">{error}</p> : (
+        activeTab === 'artists' ? (
+          <ArtistManager
+            artists={artists}
+            onArtistCreated={handleArtistCreated}
+            onArtistUpdated={handleArtistUpdated}
+            onArtistDeleted={handleArtistDeleted}
+          />
+        ) : artists.length === 0 ? (
+          <p role="alert">Necesitas al menos un artista antes de crear obras o talleres.</p>
+        ) : activeTab === 'artworks' ? (
+          <ArtworkManager artists={artists} />
+        ) : (
+          <WorkshopManager artists={artists} />
+        )
+      )}
     </section>
   );
 }

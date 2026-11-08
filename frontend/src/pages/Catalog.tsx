@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import ArtworkCard from '../components/ArtworkCard';
+import ArtworkSlideshow from '../components/ArtworkSlideshow';
 import artworksService from '../services/artworks';
 import type { Artwork } from '../types/artwork';
 import '../styles/catalog.css';
@@ -69,6 +70,8 @@ export default function Catalog() {
         <p>Aún no hay obras publicadas.</p>
       ) : (
         <>
+          <ArtworkSlideshow artworks={artworks} />
+
           <div className="catalog-filters">
             <div>
               <label htmlFor="artwork-search">Buscar por título o artista</label>

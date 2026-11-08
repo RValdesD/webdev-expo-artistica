@@ -1,5 +1,6 @@
 import axios from 'axios';
-import type { Artist } from '../types/artist';
+import axiosSecure from '../utils/axiosSecure';
+import type { Artist, ArtistInput } from '../types/artist';
 
 const baseUrl = '/api/artists';
 
@@ -11,4 +12,13 @@ const getById = (id: string, signal?: AbortSignal): Promise<Artist> =>
     .get<Artist>(`${baseUrl}/${encodeURIComponent(id)}`, { signal })
     .then(response => response.data);
 
-export default { getAll, getById };
+const create = (artist: ArtistInput): Promise<Artist> =>
+  axiosSecure.post<Artist>(baseUrl, artist).then(response => response.data);
+
+const update = (id: string, artist: Partial<ArtistInput>): Promise<Artist> =>
+  axiosSecure.put<Artist>(`${baseUrl}/${encodeURIComponent(id)}`, artist).then(response => response.data);
+
+const remove = (id: string): Promise<void> =>
+  axiosSecure.delete(`${baseUrl}/${encodeURIComponent(id)}`).then(() => undefined);
+
+export default { getAll, getById, create, update, remove };

@@ -10,6 +10,10 @@ export const sampleArtists: ArtistData[] = [
     discipline: 'Pintura',
     bio: 'Perfil ficticio para explorar el sitio. Su práctica pictórica estudia la luz y las huellas del tiempo en espacios cotidianos.\n\nTrabaja con capas de color y superficies que invitan a observar de cerca.',
     imageUrl: 'https://images.unsplash.com/photo-1758522276340-9cd1383f9d64?w=600&h=750&fit=crop&q=80&auto=format',
+    socials: {
+      instagram: 'https://instagram.com/elenarios.arte',
+      website: 'https://elenarios-studio.example.com',
+    },
     isSample: true,
   },
   {
@@ -18,6 +22,10 @@ export const sampleArtists: ArtistData[] = [
     discipline: 'Escultura',
     bio: 'Perfil ficticio para explorar el sitio. Desarrolla composiciones escultóricas centradas en el equilibrio, el volumen y la relación entre los objetos y el espacio.',
     imageUrl: 'https://images.unsplash.com/photo-1422246358533-95dcd3d48961?w=600&h=750&fit=crop&q=80&auto=format',
+    socials: {
+      website: 'https://tomasvidal-sculptures.example.com',
+      behance: 'https://behance.net/tomasvidal',
+    },
     isSample: true,
   },
   {
@@ -26,6 +34,10 @@ export const sampleArtists: ArtistData[] = [
     discipline: 'Fotografía',
     bio: 'Perfil ficticio para explorar el sitio. Su trabajo fotográfico reúne detalles arquitectónicos, sombras y escenas silenciosas de la ciudad.',
     imageUrl: 'https://images.unsplash.com/photo-1590486803833-1c5dc8ddd4c8?w=600&h=750&fit=crop&q=80&auto=format',
+    socials: {
+      instagram: 'https://instagram.com/inessoto_foto',
+      twitter: 'https://x.com/inessoto_ph',
+    },
     isSample: true,
   },
   
@@ -35,6 +47,10 @@ export const sampleArtists: ArtistData[] = [
     discipline: 'Pintura e ilustración',
     bio: 'Perfil ficticio. Explora paisajes y arquitectura mediante acuarela.\n\nSu trabajo combina observación y memoria.',
     imageUrl: 'https://images.unsplash.com/photo-1605007623951-d53263481857?w=600&h=750&fit=crop&q=80&auto=format',
+    socials: {
+      instagram: 'https://instagram.com/luciamora_ilustra',
+      behance: 'https://behance.net/luciamora',
+    },
     isSample: true,
   },
 ];
