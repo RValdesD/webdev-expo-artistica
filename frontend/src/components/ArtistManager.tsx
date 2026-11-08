@@ -47,7 +47,7 @@ export default function ArtistManager({ artists, onChanged }: Props) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function submitArtist(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (saving) return;
     setSaving(true);
@@ -67,7 +67,7 @@ export default function ArtistManager({ artists, onChanged }: Props) {
     finally { setSaving(false); }
   }
 
-  async function handleDelete(artist: Artist) {
+  async function deleteArtist(artist: Artist) {
     if (!window.confirm(`¿Eliminar al artista “${artist.name}”? Esta acción no se puede deshacer.`)) return;
     setDeletingId(artist.id);
     setError('');
@@ -83,7 +83,7 @@ export default function ArtistManager({ artists, onChanged }: Props) {
 
   return (
     <section className="manager" aria-labelledby="artist-manager-title">
-      <form className="management-form" onSubmit={handleSubmit}>
+      <form className="management-form" onSubmit={submitArtist}>
         <div className="management-form__heading">
           <h2 id="artist-manager-title">{editingId ? 'Editar artista' : 'Nuevo artista'}</h2>
           {editingId && <button type="button" onClick={resetForm}>Cancelar edición</button>}
@@ -91,7 +91,7 @@ export default function ArtistManager({ artists, onChanged }: Props) {
 
         <label htmlFor="artist-id">Identificador único (slug)</label>
         <input id="artist-id" required pattern="[a-z0-9-]+" disabled={editingId !== null || saving}
-          placeholder="ej: claudia-munoz"
+          placeholder="ej: claudia-munoz" title="Usa solo letras minúsculas sin tildes, números y guiones."
           value={form.id} onChange={event => setForm(current => ({ ...current, id: event.target.value }))} />
 
         <label htmlFor="artist-name">Nombre del artista</label>
@@ -116,7 +116,8 @@ export default function ArtistManager({ artists, onChanged }: Props) {
           {socialPlatforms.map(({ key, inputLabel, placeholder }) => (
             <div key={key}>
               <label htmlFor={`artist-social-${key}`}>{inputLabel}</label>
-              <input id={`artist-social-${key}`} type="url" placeholder={placeholder}
+              <input id={`artist-social-${key}`} type="url" placeholder={placeholder} pattern="https://.+"
+                title="Ingresa una URL completa que empiece con https://"
                 value={form.socials?.[key] ?? ''}
                 onChange={event => setForm(current => ({
                   ...current,
@@ -144,7 +145,7 @@ export default function ArtistManager({ artists, onChanged }: Props) {
             </div>
             <div className="management-item__actions">
               <button type="button" onClick={() => editArtist(artist)}>Editar</button>
-              <button type="button" disabled={deletingId !== null} onClick={() => void handleDelete(artist)}>
+              <button type="button" disabled={deletingId !== null} onClick={() => void deleteArtist(artist)}>
                 {deletingId === artist.id ? 'Eliminando…' : 'Eliminar'}
               </button>
             </div>
