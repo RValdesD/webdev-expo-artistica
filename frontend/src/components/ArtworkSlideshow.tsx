@@ -1,7 +1,12 @@
-import { memo, useEffect, useMemo, useState, type KeyboardEvent } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent, type TouchEvent } from 'react';
 import { Link } from 'react-router-dom';
 import type { Artwork } from '../types/artwork';
 import '../styles/slideshow.css';
+
+const SWIPE_THRESHOLD_PX = 40;
+
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
 
 interface ArtworkSlideshowProps {
   artworks: Artwork[];
@@ -10,14 +15,31 @@ interface ArtworkSlideshowProps {
 
 function ArtworkSlideshow({ artworks, autoPlayInterval = 5000 }: ArtworkSlideshowProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(() => !prefersReducedMotion());
   const [isHovered, setIsHovered] = useState(false);
 
   const validArtworks = useMemo(() => artworks.filter(artwork => Boolean(artwork.imageUrl)), [artworks]);
   const total = validArtworks.length;
 
-  const nextSlide = () => setCurrentIndex(prev => (prev + 1) % total);
-  const prevSlide = () => setCurrentIndex(prev => (prev - 1 + total) % total);
+  const step = useCallback((delta: number) => setCurrentIndex(prev => (prev + delta + total) % total), [total]);
+  const nextSlide = () => step(1);
+  const prevSlide = () => step(-1);
+
+  // Swipe on touch screens: a mostly horizontal drag past the threshold changes the slide.
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const handleTouchStart = (event: TouchEvent) => {
+    const touch = event.touches[0];
+    touchStart.current = { x: touch.clientX, y: touch.clientY };
+  };
+  const handleTouchEnd = (event: TouchEvent) => {
+    const start = touchStart.current;
+    touchStart.current = null;
+    if (!start) return;
+    const touch = event.changedTouches[0];
+    const dx = touch.clientX - start.x;
+    if (Math.abs(dx) < SWIPE_THRESHOLD_PX || Math.abs(dx) < Math.abs(touch.clientY - start.y)) return;
+    step(dx < 0 ? 1 : -1);
+  };
 
   // Keyboard navigation (← and →)
   const handleKeyDown = (event: KeyboardEvent) => {
@@ -25,12 +47,12 @@ function ArtworkSlideshow({ artworks, autoPlayInterval = 5000 }: ArtworkSlidesho
     else if (event.key === 'ArrowLeft') prevSlide();
   };
 
-  // Autoplay, paused on hover or when toggled off.
+  // Autoplay, paused on hover or when toggled off. It starts off for users who prefer reduced motion.
   useEffect(() => {
     if (!isPlaying || isHovered || total < 2) return;
-    const timer = window.setInterval(() => setCurrentIndex(prev => (prev + 1) % total), autoPlayInterval);
+    const timer = window.setInterval(() => step(1), autoPlayInterval);
     return () => window.clearInterval(timer);
-  }, [isPlaying, isHovered, total, autoPlayInterval]);
+  }, [isPlaying, isHovered, total, autoPlayInterval, step]);
 
   if (total === 0) {
     return null;
@@ -68,7 +90,7 @@ function ArtworkSlideshow({ artworks, autoPlayInterval = 5000 }: ArtworkSlidesho
         </div>
       </div>
 
-      <div className="slideshow-viewer">
+      <div className="slideshow-viewer" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
         <button 
           type="button" 
           className="slideshow-arrow slideshow-arrow--prev" 
