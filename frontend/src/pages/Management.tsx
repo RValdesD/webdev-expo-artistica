@@ -15,6 +15,8 @@ export default function Management() {
   const [artists, setArtists] = useState<Artist[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  // Bumped after artist changes; the server owns the list and its order.
+  const [artistsVersion, setArtistsVersion] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -23,19 +25,7 @@ export default function Management() {
       .catch(reason => { if (!controller.signal.aborted) setError(apiError(reason)); })
       .finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();
-  }, []);
-
-  function handleArtistCreated(newArtist: Artist) {
-    setArtists(prev => [...prev, newArtist].sort((a, b) => a.name.localeCompare(b.name, 'es')));
-  }
-
-  function handleArtistUpdated(updatedArtist: Artist) {
-    setArtists(prev => prev.map(a => a.id === updatedArtist.id ? updatedArtist : a));
-  }
-
-  function handleArtistDeleted(id: string) {
-    setArtists(prev => prev.filter(a => a.id !== id));
-  }
+  }, [artistsVersion]);
 
   return (
     <section className="management-page" aria-labelledby="management-title">
@@ -57,12 +47,7 @@ export default function Management() {
 
       {loading ? <p role="status">Cargando artistas…</p> : error ? <p role="alert">{error}</p> : (
         activeTab === 'artists' ? (
-          <ArtistManager
-            artists={artists}
-            onArtistCreated={handleArtistCreated}
-            onArtistUpdated={handleArtistUpdated}
-            onArtistDeleted={handleArtistDeleted}
-          />
+          <ArtistManager artists={artists} onChanged={() => setArtistsVersion(value => value + 1)} />
         ) : artists.length === 0 ? (
           <p role="alert">Necesitas al menos un artista antes de crear obras o talleres.</p>
         ) : activeTab === 'artworks' ? (
