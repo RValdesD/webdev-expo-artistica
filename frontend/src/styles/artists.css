@@ -51,7 +51,7 @@
 }
 
 .artist-social-link:hover {
-  background: var(--surface, #24221e);
+  background: var(--surface-raised);
   border-color: var(--accent, #c3a777);
   color: #ffffff;
 }
@@ -77,7 +77,7 @@
   padding: 12px 14px;
   font: inherit;
   color: var(--text, #eee5d4);
-  background: var(--surface, #24221e);
+  background: var(--surface-raised);
   border: 1px solid var(--border, #514a3d);
   border-radius: 0;
 }
