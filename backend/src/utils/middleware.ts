@@ -105,7 +105,11 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
     return;
   }
   if (error instanceof mongoose.Error.ValidationError) {
-    res.status(400).json({ error: error.message });
+    // One message per field, keyed by the last path segment (e.g. "socials.instagram" -> "instagram").
+    const fields = Object.fromEntries(
+      Object.values(error.errors).map(fieldError => [fieldError.path.split('.').pop() ?? fieldError.path, fieldError.message]),
+    );
+    res.status(400).json({ error: 'Revisa los campos.', fields });
     return;
   }
   if (error instanceof mongoose.Error.CastError) {
