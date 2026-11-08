@@ -1,7 +1,16 @@
 import { Schema, model } from 'mongoose';
 
-export const socialKeys = ['instagram', 'website', 'twitter', 'behance'] as const;
-export type ArtistSocials = Partial<Record<(typeof socialKeys)[number], string>>;
+// Spanish names used in validation messages; the keys are the supported platforms.
+const socialLabels = {
+  instagram: 'Instagram',
+  website: 'sitio web',
+  twitter: 'X / Twitter',
+  behance: 'Behance',
+} as const;
+
+export type SocialKey = keyof typeof socialLabels;
+export const socialKeys = Object.keys(socialLabels) as SocialKey[];
+export type ArtistSocials = Partial<Record<SocialKey, string>>;
 
 export interface ArtistData {
   id: string;
@@ -14,14 +23,14 @@ export interface ArtistData {
 }
 
 // Empty links are dropped so the API only returns links that exist.
-const socialLink = {
+const socialLink = (key: SocialKey) => ({
   type: String,
   set: (value: unknown) => (typeof value === 'string' && value.trim() ? value.trim() : undefined),
-  match: [/^https?:\/\/.+/i, 'El enlace de {PATH} debe ser una URL válida (http/https)'] as [RegExp, string],
-};
+  match: [/^https:\/\/.+/i, `El enlace de ${socialLabels[key]} debe ser una URL segura (https://...).`] as [RegExp, string],
+});
 
 const socialsSchema = new Schema<ArtistSocials>(
-  Object.fromEntries(socialKeys.map(key => [key, socialLink])),
+  Object.fromEntries(socialKeys.map(key => [key, socialLink(key)])),
   { _id: false },
 );
 
