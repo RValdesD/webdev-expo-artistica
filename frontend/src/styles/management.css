@@ -104,6 +104,20 @@
   opacity: .65;
 }
 
+.management-form__group {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+}
+
+.management-form__group legend {
+  padding: 0 8px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
 .management-form__row {
   display: grid;
   grid-template-columns: 1fr 1fr;
