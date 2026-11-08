@@ -1,11 +1,7 @@
 import { Schema, model } from 'mongoose';
 
-export interface ArtistSocials {
-  instagram?: string;
-  website?: string;
-  twitter?: string;
-  behance?: string;
-}
+export const socialKeys = ['instagram', 'website', 'twitter', 'behance'] as const;
+export type ArtistSocials = Partial<Record<(typeof socialKeys)[number], string>>;
 
 export interface ArtistData {
   id: string;
@@ -17,15 +13,15 @@ export interface ArtistData {
   isSample: boolean;
 }
 
-const urlRegex = /^https?:\/\/.+/i;
+// Empty links are dropped so the API only returns links that exist.
+const socialLink = {
+  type: String,
+  set: (value: unknown) => (typeof value === 'string' && value.trim() ? value.trim() : undefined),
+  match: [/^https?:\/\/.+/i, 'El enlace de {PATH} debe ser una URL válida (http/https)'] as [RegExp, string],
+};
 
 const socialsSchema = new Schema<ArtistSocials>(
-  {
-    instagram: { type: String, match: [urlRegex, 'El enlace de Instagram debe ser una URL válida (http/https)'], trim: true },
-    website: { type: String, match: [urlRegex, 'El enlace del sitio web debe ser una URL válida (http/https)'], trim: true },
-    twitter: { type: String, match: [urlRegex, 'El enlace de red social debe ser una URL válida (http/https)'], trim: true },
-    behance: { type: String, match: [urlRegex, 'El enlace de Behance debe ser una URL válida (http/https)'], trim: true },
-  },
+  Object.fromEntries(socialKeys.map(key => [key, socialLink])),
   { _id: false },
 );
 
