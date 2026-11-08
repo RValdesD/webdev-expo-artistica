@@ -9,7 +9,6 @@ const artistsRouter = Router();
 const publicFields = 'id name bio discipline imageUrl socials isSample -_id';
 const allowed = ['id', 'name', 'bio', 'discipline', 'imageUrl', 'socials'] as const;
 
-const artistBody = (body: unknown) => pickFields(body, allowed) ?? {};
 
 artistsRouter.get('/', async (_req, res, next) => {
   try { res.json(await Artist.find().select(publicFields).sort({ name: 1 }).lean()); }
@@ -25,13 +24,17 @@ artistsRouter.get('/:id', async (req, res, next) => {
 });
 
 artistsRouter.post('/', withUser, requireOrganizer, async (req, res, next) => {
-  try { res.status(201).json(await Artist.create(artistBody(req.body))); }
-  catch (error: unknown) { next(error); }
+  try {
+    const fields = pickFields(req.body, allowed);
+    if (!fields) { res.status(400).json({ error: 'El cuerpo debe ser un objeto JSON.' }); return; }
+    res.status(201).json(await Artist.create(fields));
+  } catch (error: unknown) { next(error); }
 });
 
 artistsRouter.put('/:id', withUser, requireOrganizer, async (req, res, next) => {
   try {
-    const changes = artistBody(req.body);
+    const changes = pickFields(req.body, allowed);
+    if (!changes) { res.status(400).json({ error: 'El cuerpo debe ser un objeto JSON.' }); return; }
     delete changes.id;
     const artist = await Artist.findOneAndUpdate({ id: req.params.id }, changes, { new: true, runValidators: true });
     if (!artist) { res.status(404).json({ error: 'Artista no encontrado.' }); return; }
