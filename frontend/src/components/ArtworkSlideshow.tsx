@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { memo, useEffect, useMemo, useState, type KeyboardEvent } from 'react';
 import { Link } from 'react-router-dom';
 import type { Artwork } from '../types/artwork';
 import '../styles/slideshow.css';
@@ -8,49 +8,29 @@ interface ArtworkSlideshowProps {
   autoPlayInterval?: number;
 }
 
-export default function ArtworkSlideshow({ artworks, autoPlayInterval = 5000 }: ArtworkSlideshowProps) {
+function ArtworkSlideshow({ artworks, autoPlayInterval = 5000 }: ArtworkSlideshowProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
-  const timerRef = useRef<number | null>(null);
 
-  // Filter out any artworks that don't have images
-  const validArtworks = artworks.filter(a => Boolean(a.imageUrl));
-
+  const validArtworks = useMemo(() => artworks.filter(artwork => Boolean(artwork.imageUrl)), [artworks]);
   const total = validArtworks.length;
 
-  const nextSlide = useCallback(() => {
-    if (total === 0) return;
-    setCurrentIndex(prev => (prev + 1) % total);
-  }, [total]);
-
-  const prevSlide = useCallback(() => {
-    if (total === 0) return;
-    setCurrentIndex(prev => (prev - 1 + total) % total);
-  }, [total]);
-
-  const goToSlide = (index: number) => {
-    setCurrentIndex(index);
-  };
+  const nextSlide = () => setCurrentIndex(prev => (prev + 1) % total);
+  const prevSlide = () => setCurrentIndex(prev => (prev - 1 + total) % total);
 
   // Keyboard navigation (← and →)
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowRight') {
-      nextSlide();
-    } else if (e.key === 'ArrowLeft') {
-      prevSlide();
-    }
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'ArrowRight') nextSlide();
+    else if (event.key === 'ArrowLeft') prevSlide();
   };
 
-  // Autoplay management (paused on hover or when toggled off)
+  // Autoplay, paused on hover or when toggled off.
   useEffect(() => {
-    if (isPlaying && !isHovered && total > 1) {
-      timerRef.current = window.setInterval(nextSlide, autoPlayInterval);
-    }
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [isPlaying, isHovered, total, autoPlayInterval, nextSlide]);
+    if (!isPlaying || isHovered || total < 2) return;
+    const timer = window.setInterval(() => setCurrentIndex(prev => (prev + 1) % total), autoPlayInterval);
+    return () => window.clearInterval(timer);
+  }, [isPlaying, isHovered, total, autoPlayInterval]);
 
   if (total === 0) {
     return null;
@@ -104,7 +84,6 @@ export default function ArtworkSlideshow({ artworks, autoPlayInterval = 5000 }: 
               src={currentArtwork.imageUrl} 
               alt={currentArtwork.title} 
               className="slideshow-image"
-              loading="lazy"
             />
           </div>
           <div className="slideshow-caption">
@@ -140,7 +119,7 @@ export default function ArtworkSlideshow({ artworks, autoPlayInterval = 5000 }: 
             aria-selected={idx === currentIndex}
             aria-label={`Ver obra ${idx + 1}: ${item.title}`}
             className={`slideshow-dot ${idx === currentIndex ? 'active' : ''}`}
-            onClick={() => goToSlide(idx)}
+            onClick={() => setCurrentIndex(idx)}
           />
         ))}
       </div>
@@ -148,3 +127,4 @@ export default function ArtworkSlideshow({ artworks, autoPlayInterval = 5000 }: 
   );
 }
 
+export default memo(ArtworkSlideshow);
