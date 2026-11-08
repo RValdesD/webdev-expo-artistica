@@ -121,14 +121,6 @@
   color: #ff7875;
 }
 
-.workshop-visit-link {
-  display: inline-block;
-  margin-top: 8px;
-  font-weight: 600;
-  color: #fff;
-  text-decoration: underline;
-}
-
 .workshop-card__registered-box {
   background: var(--surface-raised, #181613);
   padding: 16px;
@@ -141,28 +133,6 @@
   gap: 12px;
   margin-top: 12px;
   flex-wrap: wrap;
-}
-
-.button--secondary {
-  background: transparent;
-  border: 1px solid var(--border, #514a3d);
-  color: var(--text, #eee5d4);
-}
-
-.button--secondary:hover {
-  background: var(--surface, #24221e);
-  border-color: var(--text, #eee5d4);
-}
-
-.button--outline-danger {
-  background: transparent;
-  border: 1px solid #ff4d4f;
-  color: #ff7875;
-}
-
-.button--outline-danger:hover {
-  background: rgba(255, 77, 79, 0.15);
-  color: #fff;
 }
 
 /* Modal confirmation dialog */
