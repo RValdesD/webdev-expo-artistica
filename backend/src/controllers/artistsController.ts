@@ -3,15 +3,13 @@ import { Artist } from '../models/Artist.js';
 import { Artwork } from '../models/Artwork.js';
 import { Workshop } from '../models/Workshop.js';
 import { withUser, requireOrganizer } from '../utils/middleware.js';
+import { pickFields } from '../utils/body.js';
 
 const artistsRouter = Router();
 const publicFields = 'id name bio discipline imageUrl socials isSample -_id';
 const allowed = ['id', 'name', 'bio', 'discipline', 'imageUrl', 'socials'] as const;
 
-function artistBody(body: unknown): Record<string, unknown> {
-  const source = body && typeof body === 'object' ? body as Record<string, unknown> : {};
-  return Object.fromEntries(allowed.filter(key => source[key] !== undefined).map(key => [key, source[key]]));
-}
+const artistBody = (body: unknown) => pickFields(body, allowed) ?? {};
 
 artistsRouter.get('/', async (_req, res, next) => {
   try { res.json(await Artist.find().select(publicFields).sort({ name: 1 }).lean()); }
