@@ -8,6 +8,9 @@
   --accent: #d400ff;
   --accent-hover: #0d82f0;
   --border: #ffffff;
+  --danger: #ff6b6b;
+  --warning: #fa8c16;
+  --success: #73d13d;
   --heading-font: 'MX1', 'Times New Roman', serif;
   --body-font: 'Segoe UI', Arial, sans-serif;
   --page-width: 1980px;
@@ -169,24 +172,24 @@ h1 em {
 
 .button--secondary {
   background: transparent;
-  border: 1px solid var(--border, #514a3d);
-  color: var(--text, #eee5d4);
+  border: 1px solid var(--border);
+  color: var(--text);
 }
 
 .button--secondary:hover {
-  background: var(--surface, #24221e);
-  border-color: var(--text, #eee5d4);
+  background: var(--surface-raised);
+  border-color: var(--accent-hover);
 }
 
 .button--outline-danger {
   background: transparent;
-  border: 1px solid #ff4d4f;
-  color: #ff7875;
+  border: 1px solid var(--danger);
+  color: var(--danger);
 }
 
 .button--outline-danger:hover {
-  background: rgba(255, 77, 79, 0.15);
-  color: #fff;
+  background: var(--danger);
+  color: var(--background);
 }
 
 .hero-caption {
