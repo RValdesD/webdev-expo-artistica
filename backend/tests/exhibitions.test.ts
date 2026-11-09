@@ -47,3 +47,13 @@ test('admin still requires matching CSRF', async () => {
   role = 'organizador';
   assert.equal((await request(app).post('/api/exhibitions').set('Cookie', 'token=' + token).send({})).status, 401);
 });
+test('otras exposiciones: sala, artista y fechas; el término no puede ser antes del inicio', async () => {
+  role = 'organizador';
+  const base = { title: 'Otra', heading: 'Sala', featured: false, room: 'Sala A', artistId: 'demo-elena-rios', discipline: 'Pintura' };
+  const ok = await auth('post', '/api/exhibitions').send({ ...base, startDate: '2027-06-12', endDate: '2027-07-31' });
+  assert.equal(ok.status, 201);
+  assert.equal(ok.body.room, 'Sala A');
+  const bad = await auth('post', '/api/exhibitions').send({ ...base, startDate: '2027-07-31', endDate: '2027-06-12' });
+  assert.equal(bad.status, 400);
+  assert.match(bad.body.fields.endDate, /posterior/);
+});

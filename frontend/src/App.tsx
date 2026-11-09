@@ -1,10 +1,11 @@
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import Information from './pages/Information';
-import OtherExhibitions, { PlaceholderExhibition } from './pages/OtherExhibitions';
+import OtherExhibitions, { ExhibitionDetail } from './pages/OtherExhibitions';
 import ExhibitionManagement from './pages/ExhibitionManagement';
 import Visits from './pages/Visits';
 import ArtistList from "./pages/ArtistList";
 import ArtistDetail from "./pages/ArtistDetail";
+import ArtworkDetail from './pages/ArtworkDetail';
 import Catalog from './pages/Catalog';
 import Workshops from './pages/Workshops';
 import Signup from './pages/Signup';
@@ -36,12 +37,13 @@ export default function App() {
           <Route path="/" element={<Information />} />
           <Route path="/information" element={<Information />} />
           <Route path="/otras-exposiciones" element={<OtherExhibitions />} />
-          <Route path="/otras-exposiciones/:id" element={<PlaceholderExhibition />} />
+          <Route path="/otras-exposiciones/:id" element={<ExhibitionDetail />} />
           <Route path="/gestion/exposiciones" element={<ProtectedRoute organizerOnly><ExhibitionManagement /></ProtectedRoute>} />
           <Route path="/visitas" element={<Visits />} />
           <Route path="/artists" element={<ArtistList />} />
           <Route path="/artists/:id" element={<ArtistDetail />} />
           <Route path="/catalog" element={<Catalog />} />
+          <Route path="/catalog/:id" element={<ArtworkDetail />} />
           <Route path="/workshops" element={<Workshops />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/registro" element={<Signup />} />

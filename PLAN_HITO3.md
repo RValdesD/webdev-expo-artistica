@@ -38,14 +38,14 @@ Lista acordada por el grupo, ordenada en partes que se pueden repartir. Cada par
 
 ## 3. Las partes
 
-### Parte 0 — Deuda técnica (primero, una persona, ~1 hora)
+### Parte 0 — Deuda técnica ✅
 
 Sin esto el deploy falla y cualquier cambio posterior arrastra el problema.
 
-- [ ] 0.1 Borrar el código muerto listado arriba (verificar antes con `grep` que nada lo importa).
-- [ ] 0.2 Renombrar `models/expo.ts` → `models/Expo.ts` con `git mv` (para que git registre el cambio de mayúscula).
-- [ ] 0.3 Borrar `query`, `FISH.png~` y `LAST_FIXES.md`.
-- [ ] 0.4 `npm run build` sin errores en backend y frontend; `npm test` y `npm run test:integration` en verde.
+- [x] 0.1 Borrar el código muerto listado arriba (verificar antes con `grep` que nada lo importa).
+- [x] 0.2 Mayúsculas: en vez de renombrar el archivo, todos los imports usan `models/expo.js`, igual que el archivo (funciona en Linux). El `tsconfig` vuelve a compilar todo `src`.
+- [x] 0.3 Borrar `query`, `FISH.png~` y `LAST_FIXES.md`.
+- [x] 0.4 `npm run build` sin errores en backend y frontend; `npm test` y `npm run test:integration` en verde.
 
 **Lista cuando:** el build pasa y los tests pasan.
 
@@ -67,57 +67,59 @@ Sin esto el deploy falla y cualquier cambio posterior arrastra el problema.
 - [x] A2.2 `GET /api/login/me` solo necesita la cookie y entrega un CSRF nuevo, sin alargar la sesión. La sesión sigue funcionando aunque se borre `localStorage`.
 - [x] A2.3 Tests: login desde otro sitio → 403; desde el mismo sitio y desde Vite → 200; `/me` renueva el CSRF y conserva el vencimiento; el CSRF anterior deja de servir.
 
-### Parte B — Errores claros
+### Parte B — Errores claros ✅
 
-- [ ] B.1 En `errorHandler` (`utils/middleware.ts`), traducir los `ValidationError` de Mongoose a un mensaje por campo y en español: `{ error: "Revisa los campos.", fields: { title: "El título es obligatorio." } }`.
-- [ ] B.2 Mensajes en español en los schemas (`required: [true, 'El título es obligatorio.']`, `min`, `max`, `maxlength`).
-- [ ] B.3 Que el 409 diga qué está repetido (por ejemplo, el id de la obra), como ya hace el registro con usuario y correo.
-- [ ] B.4 Frontend: mostrar el error junto al campo que falló en Gestión, Registro y Login, no solo arriba del formulario.
+- [x] B.1 En `errorHandler` (`utils/middleware.ts`), traducir los `ValidationError` de Mongoose a un mensaje por campo y en español: `{ error: "Revisa los campos.", fields: { title: "El título es obligatorio." } }`.
+- [x] B.2 Mensajes en español: `utils/validation.ts` traduce cada error de Mongoose (`required`, `min`, `max`, `maxlength`, `enum`, formato) sin repetir mensajes en cada schema.
+- [x] B.3 Que el 409 diga qué está repetido (por ejemplo, el id de la obra), como ya hace el registro con usuario y correo.
+- [x] B.4 Frontend: mostrar el error junto al campo que falló en Gestión, Registro y Login, no solo arriba del formulario.
 
 **Lista cuando:** ningún error visible para el usuario sale en inglés ni con formato técnico.
 
-### Parte C — UI, colores y resolución
+### Parte C — UI, colores y resolución ✅
 
 **Se decide primero (C.0), porque cambia cómo se hacen D, E, F y G.**
 
-- [ ] C.0 Elegir la UI y anotarla en el README:
+- [x] C.0 UI: se sigue con **CSS propio** (anotado en el README). Confirmar con el grupo; si se cambia a MUI, D/E/F/G no dependen de esa decisión.
   - **Opción 1 — MUI (Material UI)**: componentes listos (`Button`, `Card`, `TextField`, `Dialog`, `Snackbar`, íconos), con el tema y los colores en un solo archivo. Más trabajo al principio: hay que migrar las vistas.
   - **Opción 2 — Seguir con CSS propio**, ordenando la paleta en variables. Menos trabajo, pero sin componentes nuevos.
-- [ ] C.1 Paleta nueva: quitar los grises (`--muted`, el fondo café/gris de las tarjetas `#24221e`) y elegir el azul nuevo. Con MUI va en `createTheme`; con CSS, en `:root`. Revisar el contraste: texto ≥ 4.5:1 y bordes ≥ 3:1.
-- [ ] C.2 Resolución: quitar los anchos fijos (como el `padding-left` del menú) y probar en 375, 768, 1024, 1280 y 1920 px. Menú usable en celular.
+- [x] C.1 Paleta nueva (sin grises; morado de acento; `--agua` para fondos y `--agua-texto` 7,2:1 para textos; se arregló `color: #rgb(...)` en `artists.css`): quitar los grises (`--muted`, el fondo café/gris de las tarjetas `#24221e`) y elegir el azul nuevo. Con MUI va en `createTheme`; con CSS, en `:root`. Revisar el contraste: texto ≥ 4.5:1 y bordes ≥ 3:1.
+- [x] C.2 Resolución (menú sin anchos fijos y en dos líneas en celular; 375, 768, 1024, 1280 y 1920 px sin desborde): quitar los anchos fijos (como el `padding-left` del menú) y probar en 375, 768, 1024, 1280 y 1920 px. Menú usable en celular.
 
 **Lista cuando:** todas las vistas se ven bien en esos 5 anchos y la paleta está en un solo lugar.
 
-### Parte D — Vista "Exposiciones" + gestión por el admin
+### Parte D — Vista "Exposiciones" + gestión por el admin ✅
 
 Depende de: A1 (rol admin) y C.0 (tipo de UI).
 
-- [ ] D.1 Backend: modelo `Exhibition` (`id`, `title`, `artistId`, `room`, `discipline`, `startDate`, `endDate`, `description`, `imageUrl`) + controlador CRUD con `withUser` + `requireOrganizer`/admin en crear, editar y eliminar. Tests como los de obras.
-- [ ] D.2 Seed: mover las 4 exposiciones de `Information.tsx` a `data/sampleExhibitions.ts`.
-- [ ] D.3 Frontend: ruta `/exposiciones` con la lista y el detalle; el inicio muestra un resumen con enlace a la vista.
-- [ ] D.4 Gestión: pestaña "Exposiciones" con crear, editar y eliminar (igual que Obras y Talleres).
+- [x] D.1 Backend (además: `featured` = va en el inicio u «Otras exposiciones»; validación de que el término no sea antes del inicio): modelo `Exhibition` (`id`, `title`, `artistId`, `room`, `discipline`, `startDate`, `endDate`, `description`, `imageUrl`) + controlador CRUD con `withUser` + `requireOrganizer`/admin en crear, editar y eliminar. Tests como los de obras.
+- [x] D.2 Seed: mover las 4 exposiciones de `Information.tsx` a `data/sampleExhibitions.ts`.
+- [x] D.3 Frontend: ruta `/otras-exposiciones` con la lista y el detalle; el inicio muestra un resumen con enlace a la vista.
+- [x] D.4 Gestión (en `/gestion/exposiciones`): pestaña "Exposiciones" con crear, editar y eliminar (igual que Obras y Talleres).
 
-### Parte E — Redes en los perfiles
+### Parte E — Redes en los perfiles ✅
 
-- [ ] E.1 Backend: agregar `socials: { instagram?, website?, behance?, ... }` a `Artist`, validando que sean URLs `https://`.
-- [ ] E.2 Frontend: íconos con enlace en el perfil (`target="_blank"` + `rel="noopener noreferrer"` + `aria-label`). Con MUI, usar `@mui/icons-material`.
-- [ ] E.3 Gestión: campos de redes al editar un artista.
+- [x] E.1 Backend: `socials` en `Artist` (Instagram, sitio web, X / Twitter, Behance), solo URLs `https://`, con mensajes en español.
+- [x] E.2 Frontend: íconos con enlace en el perfil (`socialPlatforms.tsx`, `target="_blank"` + `rel="noopener noreferrer"` + `aria-label`).
+- [x] E.3 Gestión: pestaña **Artistas y Redes** (crear, editar y eliminar artistas con sus redes).
 
-### Parte F — Mejorar la inscripción a talleres
+### Parte F — Mejorar la inscripción a talleres ✅
 
 Revisar con el grupo qué falla hoy. Propuestas:
 
-- [ ] F.1 Diálogo de confirmación antes de inscribirse, con fecha, sala y duración.
-- [ ] F.2 Poder cancelar desde la misma tarjeta del taller (hoy solo se puede desde Mi visita).
-- [ ] F.3 Mostrar los cupos en una barra; marcar "Últimos cupos" y "Lleno".
-- [ ] F.4 Mensaje de éxito o error que se vea (snackbar/toast), y un enlace a Mi visita.
-- [ ] F.5 Limpiar las 12 inscripciones viejas del Hito 1 que llenan "Luz y color en acuarela" (no tienen `userId`).
+- [x] F.1 Diálogo de confirmación antes de inscribirse, con fecha, sala y duración.
+- [x] F.2 Poder cancelar desde la misma tarjeta del taller (hoy solo se puede desde Mi visita).
+- [x] F.3 Mostrar los cupos en una barra; marcar "Últimos cupos" y "Lleno".
+- [x] F.4 Mensaje de éxito o error que se vea (snackbar/toast), y un enlace a Mi visita.
+- [x] F.5 Limpiar las inscripciones viejas del Hito 1 sin `userId` (12 en "Luz y color en acuarela" y 1 en "Composición"): `npm run registrations:clean --workspace backend` las cuenta; con `-- --apply` las borra. Cada uno tiene que correrlo en su base local.
 
-### Parte G — Slideshow de obras
+### Parte G — Slideshow de obras ✅
 
-- [ ] G.1 Carrusel en el Catálogo o en el detalle de la obra: flechas, puntos, teclado (← →), deslizar en celular y pausa al pasar el mouse.
-- [ ] G.2 Accesible: `aria-roledescription="carousel"`, botones con nombre y sin avanzar solo si el usuario prefiere reducir el movimiento.
-- [ ] G.3 Usar las imágenes de las obras que ya vienen del backend.
+- [x] G.0 Carrusel de obras destacadas arriba del Catálogo (`ArtworkSlideshow`), con avance automático que se pausa y respeta el movimiento reducido.
+
+- [x] G.1 Cada obra puede tener varias imágenes: campo `images` en `Artwork` (hasta 10, rutas `/images/...` o URLs `http(s)`). El organizador las agrega en Gestión → Obras → "Más imágenes de la obra".
+- [x] G.2 Página de la obra (`/catalog/:id`): galería que se pasa hacia el lado con flechas, miniaturas, teclado (← →) y deslizando el dedo en el celular. No avanza sola. En el catálogo, la tarjeta muestra "+N imágenes".
+- [x] G.3 Accesible: `aria-roledescription="carousel"`, botones con nombre y el texto alternativo dice "imagen N de M".
 
 ### Parte H — Presentación
 

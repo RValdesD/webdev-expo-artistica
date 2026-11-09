@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import workshopsService from '../services/workshops';
-import { apiError } from '../services/auth';
+import { apiError, apiFields, apiMessage } from '../services/auth';
+import FieldError, { fieldProps, type FieldErrors } from './FieldError';
 import type { Artist } from '../types/artist';
 import type { Workshop, WorkshopInput } from '../types/workshop';
 
@@ -26,6 +27,7 @@ export default function WorkshopManager({ artists }: { artists: Artist[] }) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [fields, setFields] = useState<FieldErrors>({});
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
@@ -38,7 +40,7 @@ export default function WorkshopManager({ artists }: { artists: Artist[] }) {
     return () => controller.abort();
   }, [attempt]);
 
-  function resetForm() { setForm(emptyWorkshop()); setEditingId(null); }
+  function resetForm() { setForm(emptyWorkshop()); setEditingId(null); setFields({}); }
 
   function editWorkshop(workshop: Workshop) {
     setEditingId(workshop.id);
@@ -61,6 +63,7 @@ export default function WorkshopManager({ artists }: { artists: Artist[] }) {
     if (saving) return;
     setSaving(true);
     setError('');
+    setFields({});
     setMessage('');
     try {
       const input: WorkshopInput = { ...form, date: new Date(form.date).toISOString() };
@@ -73,7 +76,7 @@ export default function WorkshopManager({ artists }: { artists: Artist[] }) {
       }
       resetForm();
       setAttempt(value => value + 1);
-    } catch (reason: unknown) { setError(apiError(reason)); }
+    } catch (reason: unknown) { setError(apiMessage(reason)); setFields(apiFields(reason)); }
     finally { setSaving(false); }
   }
 
@@ -102,38 +105,46 @@ export default function WorkshopManager({ artists }: { artists: Artist[] }) {
         </div>
 
         <label htmlFor="workshop-id">Identificador</label>
-        <input id="workshop-id" required pattern="[a-z0-9-]+" maxLength={80} disabled={editingId !== null || saving}
+        <input id="workshop-id" {...fieldProps(fields, 'id', 'workshop-id')} required pattern="[a-z0-9-]+" maxLength={80} disabled={editingId !== null || saving}
           value={form.id} onChange={event => setForm(current => ({ ...current, id: event.target.value }))} />
+        <FieldError fields={fields} name="id" id="workshop-id" />
 
         <label htmlFor="workshop-title">Título</label>
-        <input id="workshop-title" required maxLength={200} disabled={saving}
+        <input id="workshop-title" {...fieldProps(fields, 'title', 'workshop-title')} required maxLength={200} disabled={saving}
           value={form.title} onChange={event => setForm(current => ({ ...current, title: event.target.value }))} />
+        <FieldError fields={fields} name="title" id="workshop-title" />
 
         <label htmlFor="workshop-artist">Artista</label>
-        <select id="workshop-artist" required disabled={saving} value={form.artistId}
+        <select id="workshop-artist" {...fieldProps(fields, 'artistId', 'workshop-artist')} required disabled={saving} value={form.artistId}
           onChange={event => setForm(current => ({ ...current, artistId: event.target.value }))}>
           <option value="">Selecciona un artista</option>
           {artists.map(artist => <option value={artist.id} key={artist.id}>{artist.name}</option>)}
         </select>
+        <FieldError fields={fields} name="artistId" id="workshop-artist" />
 
         <label htmlFor="workshop-description">Descripción</label>
-        <textarea id="workshop-description" required maxLength={3000} rows={5} disabled={saving}
+        <textarea id="workshop-description" {...fieldProps(fields, 'description', 'workshop-description')} required maxLength={3000} rows={5} disabled={saving}
           value={form.description} onChange={event => setForm(current => ({ ...current, description: event.target.value }))} />
+        <FieldError fields={fields} name="description" id="workshop-description" />
 
         <div className="management-form__row">
-          <div><label htmlFor="workshop-date">Fecha y hora</label><input id="workshop-date" type="datetime-local" required disabled={saving}
-            value={form.date} onChange={event => setForm(current => ({ ...current, date: event.target.value }))} /></div>
-          <div><label htmlFor="workshop-duration">Duración (minutos)</label><input id="workshop-duration" type="number" min={1} required disabled={saving}
-            value={form.durationMinutes} onChange={event => setForm(current => ({ ...current, durationMinutes: Number(event.target.value) }))} /></div>
+          <div><label htmlFor="workshop-date">Fecha y hora</label><input id="workshop-date" {...fieldProps(fields, 'date', 'workshop-date')} type="datetime-local" required disabled={saving}
+            value={form.date} onChange={event => setForm(current => ({ ...current, date: event.target.value }))} />
+        <FieldError fields={fields} name="date" id="workshop-date" /></div>
+          <div><label htmlFor="workshop-duration">Duración (minutos)</label><input id="workshop-duration" {...fieldProps(fields, 'durationMinutes', 'workshop-duration')} type="number" min={1} required disabled={saving}
+            value={form.durationMinutes} onChange={event => setForm(current => ({ ...current, durationMinutes: Number(event.target.value) }))} />
+        <FieldError fields={fields} name="durationMinutes" id="workshop-duration" /></div>
         </div>
 
         <label htmlFor="workshop-location">Lugar</label>
-        <input id="workshop-location" required maxLength={300} disabled={saving}
+        <input id="workshop-location" {...fieldProps(fields, 'location', 'workshop-location')} required maxLength={300} disabled={saving}
           value={form.location} onChange={event => setForm(current => ({ ...current, location: event.target.value }))} />
+        <FieldError fields={fields} name="location" id="workshop-location" />
 
         <label htmlFor="workshop-capacity">Capacidad</label>
-        <input id="workshop-capacity" type="number" min={1} max={200} required disabled={saving}
+        <input id="workshop-capacity" {...fieldProps(fields, 'capacity', 'workshop-capacity')} type="number" min={1} max={200} required disabled={saving}
           value={form.capacity} onChange={event => setForm(current => ({ ...current, capacity: Number(event.target.value) }))} />
+        <FieldError fields={fields} name="capacity" id="workshop-capacity" />
 
         <button className="button" type="submit" disabled={saving || artists.length === 0}>
           {saving ? 'Guardando…' : editingId ? 'Guardar cambios' : 'Crear taller'}

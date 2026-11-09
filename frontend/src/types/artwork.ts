@@ -4,6 +4,7 @@ export interface Artwork {
   artistId: string;
   medium: string;
   imageUrl: string;
+  images: string[];
   year: number;
   description: string;
   isSample: boolean;
@@ -12,5 +13,5 @@ export interface Artwork {
 
 export type ArtworkInput = Pick<
   Artwork,
-  'id' | 'title' | 'artistId' | 'medium' | 'imageUrl' | 'year' | 'description'
+  'id' | 'title' | 'artistId' | 'medium' | 'imageUrl' | 'images' | 'year' | 'description'
 >;

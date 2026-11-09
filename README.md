@@ -19,6 +19,20 @@ Se conservaron el encabezado **EXPO ARTÍSTICA SANTIAGO**, el tema **Los Grandes
 - Seed consolidado e idempotente: agrega muestras ausentes sin sobrescribir documentos existentes.
 - Manejo centralizado de errores y pruebas de autenticación.
 
+### Arreglos posteriores al Hito 2 (ver `PLAN_HITO3.md`)
+
+- Rol organizador por correo `@admin.expo.cl` y protección CSRF en login y registro.
+- Errores en español y por campo, mostrados junto al campo que falló (Gestión, Registro e Inicio de sesión).
+- Exposiciones administrables: las destacadas van en el inicio y las demás en **Otras exposiciones** (`/otras-exposiciones`), con sala, disciplina, artista y fechas.
+- Redes (Instagram, sitio web, X / Twitter, Behance) en el perfil de cada artista, editables en Gestión → Artistas y Redes.
+- Inscripción a talleres con confirmación, cancelación desde la tarjeta, barra de cupos y aviso.
+- Carrusel de obras en el Catálogo y galería de varias imágenes de la misma obra en `/catalog/:id`.
+- Diseño responsive revisado en 375, 768, 1024, 1280 y 1920 px.
+
+### Interfaz
+
+La interfaz usa **CSS propio**, sin librería de componentes. Los colores están en variables al inicio de `frontend/src/styles.css` (`:root`) y cada vista tiene su archivo en `frontend/src/styles/`. Para textos sobre el fondo negro se usa `--agua-texto` (contraste 7,2:1); `--agua` es para fondos de botones con texto blanco.
+
 Las dos vistas nuevas del Hito 2 están implementadas. Gestión y todas las escrituras de contenido requieren el rol `organizador`; las cuentas nuevas son `visitante`.
 
 ## Roles y primer organizador
@@ -109,7 +123,10 @@ Abre la URL mostrada por Vite, normalmente `http://localhost:5173`. Vite reenví
 Rutas nuevas del frontend:
 
 - `/mi-visita`: perfil protegido del visitante y sus inscripciones.
-- `/gestion`: panel exclusivo para organizadores para administrar obras y talleres.
+- `/gestion`: panel exclusivo para organizadores para administrar obras, talleres y artistas.
+- `/gestion/exposiciones`: exposiciones del inicio y de «Otras exposiciones».
+- `/otras-exposiciones` y `/otras-exposiciones/:id`: listado y detalle públicos.
+- `/catalog/:id`: obra con su galería de imágenes.
 
 ## Rutas principales
 
@@ -121,7 +138,7 @@ Rutas nuevas del frontend:
 | POST | `/api/login/logout` | Sesión + CSRF | Cerrar sesión |
 | GET | `/api/expo` | Público | Información de la exposición |
 | PUT | `/api/expo` | Organizador + CSRF | Editar la exposición |
-| GET | `/api/artists`, `/api/artworks`, `/api/workshops` | Público | Listados y detalles |
+| GET | `/api/artists`, `/api/artworks`, `/api/workshops`, `/api/exhibitions` | Público | Listados y detalles |
 | POST/PUT/DELETE | recursos anteriores | Organizador + CSRF | Gestión CRUD |
 | POST | `/api/workshops/:id/registrations` | Sesión + CSRF | Inscribirse a un taller |
 | GET | `/api/registrations/me` | Sesión + CSRF | Listar mis inscripciones |
@@ -165,4 +182,8 @@ Las pruebas no necesitan una instancia real de MongoDB. Para comprobar el recorr
 - `409`: identificador duplicado, relación que impide borrar o inscripción incompatible.
 - `500`: error interno no previsto.
 
-La API responde errores con la forma `{ "error": "mensaje" }`.
+La API responde errores con la forma `{ "error": "mensaje" }`. Cuando el problema es de un campo, agrega `fields`, con un mensaje por campo:
+
+```json
+{ "error": "Revisa los campos: título, año.", "fields": { "title": "Este campo es obligatorio.", "year": "El año debe ser un entero." } }
+```

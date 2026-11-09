@@ -151,7 +151,7 @@
 }
 
 .artist-sample {
-  color: #rgb(13, 72, 182)
+  color: var(--agua-texto);
   font-size: 12px;
   border-left: 2px solid var(--accent, #c3a777);
   padding-left: 10px;

@@ -15,7 +15,8 @@ export default function Information() {
     const controller = new AbortController();
     setLoading(true); setError(false);
     exhibitionsService.getAll(controller.signal)
-      .then(data => { if (!controller.signal.aborted) setItems(data); })
+      // En el inicio van solo las destacadas; las demás están en «Otras exposiciones».
+      .then(data => { if (!controller.signal.aborted) setItems(data.filter(item => item.featured !== false)); })
       .catch(() => { if (!controller.signal.aborted) setError(true); })
       .finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();

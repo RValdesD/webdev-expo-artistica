@@ -15,7 +15,8 @@
   --body-font: 'Segoe UI', Arial, sans-serif;
   --page-width: 1980px;
   --page-gutter: 6%;
-  --agua: #0d21cf;
+  --agua: #0d21cf;        /* fondo de botones: texto blanco encima (9,8:1) */
+  --agua-texto: #7d8fff;  /* el mismo azul, más claro, para texto sobre negro (7,2:1) */
   --section-space: 64px;
   font-family:var(--body-font);
   color:var(--text);
@@ -86,16 +87,16 @@ p {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 30px;
-  padding:20px;
-  padding-left: 120px;
-  padding-right: 40px;
+  flex-wrap: wrap;
+  gap: 16px 30px;
+  padding: 20px var(--page-gutter);
   border-bottom: 1px solid var(--border);
 }
 
 .site-header nav {
   display:flex;
-  gap:30px;
+  flex-wrap:wrap;
+  gap:12px 30px;
   font-size:13px;
   align-items: center;
   flex: 1;
@@ -141,7 +142,7 @@ h1 {
 }
 
 h1 em {
-  color:var(--agua);
+  color:var(--agua-texto);
   font-weight:500;
 }
 
@@ -351,8 +352,10 @@ h1 em {
     flex-wrap:wrap;
   }
 
+  /* En pantallas angostas el menú baja y ocupa todo el ancho. */
   .site-header nav {
-    gap:20px;
+    flex-basis:100%;
+    gap:10px 20px;
   }
 
   .hero {
@@ -511,4 +514,15 @@ h1 em {
   margin-top: auto;
   padding-top: 8px;
   font-size: 14px;
+}
+
+/* Error junto al campo que falló (formularios de Gestión, Registro e Inicio de sesión). */
+.field-error {
+  margin: 4px 0 8px;
+  font-size: 13px;
+  color: var(--danger);
+}
+
+[aria-invalid='true'] {
+  border-color: var(--danger) !important;
 }

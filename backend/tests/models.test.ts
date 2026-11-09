@@ -13,6 +13,10 @@ test('el nombre de la exposición es obligatorio', async () => {
   await assert.rejects(new Expo({ ...sampleExpo, name: '' }).validate());
 });
 
+test('las preguntas frecuentes necesitan respuesta', async () => {
+  await assert.rejects(new Expo({ ...sampleExpo, faqs: [{ question: 'Pregunta' }] }).validate());
+});
+
 test('el hash de contraseña no aparece en JSON', () => {
   const result = new User({ username: 'ana', name: 'Ana', passwordHash: 'secret-hash' }).toJSON();
   assert.equal('passwordHash' in result, false);
@@ -67,4 +71,17 @@ test('el mensaje de error de redes nombra la plataforma en español', async () =
 test('el esquema de artista rechaza enlaces http sin cifrar', async () => {
   const artist = new Artist({ id: 'test-artist-5', name: 'X', bio: 'Y', discipline: 'Z', socials: { instagram: 'http://instagram.com/x' } });
   await assert.rejects(artist.validate());
+});
+
+const artworkBase = { id: 'obra-prueba', title: 'Obra', artistId: 'artista', medium: 'Óleo', year: 2024 };
+
+test('una obra acepta imágenes extra con rutas o URLs http(s)', async () => {
+  const { Artwork } = await import('../src/models/Artwork.js');
+  await new Artwork({ ...artworkBase, images: ['/images/detalle.jpg', 'https://example.com/obra.jpg'] }).validate();
+});
+
+test('una obra rechaza imágenes extra peligrosas o demasiadas', async () => {
+  const { Artwork, MAX_ARTWORK_IMAGES } = await import('../src/models/Artwork.js');
+  await assert.rejects(new Artwork({ ...artworkBase, images: ['javascript:alert(1)'] }).validate());
+  await assert.rejects(new Artwork({ ...artworkBase, images: Array(MAX_ARTWORK_IMAGES + 1).fill('/images/a.jpg') }).validate());
 });

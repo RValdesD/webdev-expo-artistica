@@ -18,7 +18,21 @@
 .expo-editor label { display: grid; gap: 8px; margin: 16px 0; }
 .expo-editor input, .expo-editor textarea, .expo-editor select { width: 100%; min-width: 0; font: inherit; padding: 12px; background: #151515; color: var(--text); border: 1px solid #777; }
 .expo-editor__actions { display: flex; flex-wrap: wrap; gap: 16px; }
+.other-expos__grid { list-style: none; padding: 0; margin: 32px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+.other-expos__card { min-width: 0; padding: 28px; border: 1px solid var(--border); overflow-wrap: anywhere; }
+.other-expos__card h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); margin: 8px 0; }
+.other-expos__card h2 a { color: inherit; text-decoration: none; }
+.other-expos__card h2 a:hover, .other-expos__card h2 a:focus-visible { text-decoration: underline; }
+.other-expos__meta { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin: 24px 0 0; }
+.other-expos__dates { color: var(--agua-texto); }
+.other-expos__heading { font-size: 1.3rem; }
+.other-expos__figure { margin: 24px 0; max-width: 720px; }
+.other-expos__figure img { display: block; width: 100%; height: auto; }
+.expo-editor__check { display: flex !important; align-items: center; gap: 12px; }
+.expo-editor__check input { width: auto; }
+.expo-editor__dates { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 @media (max-width: 750px) {
+  .other-expos__grid, .expo-editor__dates { grid-template-columns: 1fr; }
   .expo-item__type-panel { min-height: 250px; }
   .expo-divider { height: 32px; }
   .expo-item .hero-copy { min-width: 0; }

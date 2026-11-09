@@ -53,7 +53,7 @@ workshopsRouter.post('/', withUser, requireOrganizer, async (req, res, next) => 
   try {
     const input = workshopBody(req.body);
     if (typeof input.artistId !== 'string' || !await Artist.exists({ id: input.artistId })) {
-      res.status(400).json({ error: 'El artista indicado no existe.' }); return;
+      res.status(400).json({ error: 'El artista indicado no existe.', fields: { artistId: 'El artista indicado no existe.' } }); return;
     }
     res.status(201).json(await Workshop.create(input));
   } catch (error: unknown) { next(error); }
@@ -64,10 +64,10 @@ workshopsRouter.put('/:id', withUser, requireOrganizer, async (req, res, next) =
     const input = workshopBody(req.body);
     delete input.id;
     if (input.artistId !== undefined && (typeof input.artistId !== 'string' || !await Artist.exists({ id: input.artistId }))) {
-      res.status(400).json({ error: 'El artista indicado no existe.' }); return;
+      res.status(400).json({ error: 'El artista indicado no existe.', fields: { artistId: 'El artista indicado no existe.' } }); return;
     }
     if (input.capacity !== undefined && (typeof input.capacity !== 'number' || !Number.isInteger(input.capacity) || input.capacity < 1 || input.capacity > 200)) {
-      res.status(400).json({ error: 'capacity debe ser un número entero entre 1 y 200.' }); return;
+      res.status(400).json({ error: 'Los cupos deben ser un número entero entre 1 y 200.', fields: { capacity: 'Debe ser un número entero entre 1 y 200.' } }); return;
     }
     // Check capacity and write in the same MongoDB operation. Registration uses
     // an atomic capacity predicate too, so concurrent writes cannot overbook.
