@@ -1,10 +1,10 @@
 import { randomUUID } from 'node:crypto';
-import { Router } from 'express';
+import { Router, type Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/User.js';
 import { JWT_SECRET, NODE_ENV } from '../utils/config.js';
-import { withUser } from '../utils/middleware.js';
+import { requireSameOrigin, withUser } from '../utils/middleware.js';
 
 const loginRouter = Router();
 const cookieSecurity = {
@@ -13,8 +13,19 @@ const cookieSecurity = {
   secure: NODE_ENV === 'production',
   path: '/',
 };
+const SESSION_SECONDS = 60 * 60;
 
-loginRouter.post('/', async (req, res, next) => {
+// Firma el JWT con un CSRF nuevo y lo entrega: el JWT en la cookie httpOnly y el
+// CSRF en el header. `expiresAt` permite renovar el CSRF sin alargar la sesión.
+function issueSession(res: Response, user: { id: string; username: string }, expiresAt: number): void {
+  const csrf = randomUUID();
+  const token = jwt.sign({ id: user.id, username: user.username, csrf, exp: expiresAt }, JWT_SECRET);
+  res.cookie('token', token, { ...cookieSecurity, maxAge: Math.max(0, expiresAt * 1000 - Date.now()) });
+  res.setHeader('X-CSRF-Token', csrf);
+  res.setHeader('Cache-Control', 'no-store');
+}
+
+loginRouter.post('/', requireSameOrigin, async (req, res, next) => {
   try {
     const body = req.body as Record<string, unknown>;
     // El mismo campo acepta el nombre de usuario o el correo.
@@ -28,23 +39,30 @@ loginRouter.post('/', async (req, res, next) => {
       return;
     }
 
-    const csrf = randomUUID();
-    const token = jwt.sign({ id: user.id, username: user.username, csrf }, JWT_SECRET, { expiresIn: '1h' });
-    res.cookie('token', token, { ...cookieSecurity, maxAge: 60 * 60 * 1000 });
-    res.setHeader('X-CSRF-Token', csrf);
-    res.setHeader('Cache-Control', 'no-store');
+    issueSession(res, { id: String(user.id), username: user.username }, Math.floor(Date.now() / 1000) + SESSION_SECONDS);
     res.json({ user });
   } catch (error: unknown) { next(error); }
 });
 
-loginRouter.get('/me', withUser, async (req, res, next) => {
+// Restaurar la sesión solo lee datos, así que basta la cookie (SameSite=Strict impide
+// que otro sitio la envíe). Entrega un CSRF nuevo: la sesión sigue funcionando
+// aunque se haya borrado localStorage, y el CSRF anterior deja de servir.
+loginRouter.get('/me', async (req, res, next) => {
   try {
-    const user = await User.findById(req.userId);
-    if (!user) {
+    const token = req.cookies?.token as unknown;
+    if (typeof token !== 'string') {
+      res.status(401).json({ error: 'Sesión requerida.' });
+      return;
+    }
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = typeof decoded !== 'string' && typeof decoded.id === 'string'
+      ? await User.findById(decoded.id)
+      : null;
+    if (!user || typeof decoded === 'string' || typeof decoded.exp !== 'number') {
       res.status(401).json({ error: 'La sesión ya no es válida.' });
       return;
     }
-    res.setHeader('Cache-Control', 'no-store');
+    issueSession(res, { id: String(user.id), username: user.username }, decoded.exp);
     res.json({ user });
   } catch (error: unknown) { next(error); }
 });

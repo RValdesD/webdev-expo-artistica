@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { Expo } from '../src/models/Expo.js';
+import { Expo } from '../src/models/expo.js';
 import { User } from '../src/models/User.js';
+import { Artist } from '../src/models/Artist.js';
 import { sampleExpo } from '../src/data/sampleExpo.js';
 
 test('la exposición de muestra satisface el esquema', async () => {
@@ -12,8 +13,75 @@ test('el nombre de la exposición es obligatorio', async () => {
   await assert.rejects(new Expo({ ...sampleExpo, name: '' }).validate());
 });
 
+test('las preguntas frecuentes necesitan respuesta', async () => {
+  await assert.rejects(new Expo({ ...sampleExpo, faqs: [{ question: 'Pregunta' }] }).validate());
+});
+
 test('el hash de contraseña no aparece en JSON', () => {
   const result = new User({ username: 'ana', name: 'Ana', passwordHash: 'secret-hash' }).toJSON();
   assert.equal('passwordHash' in result, false);
   assert.equal(typeof result.id, 'string');
+});
+
+test('el esquema de artista valida correctamente las redes sociales', async () => {
+  const validArtist = new Artist({
+    id: 'test-artist',
+    name: 'Test Artist',
+    bio: 'Biografía de prueba',
+    discipline: 'Pintura',
+    socials: {
+      instagram: 'https://instagram.com/test',
+      website: 'https://test.com',
+    },
+  });
+  await validArtist.validate();
+
+  const invalidArtist = new Artist({
+    id: 'test-artist-2',
+    name: 'Test Artist 2',
+    bio: 'Biografía',
+    discipline: 'Escultura',
+    socials: {
+      instagram: 'not-a-valid-url',
+    },
+  });
+  await assert.rejects(invalidArtist.validate());
+});
+
+test('el esquema de artista descarta enlaces vacíos y recorta espacios', async () => {
+  const artist = new Artist({
+    id: 'test-artist-3',
+    name: 'Test Artist 3',
+    bio: 'Biografía',
+    discipline: 'Pintura',
+    socials: { instagram: '  https://instagram.com/test  ', website: '', twitter: '   ' },
+  });
+  await artist.validate();
+  assert.deepEqual(artist.toObject().socials, { instagram: 'https://instagram.com/test' });
+});
+
+test('el mensaje de error de redes nombra la plataforma en español', async () => {
+  const artist = new Artist({ id: 'test-artist-4', name: 'X', bio: 'Y', discipline: 'Z', socials: { website: 'nope' } });
+  await assert.rejects(artist.validate(), (error: Error & { errors: Record<string, { message: string }> }) => {
+    assert.equal(error.errors['socials.website'].message, 'El enlace de sitio web debe ser una URL segura (https://...).');
+    return true;
+  });
+});
+
+test('el esquema de artista rechaza enlaces http sin cifrar', async () => {
+  const artist = new Artist({ id: 'test-artist-5', name: 'X', bio: 'Y', discipline: 'Z', socials: { instagram: 'http://instagram.com/x' } });
+  await assert.rejects(artist.validate());
+});
+
+const artworkBase = { id: 'obra-prueba', title: 'Obra', artistId: 'artista', medium: 'Óleo', year: 2024 };
+
+test('una obra acepta imágenes extra con rutas o URLs http(s)', async () => {
+  const { Artwork } = await import('../src/models/Artwork.js');
+  await new Artwork({ ...artworkBase, images: ['/images/detalle.jpg', 'https://example.com/obra.jpg'] }).validate();
+});
+
+test('una obra rechaza imágenes extra peligrosas o demasiadas', async () => {
+  const { Artwork, MAX_ARTWORK_IMAGES } = await import('../src/models/Artwork.js');
+  await assert.rejects(new Artwork({ ...artworkBase, images: ['javascript:alert(1)'] }).validate());
+  await assert.rejects(new Artwork({ ...artworkBase, images: Array(MAX_ARTWORK_IMAGES + 1).fill('/images/a.jpg') }).validate());
 });

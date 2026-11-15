@@ -1,0 +1,199 @@
+.artwork-slideshow {
+  margin-bottom: 48px;
+  padding: 28px;
+  background: var(--surface-raised, #181613);
+  border: 1px solid var(--border, #514a3d);
+  outline: none;
+}
+
+.artwork-slideshow:focus-visible {
+  outline: 2px solid var(--accent, #c3a777);
+}
+
+.slideshow-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border, #514a3d);
+  padding-bottom: 16px;
+}
+
+.slideshow-header h2 {
+  font-size: 1.8rem;
+  margin: 4px 0 0 0;
+}
+
+.slideshow-controls-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.slideshow-autoplay-toggle {
+  background: transparent;
+  border: 1px solid var(--border, #514a3d);
+  color: var(--text, #eee5d4);
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.slideshow-autoplay-toggle:hover {
+  background: var(--surface-raised);
+  border-color: var(--accent, #c3a777);
+}
+
+.slideshow-counter {
+  font-size: 0.95rem;
+  color: var(--muted, #bcb3a3);
+  font-variant-numeric: tabular-nums;
+}
+
+.slideshow-viewer {
+  display: flex;
+  touch-action: pan-y;
+  align-items: center;
+  gap: 20px;
+}
+
+.slideshow-arrow {
+  background: var(--surface-raised);
+  border: 1px solid var(--border, #514a3d);
+  color: var(--text, #eee5d4);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  border-radius: 50%;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.slideshow-arrow:hover {
+  background: var(--accent, #c3a777);
+  color: #000;
+  border-color: var(--accent, #c3a777);
+}
+
+.slideshow-slide {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: center;
+  min-height: 380px;
+}
+
+.slideshow-image-wrapper {
+  width: 100%;
+  height: 380px;
+  background: #000;
+  border: 1px solid var(--border, #514a3d);
+  overflow: hidden;
+}
+
+.slideshow-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.slideshow-caption {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.slideshow-medium {
+  color: var(--accent, #c3a777);
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.slideshow-title {
+  font-size: 2.2rem;
+  margin: 0 0 12px 0;
+  line-height: 1.2;
+}
+
+.slideshow-artist {
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+}
+
+.slideshow-artist a {
+  color: var(--accent, #c3a777);
+  text-decoration: underline;
+}
+
+.slideshow-description {
+  color: var(--muted, #bcb3a3);
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.slideshow-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.slideshow-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid var(--border, #514a3d);
+  background: var(--surface-raised);
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.slideshow-dot.active {
+  background: var(--accent, #c3a777);
+  transform: scale(1.25);
+  border-color: var(--accent, #c3a777);
+}
+
+@media (max-width: 860px) {
+  .slideshow-slide {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .slideshow-image-wrapper {
+    height: 260px;
+  }
+
+  .slideshow-title {
+    font-size: 1.6rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slideshow-arrow,
+  .slideshow-dot {
+    transition: none;
+  }
+}
+
+.slideshow-title a { color: inherit; }
+.slideshow-caption > .button { align-self: flex-start; }
+.slideshow-arrow:disabled, .slideshow-autoplay-toggle:disabled { opacity: .5; cursor: default; }
+
+/* Una miniatura propia por obra, en lugar de indicadores vacíos. */
+.slideshow-dots .slideshow-preview { width: 112px; height: auto; min-height: 84px; padding: 6px; border: 1px solid var(--border); border-radius: 0; background: transparent; }
+.slideshow-dots .slideshow-preview::after { content: none; }
+.slideshow-preview img { display: block; width: 100%; height: 64px; object-fit: contain; }
+.slideshow-preview span { display: block; font-size: 12px; color: var(--text); overflow-wrap: anywhere; }
+.slideshow-dots .slideshow-preview.active { border: 2px solid var(--accent-hover); background: var(--surface-raised); transform: none; }

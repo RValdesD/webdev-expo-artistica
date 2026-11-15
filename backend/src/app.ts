@@ -1,4 +1,8 @@
 import express from 'express';
+import artistAccountRouter from './controllers/artistAccount.js';
+import submissionsRouter from './controllers/submissions.js';
+import { uploadDirectory } from './utils/uploads.js';
+import exhibitionsRouter from './controllers/exhibitions.js';
 import { fileURLToPath } from 'node:url';
 import cookieParser from 'cookie-parser';
 import usersRouter from './controllers/users.js';
@@ -15,6 +19,9 @@ app.disable('x-powered-by');
 app.use(requestLogger);
 app.use(cookieParser());
 app.use(express.json({ limit: '20kb' }));
+app.use('/images/uploads', express.static(uploadDirectory, { dotfiles: 'deny', setHeaders: res => { res.setHeader('X-Content-Type-Options', 'nosniff'); } }));
+app.use('/api/artist-account', artistAccountRouter);
+app.use('/api/submissions', submissionsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/artists', artistsRouter);
@@ -22,6 +29,7 @@ app.use('/api/artworks', artworksRouter);
 app.use('/api/workshops', workshopsRouter);
 app.use('/api/registrations', registrationsRouter);
 app.use('/api/expo', expoRouter);
+app.use('/api/exhibitions', exhibitionsRouter);
 // Production serves the built React application and API on the same origin.
 // Keep unknown API URLs as JSON errors rather than returning the SPA.
 app.use('/api', unknownEndpoint);

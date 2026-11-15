@@ -7,6 +7,9 @@ const baseUrl = '/api/artworks';
 const getAll = (signal?: AbortSignal): Promise<Artwork[]> =>
   axios.get<Artwork[]>(baseUrl, { signal }).then(response => response.data);
 
+const getOne = (id: string, signal?: AbortSignal): Promise<Artwork> =>
+  axios.get<Artwork>(`${baseUrl}/${encodeURIComponent(id)}`, { signal }).then(response => response.data);
+
 const create = (input: ArtworkInput): Promise<void> =>
   axiosSecure.post(baseUrl, input).then(() => undefined);
 
@@ -16,4 +19,4 @@ const update = (id: string, input: ArtworkInput): Promise<void> =>
 const remove = (id: string): Promise<void> =>
   axiosSecure.delete(`${baseUrl}/${encodeURIComponent(id)}`).then(() => undefined);
 
-export default { getAll, create, update, remove };
+export default { getAll, getOne, create, update, remove };

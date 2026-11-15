@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
+import { Exhibition } from './models/Exhibition.js';
+import { sampleExhibitions } from './data/sampleExhibitions.js';
 import { Artist } from './models/Artist.js';
 import { Artwork } from './models/Artwork.js';
-import { Expo } from './models/Expo.js';
+import { Expo } from './models/expo.js';
 import { Workshop } from './models/Workshop.js';
 import { sampleArtists } from './data/sampleArtists.js';
 import { sampleArtworks } from './data/sampleArtworks.js';
@@ -26,7 +28,16 @@ try {
   if (invalidRelations.length) throw new Error(`Hay datos asociados a artistas inexistentes: ${invalidRelations.map(item => item.id).join(', ')}`);
 
   await insertMissing(sampleArtworks, value => Artwork.updateOne({ id: value.id }, { $setOnInsert: value }, { upsert: true, runValidators: true }));
+  // Obras de ejemplo creadas antes de que existieran las imágenes extra: se les agregan, sin tocar las que ya tienen.
+  for (const value of sampleArtworks) {
+    await Artwork.updateOne(
+      { id: value.id, isSample: true, $or: [{ images: { $exists: false } }, { images: { $size: 0 } }] },
+      { $set: { images: value.images ?? [] } },
+      { runValidators: true },
+    );
+  }
   await insertMissing(sampleWorkshops, value => Workshop.updateOne({ id: value.id }, { $setOnInsert: value }, { upsert: true, runValidators: true }));
+  for (const item of sampleExhibitions) await Exhibition.updateOne({ id: item.id }, { $setOnInsert: item }, { upsert: true, runValidators: true });
   console.log('Seed completado. Los documentos existentes se conservaron.');
 } catch (error: unknown) {
   console.error(error);

@@ -2,8 +2,9 @@ import type { ErrorRequestHandler, NextFunction, Request, Response } from 'expre
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { User } from '../models/User.js';
-import { JWT_SECRET } from './config.js';
+import { ALLOWED_ORIGINS, JWT_SECRET } from './config.js';
 import * as logger from './logger.js';
+import { duplicateBody, validationBody } from './validation.js';
 
 interface TokenPayload extends jwt.JwtPayload {
   id: string;
@@ -41,6 +42,19 @@ export function withUser(req: Request, res: Response, next: NextFunction): void 
   } catch (error: unknown) {
     next(error);
   }
+}
+
+// Login CSRF: impide que un formulario de otro sitio inicie sesión o cree cuentas
+// a nombre del visitante. Los navegadores siempre envían Origin (o Referer) en un
+// POST entre sitios; si no viene ninguno, la solicitud no es de un navegador.
+export function requireSameOrigin(req: Request, res: Response, next: NextFunction): void {
+  const source = req.get('origin') ?? req.get('referer');
+  if (!source) { next(); return; }
+  let url: URL;
+  try { url = new URL(source); }
+  catch { res.status(403).json({ error: 'Solicitud bloqueada: origen no válido.' }); return; }
+  if (url.host === req.get('host') || ALLOWED_ORIGINS.includes(url.origin)) { next(); return; }
+  res.status(403).json({ error: 'Solicitud bloqueada: el formulario no viene de este sitio.' });
 }
 
 export function optionalUser(req: Request, res: Response, next: NextFunction): void {
@@ -91,18 +105,21 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
     res.status(401).json({ error: 'Sesión inválida o vencida.' });
     return;
   }
+  // Un mensaje en español por campo (las redes, "socials.instagram", quedan como "instagram").
   if (error instanceof mongoose.Error.ValidationError) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json(validationBody(error));
     return;
   }
   if (error instanceof mongoose.Error.CastError) {
-    res.status(400).json({ error: `El campo ${error.path} contiene un valor inválido.` });
+    res.status(400).json({ error: 'Revisa los campos.', fields: { [error.path]: 'El valor no es válido.' } });
     return;
   }
+  // 409: dice qué campo y qué valor ya existen.
   if (duplicateError(error)) {
-    res.status(409).json({ error: 'Ya existe un recurso con ese identificador.' });
+    res.status(409).json(duplicateBody(error));
     return;
   }
+  if (error?.type === 'entity.too.large') { res.status(413).json({ error: 'El archivo supera el límite de 5 MB.' }); return; }
   if (error instanceof SyntaxError && 'status' in error && error.status === 400) {
     res.status(400).json({ error: 'El cuerpo JSON está mal formado.' });
     return;

@@ -1,0 +1,12 @@
+.registered-users { min-width: 0; }
+.registered-users > section { margin-top: 32px; }
+.registered-users__list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; padding: 0; list-style: none; }
+.registered-users__list li { min-width: 0; padding: 20px; border: 1px solid var(--border); }
+.registered-users__list h4 { margin: 0 0 16px; overflow-wrap: anywhere; }
+.registered-users__list dl { margin: 0; }
+.registered-users__list dt { color: var(--muted); margin-top: 12px; }
+.registered-users__list dd { margin: 4px 0 0; overflow-wrap: anywhere; }
+.management-tabs { flex-wrap: wrap; }
+
+.registered-users__delete { margin-top: 20px; }
+.registered-users__delete:disabled { opacity: .55; cursor: not-allowed; }

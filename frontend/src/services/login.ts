@@ -13,6 +13,9 @@ export async function login(input: LoginInput): Promise<User> {
 export async function restoreLogin(): Promise<User | null> {
   try {
     const response = await axiosSecure.get<{ user: User }>('/api/login/me');
+    // El servidor renueva el CSRF al restaurar la sesión.
+    const csrf = response.headers['x-csrf-token'];
+    if (typeof csrf === 'string') localStorage.setItem(CSRF_STORAGE_KEY, csrf);
     return response.data.user;
   } catch (error: unknown) {
     if (axios.isAxiosError(error) && error.response?.status === 401) {

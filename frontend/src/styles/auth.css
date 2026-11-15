@@ -109,3 +109,9 @@
   color: var(--muted, #bcb3a3);
   text-align: center;
 }
+
+/* Keep account controls in reading order, with logout at the right edge. */
+.auth-nav { justify-content: flex-end; }
+.auth-nav .avatar-menu { margin-left: 0; }
+.auth-nav__logout { margin-left: auto; flex-shrink: 0; white-space: nowrap; }
+.auth-nav > .auth-nav__error { flex-basis: 100%; max-width: 100%; text-align: right; }

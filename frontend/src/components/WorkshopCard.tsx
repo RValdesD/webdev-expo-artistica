@@ -3,38 +3,59 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import type { Workshop } from '../types/workshop';
 import workshopsService from '../services/workshops';
+import registrationsService from '../services/registrations';
 import { apiError } from '../services/auth';
 import { useAuth } from '../auth/AuthContext';
 
 interface Props {
   workshop: Workshop;
-  onRegistered: (updated: Workshop) => void;
+  onChange: (updated: Workshop) => void;
 }
+
+type PendingAction = 'register' | 'cancel';
 
 const dateFormatter = new Intl.DateTimeFormat('es-CL', {
   dateStyle: 'long', timeStyle: 'short', timeZone: 'America/Santiago',
 });
 
-export default function WorkshopCard({ workshop, onRegistered }: Props) {
+export default function WorkshopCard({ workshop, onChange }: Props) {
   const { user, refresh } = useAuth();
-  const [submitting, setSubmitting] = useState(false);
+  const [pending, setPending] = useState<PendingAction | null>(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
   const [error, setError] = useState('');
-  const started = new Date(workshop.date).getTime() <= Date.now();
-  const unavailable = started || workshop.availablePlaces === 0;
 
-  async function handleRegister() {
-    if (submitting || !user) return;
-    setSubmitting(true);
+  const started = new Date(workshop.date).getTime() <= Date.now();
+  const isFull = workshop.availablePlaces === 0;
+  const unavailable = started || isFull;
+  const isLowPlaces = !isFull && workshop.availablePlaces <= 3;
+  const percentFilled = Math.min(100, Math.max(0, Math.round(((workshop.capacity - workshop.availablePlaces) / workshop.capacity) * 100)));
+
+  async function runRegistrationAction(action: PendingAction, request: () => Promise<Workshop>, success: string) {
+    if (pending || !user) return;
+    setPending(action);
     setError('');
+    setSuccessMsg('');
     try {
-      onRegistered(await workshopsService.register(workshop.id));
+      onChange(await request());
+      setShowConfirmModal(false);
+      setSuccessMsg(success);
     } catch (reason: unknown) {
       setError(apiError(reason));
       if (axios.isAxiosError(reason) && reason.response?.status === 401) await refresh();
     } finally {
-      setSubmitting(false);
+      setPending(null);
     }
   }
+
+  const handleRegister = () => runRegistrationAction('register', () => workshopsService.register(workshop.id),
+    '¡Inscripción confirmada con éxito!');
+
+  // The cancel endpoint returns no body, so the card applies the freed place locally.
+  const handleCancel = () => runRegistrationAction('cancel', async () => {
+    await registrationsService.cancel(workshop.id);
+    return { ...workshop, isRegistered: false, availablePlaces: workshop.availablePlaces + 1 };
+  }, 'Tu inscripción ha sido cancelada.');
 
   return (
     <article className="workshop-card">
@@ -46,17 +67,57 @@ export default function WorkshopCard({ workshop, onRegistered }: Props) {
         <p>Con <Link to={`/artists/${encodeURIComponent(workshop.artist.id)}`}>{workshop.artist.name}</Link></p>
       ) : <p>Artista no disponible</p>}
       <p className="workshop-card__description">{workshop.description}</p>
+      
       <dl className="workshop-card__details">
         <div><dt>Lugar</dt><dd>{workshop.location}</dd></div>
         <div><dt>Duración</dt><dd>{workshop.durationMinutes} minutos</dd></div>
-        <div><dt>Cupos</dt><dd>{workshop.availablePlaces} de {workshop.capacity} disponibles</dd></div>
+        <div>
+          <dt>Cupos</dt>
+          <dd>
+            <div className="workshop-places-header">
+              <span>{workshop.availablePlaces} de {workshop.capacity} disponibles</span>
+              {isFull ? (
+                <span className="badge badge--full">Lleno</span>
+              ) : isLowPlaces ? (
+                <span className="badge badge--low">¡Últimos cupos!</span>
+              ) : null}
+            </div>
+            <div className="workshop-capacity-bar" aria-label={`Capacidad ocupada: ${percentFilled}%`}>
+              <div 
+                className={`workshop-capacity-fill ${isFull ? 'full' : isLowPlaces ? 'low' : ''}`} 
+                style={{ width: `${percentFilled}%` }} 
+              />
+            </div>
+          </dd>
+        </div>
       </dl>
+
       {workshop.isSample && <p className="workshop-card__sample">Demostración: usa datos ficticios. No es una reserva para un evento real.</p>}
 
+      {successMsg && (
+        <div className="workshop-alert workshop-alert--success" role="status">
+          <p>{successMsg}</p>
+          <Link to="/mi-visita" className="workshop-alert__link">Ver en Mi visita →</Link>
+        </div>
+      )}
+
       {workshop.isRegistered && user ? (
-        <p className="workshop-card__success" role="status">Ya estás inscrito en este taller.</p>
+        <div className="workshop-card__registered-box">
+          <p className="workshop-card__success" role="status">✓ Estás inscrito en este taller.</p>
+          <div className="workshop-registered-actions">
+            {!successMsg && <Link to="/mi-visita" className="button button--secondary">Ir a Mi visita</Link>}
+            <button 
+              type="button" 
+              className="button button--outline-danger" 
+              disabled={pending !== null}
+              onClick={handleCancel}
+            >
+              {pending === 'cancel' ? 'Cancelando…' : 'Cancelar inscripción'}
+            </button>
+          </div>
+        </div>
       ) : unavailable ? (
-        <p>{started ? 'Inscripciones cerradas' : 'Sin cupos'}</p>
+        <p>{started ? 'Inscripciones cerradas (evento iniciado)' : 'Sin cupos disponibles'}</p>
       ) : !user ? (
         <div>
           <p>Necesitas una cuenta para guardar este taller en Mi visita.</p>
@@ -64,13 +125,48 @@ export default function WorkshopCard({ workshop, onRegistered }: Props) {
         </div>
       ) : (
         <>
-          <p>Inscribirme como {user.name}.</p>
-          <button className="button" type="button" disabled={submitting} onClick={handleRegister}>
-            {submitting ? 'Guardando…' : 'Confirmar mi inscripción'}
+          <p>Inscribirme como <strong>{user.name}</strong>.</p>
+          <button className="button" type="button" onClick={() => setShowConfirmModal(true)}>
+            Inscribirme a este taller
           </button>
         </>
       )}
-      {error && <p role="alert">{error} Puedes actualizar los cupos antes de reintentar.</p>}
+
+      {error && <p className="workshop-alert workshop-alert--error" role="alert">{error}</p>}
+
+      {showConfirmModal && (
+        <div className="workshop-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+          <div className="workshop-modal">
+            <h3 id="modal-title">Confirmar inscripción al taller</h3>
+            <p>Por favor revisa los detalles antes de confirmar tu asistencia:</p>
+            <ul className="workshop-modal-details">
+              <li><strong>Taller:</strong> {workshop.title}</li>
+              <li><strong>Fecha y hora:</strong> {dateFormatter.format(new Date(workshop.date))}</li>
+              <li><strong>Lugar:</strong> {workshop.location}</li>
+              <li><strong>Duración:</strong> {workshop.durationMinutes} minutos</li>
+            </ul>
+            <p className="workshop-modal-user">Se registrará a nombre de: <strong>{user?.name}</strong> ({user?.username})</p>
+            <div className="workshop-modal-actions">
+              <button 
+                type="button" 
+                className="button button--secondary" 
+                disabled={pending !== null} 
+                onClick={() => setShowConfirmModal(false)}
+              >
+                Volver
+              </button>
+              <button 
+                type="button" 
+                className="button" 
+                disabled={pending !== null} 
+                onClick={handleRegister}
+              >
+                {pending === 'register' ? 'Confirmando…' : 'Confirmar asistencia'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </article>
   );
 }

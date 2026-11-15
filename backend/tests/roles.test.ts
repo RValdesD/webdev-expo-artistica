@@ -9,7 +9,7 @@ const { User } = await import('../src/models/User.js');
 const { Artwork } = await import('../src/models/Artwork.js');
 const { Workshop } = await import('../src/models/Workshop.js');
 const { Artist } = await import('../src/models/Artist.js');
-const { Expo } = await import('../src/models/Expo.js');
+const { Expo } = await import('../src/models/expo.js');
 const originals = {
   findUser: User.findById, createUser: User.create,
   createArtwork: Artwork.create, updateArtwork: Artwork.findOneAndUpdate, deleteArtwork: Artwork.findOneAndDelete,
@@ -111,6 +111,24 @@ test('signup requires a valid email', async () => {
     assert.equal(response.status, 400);
     assert.match(response.body.error, /correo/i);
   }
+});
+
+test('signup rejects organizer-domain emails without creating the account', async () => {
+  let created = false;
+  User.create = (async () => { created = true; }) as unknown as typeof User.create;
+  const response = await request(app).post('/api/users').send({
+    username: 'colado', email: 'Colado@Admin.Expo.cl', name: 'Colado', password: 'long-password-example',
+  });
+  assert.equal(response.status, 403);
+  assert.match(response.body.error, /organizadores/);
+  assert.equal(created, false);
+});
+
+test('signup from another site is blocked (login CSRF)', async () => {
+  const response = await request(app).post('/api/users')
+    .set('Origin', 'https://sitio-malicioso.example')
+    .send({ username: 'visitor', email: 'v@example.com', name: 'V', password: 'long-password-example' });
+  assert.equal(response.status, 403);
 });
 
 test('schema defaults to visitor and rejects unsupported roles', async () => {

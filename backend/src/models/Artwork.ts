@@ -6,10 +6,31 @@ export interface ArtworkData {
   artistId: string;
   medium: string;
   imageUrl: string;
+  images?: string[];
+  previewImageUrl?: string;
+  inSlideshow?: boolean;
   year: number;
   description: string;
   isSample: boolean;
 }
+
+export const MAX_ARTWORK_IMAGES = 10;
+// Una ruta del sitio (/images/...) o una URL http(s); nunca javascript: ni data:
+
+// Only files inside frontend/public/images/, including subfolders.
+const isImageUrl = (value: string): boolean => {
+  if (!value.startsWith('/images/')) return false;
+
+  const path = value.slice('/images/'.length);
+
+  return (
+    path.length > 0 &&
+    !/[\s\\?#%]/.test(path) &&
+    path.split('/').every(part =>
+      part !== '' && part !== '.' && part !== '..'
+    )
+  );
+};
 
 const artworkSchema = new Schema<ArtworkData>(
   {
@@ -19,6 +40,18 @@ const artworkSchema = new Schema<ArtworkData>(
     artistId: { type: String, required: true, match: /^[a-z0-9-]+$/ },
     medium: { type: String, required: true, trim: true, maxlength: 100 },
     imageUrl: { type: String, default: '', trim: true },
+    previewImageUrl: { type: String, default: '', trim: true, maxlength: 1000,
+      validate: { validator: (value: string) => !value || isImageUrl(value), message: 'La vista previa debe ser una ruta local o una URL http(s).' } },
+    inSlideshow: { type: Boolean, default: false },
+    // Imágenes extra de la misma obra; la galería las muestra después de imageUrl.
+    images: {
+      type: [{
+        type: String, trim: true, maxlength: 1000,
+        validate: { validator: isImageUrl, message: 'Cada imagen debe ser una ruta (/images/...) o una URL http(s).' },
+      }],
+      default: [],
+      validate: { validator: (list: string[]) => list.length <= MAX_ARTWORK_IMAGES, message: `Una obra puede tener hasta ${MAX_ARTWORK_IMAGES} imágenes extra.` },
+    },
     year: { type: Number, required: true, validate: { validator: Number.isInteger, message: 'El año debe ser un entero.' } },
     description: { type: String, default: '', trim: true, maxlength: 3000 },
     isSample: { type: Boolean, default: false },

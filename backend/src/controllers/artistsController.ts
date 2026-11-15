@@ -1,17 +1,15 @@
 import { Router } from 'express';
 import { Artist } from '../models/Artist.js';
+import { ensureArtistSlug } from '../utils/artistSlug.js';
 import { Artwork } from '../models/Artwork.js';
 import { Workshop } from '../models/Workshop.js';
 import { withUser, requireOrganizer } from '../utils/middleware.js';
+import { pickFields } from '../utils/body.js';
 
 const artistsRouter = Router();
-const publicFields = 'id name bio discipline imageUrl isSample -_id';
-const allowed = ['id', 'name', 'bio', 'discipline', 'imageUrl'] as const;
+const publicFields = 'id slug name bio discipline imageUrl socials socialImages isSample -_id';
+const allowed = ['id', 'name', 'bio', 'discipline', 'imageUrl', 'socials', 'socialImages'] as const;
 
-function artistBody(body: unknown): Record<string, unknown> {
-  const source = body && typeof body === 'object' ? body as Record<string, unknown> : {};
-  return Object.fromEntries(allowed.filter(key => source[key] !== undefined).map(key => [key, source[key]]));
-}
 
 artistsRouter.get('/', async (_req, res, next) => {
   try { res.json(await Artist.find().select(publicFields).sort({ name: 1 }).lean()); }
@@ -20,23 +18,30 @@ artistsRouter.get('/', async (_req, res, next) => {
 
 artistsRouter.get('/:id', async (req, res, next) => {
   try {
-    const artist = await Artist.findOne({ id: req.params.id }).select(publicFields).lean();
+    const artist = await Artist.findOne({ id: req.params.id }).select(publicFields).lean()
+      ?? await Artist.findOne({ slug: req.params.id }).select(publicFields).lean();
     if (!artist) { res.status(404).json({ error: 'Artista no encontrado.' }); return; }
+    artist.slug = await ensureArtistSlug(artist.id, artist.name);
     res.json(artist);
   } catch (error: unknown) { next(error); }
 });
 
 artistsRouter.post('/', withUser, requireOrganizer, async (req, res, next) => {
-  try { res.status(201).json(await Artist.create(artistBody(req.body))); }
-  catch (error: unknown) { next(error); }
+  try {
+    const fields = pickFields(req.body, allowed);
+    if (!fields) { res.status(400).json({ error: 'El cuerpo debe ser un objeto JSON.' }); return; }
+    res.status(201).json(await Artist.create(fields));
+  } catch (error: unknown) { next(error); }
 });
 
 artistsRouter.put('/:id', withUser, requireOrganizer, async (req, res, next) => {
   try {
-    const changes = artistBody(req.body);
+    const changes = pickFields(req.body, allowed);
+    if (!changes) { res.status(400).json({ error: 'El cuerpo debe ser un objeto JSON.' }); return; }
     delete changes.id;
     const artist = await Artist.findOneAndUpdate({ id: req.params.id }, changes, { new: true, runValidators: true });
     if (!artist) { res.status(404).json({ error: 'Artista no encontrado.' }); return; }
+    artist.slug = await ensureArtistSlug(artist.id, artist.name);
     res.json(artist);
   } catch (error: unknown) { next(error); }
 });

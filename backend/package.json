@@ -8,9 +8,13 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "seed": "node --import tsx src/seed.ts",
+    "seed:exhibitions": "node --import tsx src/seedExhibitions.ts",
+    "registrations:clean": "node --import tsx src/cleanRegistrations.ts",
     "user:role": "node --import tsx src/setUserRole.ts",
+    "user:create-admin": "node --import tsx src/createAdmin.ts",
     "test": "node --import tsx --test tests/*.test.ts",
-    "test:integration": "node --import tsx --test tests/integration/*.test.ts"
+    "test:integration": "node --import tsx --test tests/integration/*.test.ts",
+    "user:create-artist": "node --import tsx src/createArtist.ts"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -18,7 +22,8 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^8.9.0"
+    "mongoose": "^8.9.0",
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

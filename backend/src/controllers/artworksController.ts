@@ -4,7 +4,7 @@ import { Artist } from '../models/Artist.js';
 import { withUser, requireOrganizer } from '../utils/middleware.js';
 
 const artworksRouter = Router();
-const allowed = ['id', 'title', 'artistId', 'medium', 'imageUrl', 'year', 'description'] as const;
+const allowed = ['id', 'title', 'artistId', 'medium', 'imageUrl', 'previewImageUrl', 'inSlideshow', 'images', 'year', 'description'] as const;
 
 function artworkBody(body: unknown): Record<string, unknown> {
   const source = body && typeof body === 'object' ? body as Record<string, unknown> : {};
@@ -12,7 +12,7 @@ function artworkBody(body: unknown): Record<string, unknown> {
 }
 
 async function present(query: ReturnType<typeof Artwork.find>) {
-  const artworks = await query.select('id title artistId medium imageUrl year description isSample -_id').lean();
+  const artworks = await query.select('id title artistId medium imageUrl previewImageUrl inSlideshow images year description isSample -_id').lean();
   const artists = await Artist.find({ id: { $in: artworks.map(item => item.artistId) } }).select('id name -_id').lean();
   const names = new Map(artists.map(artist => [artist.id, artist.name]));
   return artworks.map(item => ({ ...item, artist: names.has(item.artistId) ? { id: item.artistId, name: names.get(item.artistId) } : null }));
@@ -36,7 +36,7 @@ artworksRouter.post('/', withUser, requireOrganizer, async (req, res, next) => {
   try {
     const input = artworkBody(req.body);
     if (typeof input.artistId !== 'string' || !await Artist.exists({ id: input.artistId })) {
-      res.status(400).json({ error: 'El artista indicado no existe.' }); return;
+      res.status(400).json({ error: 'El artista indicado no existe.', fields: { artistId: 'El artista indicado no existe.' } }); return;
     }
     res.status(201).json(await Artwork.create(input));
   } catch (error: unknown) { next(error); }
@@ -47,7 +47,7 @@ artworksRouter.put('/:id', withUser, requireOrganizer, async (req, res, next) =>
     const input = artworkBody(req.body);
     delete input.id;
     if (input.artistId !== undefined && (typeof input.artistId !== 'string' || !await Artist.exists({ id: input.artistId }))) {
-      res.status(400).json({ error: 'El artista indicado no existe.' }); return;
+      res.status(400).json({ error: 'El artista indicado no existe.', fields: { artistId: 'El artista indicado no existe.' } }); return;
     }
     const artwork = await Artwork.findOneAndUpdate({ id: req.params.id }, input, { new: true, runValidators: true });
     if (!artwork) { res.status(404).json({ error: 'Obra no encontrada.' }); return; }

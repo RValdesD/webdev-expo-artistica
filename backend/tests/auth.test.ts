@@ -102,3 +102,49 @@ test('logout invalida la cookie del navegador', async () => {
   assert.equal(response.status, 204);
   assert.match(response.headers['set-cookie'][0], /Expires=Thu, 01 Jan 1970/);
 });
+
+test('login CSRF: rechaza un login enviado desde otro sitio', async () => {
+  for (const origin of ['https://sitio-malicioso.example', 'null']) {
+    const response = await request(app).post('/api/login')
+      .set('Origin', origin)
+      .send({ username: 'ana', password: 'correct-password' });
+    assert.equal(response.status, 403);
+    assert.equal(response.headers['set-cookie'], undefined);
+  }
+});
+
+test('login CSRF: acepta el login desde el mismo sitio', async () => {
+  const response = await request(app).post('/api/login')
+    .set('Host', 'expo.test')
+    .set('Origin', 'http://expo.test')
+    .send({ username: 'ana', password: 'correct-password' });
+  assert.equal(response.status, 200);
+  assert.equal(typeof response.headers['x-csrf-token'], 'string');
+});
+
+test('restaurar la sesión renueva el CSRF sin alargar la sesión', async () => {
+  const token = jwt.sign({ id: user.id, username: user.username, csrf: 'antiguo' }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+  const original = jwt.decode(token) as jwt.JwtPayload;
+  // Sin header CSRF: por ejemplo, después de borrar localStorage.
+  const response = await request(app).get('/api/login/me').set('Cookie', `token=${token}`);
+  assert.equal(response.status, 200);
+  const csrf = response.headers['x-csrf-token'];
+  assert.equal(typeof csrf, 'string');
+  assert.notEqual(csrf, 'antiguo');
+  const renewed = jwt.decode(/token=([^;]+)/.exec(response.headers['set-cookie'][0])![1]) as jwt.JwtPayload;
+  assert.equal(renewed.csrf, csrf);
+  assert.equal(renewed.exp, original.exp);
+});
+
+test('restaurar la sesión sin cookie o con un token inválido devuelve 401', async () => {
+  assert.equal((await request(app).get('/api/login/me')).status, 401);
+  assert.equal((await request(app).get('/api/login/me').set('Cookie', 'token=no-es-un-jwt')).status, 401);
+});
+
+test('login CSRF: en desarrollo acepta el origen de Vite aunque el proxy cambie el Host', async () => {
+  const response = await request(app).post('/api/login')
+    .set('Host', '127.0.0.1:3001')
+    .set('Origin', 'http://localhost:5173')
+    .send({ username: 'ana', password: 'correct-password' });
+  assert.equal(response.status, 200);
+});

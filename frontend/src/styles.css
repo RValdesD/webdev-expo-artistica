@@ -1,16 +1,22 @@
 /* 01. THEME — edit these values first. No external fonts required. */
 :root {
+  --footer-surface: #3c0e3d;
   --background: #000000;
-  --surface-raised: #302c24;
+  --surface-raised: #0f0f0e;
   --text: #d8d1cb;
-  --muted: #bcb3a3;
-  --accent: #00308a;
+  --muted: #ffffff;
+  --accent: #d400ff;
   --accent-hover: #0d82f0;
   --border: #ffffff;
+  --danger: #ff6b6b;
+  --warning: #fa8c16;
+  --success: #73d13d;
   --heading-font: 'MX1', 'Times New Roman', serif;
   --body-font: 'Segoe UI', Arial, sans-serif;
   --page-width: 1980px;
   --page-gutter: 6%;
+  --agua: #0d21cf;        /* fondo de botones: texto blanco encima (9,8:1) */
+  --agua-texto: #7d8fff;  /* el mismo azul, más claro, para texto sobre negro (7,2:1) */
   --section-space: 64px;
   font-family:var(--body-font);
   color:var(--text);
@@ -81,16 +87,16 @@ p {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 30px;
-  padding:20px;
-  padding-left: 120px;
-  padding-right: 40px;
+  flex-wrap: wrap;
+  gap: 16px 30px;
+  padding: 20px var(--page-gutter);
   border-bottom: 1px solid var(--border);
 }
 
 .site-header nav {
   display:flex;
-  gap:30px;
+  flex-wrap:wrap;
+  gap:12px 30px;
   font-size:13px;
   align-items: center;
   flex: 1;
@@ -136,7 +142,7 @@ h1 {
 }
 
 h1 em {
-  color:var(--accent);
+  color:var(--agua-texto);
   font-weight:500;
 }
 
@@ -153,7 +159,7 @@ h1 em {
   justify-content:space-between;
   align-items:center;
   gap:32px;
-  background:var(--accent);
+  background:var(--agua);
   color:#ffffff;
   padding:13px 22px;
   text-decoration:none;
@@ -163,6 +169,28 @@ h1 em {
 
 .button:hover {
   background:var(--accent-hover);
+}
+
+.button--secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.button--secondary:hover {
+  background: var(--surface-raised);
+  border-color: var(--accent-hover);
+}
+
+.button--outline-danger {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+
+.button--outline-danger:hover {
+  background: var(--danger);
+  color: var(--background);
 }
 
 .hero-caption {
@@ -269,7 +297,7 @@ h1 em {
 
 /* 11. FOOTER */
 .site-footer {
-  background:var(--surface);
+  background:var(--footer-surface);
   color:#ffffff;
   padding:30px var(--page-gutter);
   display:flex;
@@ -324,8 +352,10 @@ h1 em {
     flex-wrap:wrap;
   }
 
+  /* En pantallas angostas el menú baja y ocupa todo el ancho. */
   .site-header nav {
-    gap:20px;
+    flex-basis:100%;
+    gap:10px 20px;
   }
 
   .hero {
@@ -484,4 +514,15 @@ h1 em {
   margin-top: auto;
   padding-top: 8px;
   font-size: 14px;
+}
+
+/* Error junto al campo que falló (formularios de Gestión, Registro e Inicio de sesión). */
+.field-error {
+  margin: 4px 0 8px;
+  font-size: 13px;
+  color: var(--danger);
+}
+
+[aria-invalid='true'] {
+  border-color: var(--danger) !important;
 }

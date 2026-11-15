@@ -1,8 +1,11 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import artworksService from '../services/artworks';
-import { apiError } from '../services/auth';
+import { apiError, apiFields, apiMessage } from '../services/auth';
+import FieldError, { fieldProps, type FieldErrors } from './FieldError';
 import type { Artist } from '../types/artist';
 import type { Artwork, ArtworkInput } from '../types/artwork';
+
+const MAX_EXTRA_IMAGES = 10;
 
 const emptyArtwork = (): ArtworkInput => ({
   id: '',
@@ -10,6 +13,9 @@ const emptyArtwork = (): ArtworkInput => ({
   artistId: '',
   medium: '',
   imageUrl: '',
+  previewImageUrl: '',
+  inSlideshow: false,
+  images: [],
   year: new Date().getFullYear(),
   description: '',
 });
@@ -23,6 +29,7 @@ export default function ArtworkManager({ artists }: { artists: Artist[] }) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [fields, setFields] = useState<FieldErrors>({});
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
@@ -36,6 +43,7 @@ export default function ArtworkManager({ artists }: { artists: Artist[] }) {
   }, [attempt]);
 
   function resetForm() {
+    setFields({});
     setForm(emptyArtwork());
     setEditingId(null);
   }
@@ -48,6 +56,9 @@ export default function ArtworkManager({ artists }: { artists: Artist[] }) {
       artistId: artwork.artistId,
       medium: artwork.medium,
       imageUrl: artwork.imageUrl,
+      previewImageUrl: artwork.previewImageUrl ?? '',
+      inSlideshow: artwork.inSlideshow === true,
+      images: artwork.images ?? [],
       year: artwork.year,
       description: artwork.description,
     });
@@ -55,23 +66,33 @@ export default function ArtworkManager({ artists }: { artists: Artist[] }) {
     setMessage('');
   }
 
+  function setImage(position: number, value: string) {
+    setForm(current => ({ ...current, images: current.images.map((src, i) => i === position ? value : src) }));
+  }
+
+  function removeImage(position: number) {
+    setForm(current => ({ ...current, images: current.images.filter((_, i) => i !== position) }));
+  }
+
   async function submitArtwork(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (saving) return;
+    // Las filas que se dejaron vacías no se guardan.
+    const payload = { ...form, images: form.images.map(src => src.trim()).filter(Boolean) };
     setSaving(true);
-    setError('');
+    setError(''); setFields({});
     setMessage('');
     try {
       if (editingId) {
-        await artworksService.update(editingId, form);
+        await artworksService.update(editingId, payload);
         setMessage('Obra actualizada.');
       } else {
-        await artworksService.create(form);
+        await artworksService.create(payload);
         setMessage('Obra creada.');
       }
       resetForm();
       setAttempt(value => value + 1);
-    } catch (reason: unknown) { setError(apiError(reason)); }
+    } catch (reason: unknown) { setError(apiMessage(reason)); setFields(apiFields(reason)); }
     finally { setSaving(false); }
   }
 
@@ -98,34 +119,72 @@ export default function ArtworkManager({ artists }: { artists: Artist[] }) {
         </div>
 
         <label htmlFor="artwork-id">Identificador</label>
-        <input id="artwork-id" required pattern="[a-z0-9-]+" maxLength={80} disabled={editingId !== null || saving}
+        <input id="artwork-id" {...fieldProps(fields, 'id', 'artwork-id')} required pattern="[a-z0-9-]+" maxLength={80} disabled={editingId !== null || saving}
           value={form.id} onChange={event => setForm(current => ({ ...current, id: event.target.value }))} />
+        <FieldError fields={fields} name="id" id="artwork-id" />
 
         <label htmlFor="artwork-title">Título</label>
-        <input id="artwork-title" required maxLength={200} disabled={saving}
+        <input id="artwork-title" {...fieldProps(fields, 'title', 'artwork-title')} required maxLength={200} disabled={saving}
           value={form.title} onChange={event => setForm(current => ({ ...current, title: event.target.value }))} />
+        <FieldError fields={fields} name="title" id="artwork-title" />
 
         <label htmlFor="artwork-artist">Artista</label>
-        <select id="artwork-artist" required disabled={saving} value={form.artistId}
+        <select id="artwork-artist" {...fieldProps(fields, 'artistId', 'artwork-artist')} required disabled={saving} value={form.artistId}
           onChange={event => setForm(current => ({ ...current, artistId: event.target.value }))}>
           <option value="">Selecciona un artista</option>
           {artists.map(artist => <option value={artist.id} key={artist.id}>{artist.name}</option>)}
         </select>
+        <FieldError fields={fields} name="artistId" id="artwork-artist" />
 
         <div className="management-form__row">
-          <div><label htmlFor="artwork-medium">Medio</label><input id="artwork-medium" required maxLength={100} disabled={saving}
-            value={form.medium} onChange={event => setForm(current => ({ ...current, medium: event.target.value }))} /></div>
-          <div><label htmlFor="artwork-year">Año</label><input id="artwork-year" type="number" required disabled={saving}
-            value={form.year} onChange={event => setForm(current => ({ ...current, year: Number(event.target.value) }))} /></div>
+          <div><label htmlFor="artwork-medium">Medio</label><input id="artwork-medium" {...fieldProps(fields, 'medium', 'artwork-medium')} required maxLength={100} disabled={saving}
+            value={form.medium} onChange={event => setForm(current => ({ ...current, medium: event.target.value }))} />
+        <FieldError fields={fields} name="medium" id="artwork-medium" /></div>
+          <div><label htmlFor="artwork-year">Año</label><input id="artwork-year" {...fieldProps(fields, 'year', 'artwork-year')} type="number" required disabled={saving}
+            value={form.year} onChange={event => setForm(current => ({ ...current, year: Number(event.target.value) }))} />
+        <FieldError fields={fields} name="year" id="artwork-year" /></div>
         </div>
 
-        <label htmlFor="artwork-image">URL o ruta de imagen</label>
-        <input id="artwork-image" maxLength={1000} disabled={saving} placeholder="/images/obra.jpg"
+        <label htmlFor="artwork-preview">Imagen de vista previa del catálogo</label>
+        <input id="artwork-preview" maxLength={1000} disabled={saving} placeholder="/images/obra-preview.jpg"
+          {...fieldProps(fields, 'previewImageUrl', 'artwork-preview')}
+          value={form.previewImageUrl ?? ''} onChange={event => setForm(current => ({ ...current, previewImageUrl: event.target.value }))} />
+        <FieldError fields={fields} name="previewImageUrl" id="artwork-preview" />
+        <small>Cada obra tiene su propia vista previa; si está vacía, se usa su imagen principal.</small>
+        <label className="management-slideshow-check" htmlFor="artwork-slideshow">
+          <input id="artwork-slideshow" type="checkbox" disabled={saving} checked={form.inSlideshow === true}
+            onChange={event => setForm(current => ({ ...current, inSlideshow: event.target.checked }))} />
+          Incluir esta obra en el slideshow del Catálogo
+        </label>
+        <small>La imagen principal se muestra en el slideshow. Las imágenes adicionales se muestran solo en la galería de esta obra.</small>
+
+        <label htmlFor="artwork-image">Imagen principal (URL o ruta)</label>
+        <input id="artwork-image" {...fieldProps(fields, 'imageUrl', 'artwork-image')} maxLength={1000} disabled={saving} placeholder="/images/obra.jpg"
           value={form.imageUrl} onChange={event => setForm(current => ({ ...current, imageUrl: event.target.value }))} />
+        <FieldError fields={fields} name="imageUrl" id="artwork-image" />
+
+        <fieldset className="management-images" disabled={saving}>
+          <legend>Más imágenes de la obra ({form.images.length} de {MAX_EXTRA_IMAGES})</legend>
+          <p>Se ven en la galería de la obra, después de la imagen principal.</p>
+          {form.images.map((src, position) => (
+            <div className="management-images__row" key={position}>
+              <label className="visually-hidden" htmlFor={`artwork-extra-${position}`}>Imagen extra {position + 1}</label>
+              <input id={`artwork-extra-${position}`} maxLength={1000} placeholder="https://… o /images/…"
+                value={src} onChange={event => setImage(position, event.target.value)} />
+              <button type="button" aria-label={`Quitar imagen extra ${position + 1}`} onClick={() => removeImage(position)}>Quitar</button>
+            </div>
+          ))}
+          <button type="button" disabled={form.images.length >= MAX_EXTRA_IMAGES}
+            onClick={() => setForm(current => ({ ...current, images: [...current.images, ''] }))}>
+            + Agregar imagen
+          </button>
+          <FieldError fields={fields} name="images" id="artwork-images" />
+        </fieldset>
 
         <label htmlFor="artwork-description">Descripción</label>
-        <textarea id="artwork-description" maxLength={3000} disabled={saving} rows={5}
+        <textarea id="artwork-description" {...fieldProps(fields, 'description', 'artwork-description')} maxLength={3000} disabled={saving} rows={5}
           value={form.description} onChange={event => setForm(current => ({ ...current, description: event.target.value }))} />
+        <FieldError fields={fields} name="description" id="artwork-description" />
 
         <button className="button" type="submit" disabled={saving || artists.length === 0}>
           {saving ? 'Guardando…' : editingId ? 'Guardar cambios' : 'Crear obra'}

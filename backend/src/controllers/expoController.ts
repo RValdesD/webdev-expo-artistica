@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Expo } from '../models/Expo.js';
+import { Expo } from '../models/expo.js';
 import { withUser, requireOrganizer } from '../utils/middleware.js';
 
 const expoRouter = Router();
