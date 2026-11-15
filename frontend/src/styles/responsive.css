@@ -1,0 +1,137 @@
+/* Shared responsive rules, imported after the view styles in main.tsx.
+   Layouts remain fluid between the verification widths (375–1920px). */
+:root {
+  --page-gutter: clamp(16px, 4vw, 96px);
+  --section-space: clamp(40px, 5vw, 80px);
+}
+
+/* Allow content and form controls to shrink without hiding overflow. */
+#root, main, section, article, form, fieldset,
+.hero > *, .artist-profile > *, .artwork-detail__layout > *,
+.manager > *, .management-form__row > *, .management-item > *,
+.visit-registration > *, .slideshow-slide > * {
+  min-width: 0;
+}
+fieldset { min-inline-size: 0; }
+img { max-width: 100%; }
+input, select, textarea { max-width: 100%; min-width: 0; }
+textarea { resize: vertical; }
+h1, h2, h3, p, dd, li, label, legend, a, .auth-nav span {
+  overflow-wrap: anywhere;
+}
+button, .button { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+.button { gap: clamp(12px, 2vw, 32px); min-height: 44px; }
+.button > span[aria-hidden] { flex-shrink: 0; }
+
+.site-header nav { min-width: 0; gap: 8px 22px; }
+.site-header nav a, .auth-nav button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.auth-nav { min-width: 0; max-width: 100%; }
+.auth-nav > span { max-width: 28ch; }
+.hero {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 65px);
+  padding-block: clamp(40px, 5vw, 80px);
+}
+.hero-image { height: auto; aspect-ratio: 4 / 3; max-height: 560px; }
+.info-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.exhibitions__grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+}
+.management-tabs, .management-form__heading, .management-item__actions,
+.slideshow-header, .slideshow-controls-top, .slideshow-dots,
+.workshop-places-header, .workshop-modal-actions { flex-wrap: wrap; }
+.management-tabs button { min-height: 44px; padding: 12px 20px; }
+.management-form__row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.management-item, .visit-registration { grid-template-columns: minmax(0, 1fr) auto; }
+.management-images__row { grid-template-columns: minmax(0, 1fr) auto; }
+.management-form__heading button, .management-item__actions button,
+.management-images button, .slideshow-autoplay-toggle { min-height: 44px; }
+.slideshow-header { gap: 16px; }
+.slideshow-slide { min-width: 0; }
+.slideshow-image-wrapper { height: auto; aspect-ratio: 4 / 3; }
+.slideshow-image { object-fit: contain; }
+.slideshow-caption { overflow-wrap: anywhere; }
+.slideshow-dots { gap: 4px; }
+/* Keep the dot visual small while providing a 44px touch target. */
+.slideshow-dot {
+  width: 44px; height: 44px; border: 0; border-radius: 0;
+  background: transparent; position: relative;
+}
+.slideshow-dot::after {
+  content: ''; position: absolute; inset: 16px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--surface-raised);
+}
+.slideshow-dot.active { background: transparent; transform: none; }
+.slideshow-dot.active::after { background: var(--accent); }
+.workshop-places-header { gap: 8px; }
+.workshop-modal {
+  max-height: calc(100dvh - 40px); overflow-y: auto;
+  overscroll-behavior: contain; overflow-wrap: anywhere;
+}
+
+/* Tablet / small laptop: keep navigation readable, reduce dense columns. */
+@media (max-width: 1279px) {
+  .site-header nav { flex-basis: 100%; }
+  .auth-nav { margin-left: auto; }
+  .manager { grid-template-columns: minmax(0, 1fr); }
+  .management-item { gap: 20px; }
+}
+@media (max-width: 1023px) {
+  .hero, .artwork-detail__layout { grid-template-columns: minmax(0, 1fr); }
+  .hero-figure { width: 100%; max-width: 680px; justify-self: center; }
+  .hero-image { max-height: 480px; }
+  .expo-item__type-panel { min-height: 280px; }
+  .info-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .artists-grid, .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .slideshow-slide { grid-template-columns: minmax(0, 1fr); }
+  .slideshow-image-wrapper { max-height: 360px; }
+  .faq-section { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+}
+
+/* Phone: stack controls and reserve the full width for artwork. */
+@media (max-width: 767px) {
+  .auth-page { padding: 40px var(--page-gutter); }
+  .auth-form { padding: 20px; }
+  .site-header { gap: 12px; }
+  .site-header nav { gap: 4px 16px; }
+  .auth-nav { flex-basis: 100%; margin-left: 0; gap: 8px 16px; }
+  h1 { font-size: clamp(2.4rem, 8vw, 3.5rem); }
+  .status h1 { font-size: clamp(2rem, 8vw, 3rem); }
+  .status { padding-block: 56px; }
+  .artists-page, .catalog-page, .workshops-page,
+  .management-page, .my-visit { padding-block: 40px; }
+  .artists-grid, .catalog-grid, .workshops-grid, .other-expos__grid,
+  .artist-profile, .catalog-filters { grid-template-columns: minmax(0, 1fr); }
+  .artist-profile { gap: 28px; }
+  .artist-profile > .artist-portrait { max-width: 440px; justify-self: center; }
+  .artwork-slideshow { padding: 16px; }
+  .slideshow-viewer { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .slideshow-slide { grid-column: 1 / -1; grid-row: 1; min-height: 0; }
+  .slideshow-viewer > .slideshow-arrow:first-child { justify-self: start; }
+  .slideshow-viewer > .slideshow-arrow:last-child { justify-self: end; }
+  .slideshow-image-wrapper { max-height: none; }
+  .slideshow-title { font-size: 1.8rem; }
+  .expo-editor fieldset, .other-expos__card { padding: 18px; }
+  .management-tabs { gap: 4px; }
+  .management-tabs button { flex: 1 1 140px; padding-inline: 12px; }
+  .management-form__row, .management-item, .visit-registration,
+  .expo-editor__dates { grid-template-columns: minmax(0, 1fr); }
+  .management-item__actions { justify-content: flex-start; }
+  .visit-registration { gap: 16px; }
+  .visit-registration__cancel { justify-self: start; }
+  .workshop-modal { padding: 20px; }
+  .workshop-modal-actions > button { flex: 1 1 140px; }
+  .site-footer { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
+@media (max-width: 479px) {
+  .info-grid { grid-template-columns: minmax(0, 1fr); }
+  .management-images__row { grid-template-columns: minmax(0, 1fr); }
+  .management-images__row button { justify-self: start; }
+  .artist-card__body, .artwork-card__body, .workshop-card { padding: 20px; }
+  .expo-item__type-panel { min-height: 220px; padding: 24px; }
+  .expo-divider { height: 32px; }
+}
