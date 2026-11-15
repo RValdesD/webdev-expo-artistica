@@ -40,3 +40,40 @@ test('public registration forces its origin and visitor role', async t => {
   assert.equal(saved?.createdVia, 'registration');
   assert.equal(saved?.role, 'visitante');
 });
+
+const { Workshop } = await import('../src/models/Workshop.js');
+const targetId = '507f1f77bcf86cd799439022';
+test('user deletion rejects anonymous, visitor and artist callers', async t => {
+  assert.equal((await request(app).delete(`/api/users/${targetId}`)).status, 401);
+  for (const role of ['visitante', 'artista']) {
+    const mocked = t.mock.method(User, 'findById', async () => ({ role }));
+    assert.equal((await auth(request(app).delete(`/api/users/${targetId}`))).status, 403);
+    mocked.mock.restore();
+  }
+});
+test('user deletion rejects invalid IDs and self deletion before mutation', async t => {
+  t.mock.method(User, 'findById', async () => ({ role: 'organizador' }));
+  const deleted = t.mock.method(User, 'findByIdAndDelete', async () => null);
+  assert.equal((await auth(request(app).delete('/api/users/invalid'))).status, 400);
+  assert.equal((await auth(request(app).delete('/api/users/507f1f77bcf86cd799439011'))).status, 409);
+  assert.equal(deleted.mock.callCount(), 0);
+});
+test('deleting an account removes only its workshop registrations and allows retries', async t => {
+  t.mock.method(User, 'findById', async () => ({ role: 'organizador' }));
+  const deleted = t.mock.method(User, 'findByIdAndDelete', async (id: string) => { assert.equal(id, targetId); return null; });
+  const cleaned = t.mock.method(Workshop, 'updateMany', async (filter: unknown, update: unknown) => {
+    assert.deepEqual(filter, { 'registrations.userId': targetId });
+    assert.deepEqual(update, { $pull: { registrations: { userId: targetId } } });
+    return { modifiedCount: 1 };
+  });
+  for (let i = 0; i < 2; i++) assert.equal((await auth(request(app).delete(`/api/users/${targetId}`))).status, 204);
+  assert.equal(deleted.mock.callCount(), 2); assert.equal(cleaned.mock.callCount(), 2);
+});
+test('cleanup failure is reported and can be retried', async t => {
+  t.mock.method(User, 'findById', async () => ({ role: 'organizador' }));
+  t.mock.method(User, 'findByIdAndDelete', async () => null);
+  let attempts = 0;
+  t.mock.method(Workshop, 'updateMany', async () => { if (++attempts === 1) throw new Error('Database unavailable'); return {}; });
+  assert.equal((await auth(request(app).delete(`/api/users/${targetId}`))).status, 500);
+  assert.equal((await auth(request(app).delete(`/api/users/${targetId}`))).status, 204);
+});

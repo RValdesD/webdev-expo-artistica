@@ -1,5 +1,7 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
+import { isObjectIdOrHexString } from "mongoose";
+import { Workshop } from "../models/Workshop.js";
 import { User } from "../models/User.js";
 import { ADMIN_EMAIL_DOMAIN, isAdminEmail, isArtistEmail } from "../utils/config.js";
 import { requireSameOrigin, withUser, requireOrganizer } from "../utils/middleware.js";
@@ -15,6 +17,23 @@ usersRouter.get('/', withUser, requireOrganizer, async (_req, res, next) => {
       id: String(user._id), username: user.username, name: user.name,
       email: user.email, role: user.role, createdVia: user.createdVia ?? 'unknown',
     })));
+  } catch (error) { next(error); }
+});
+
+// Deletion is idempotent so workshop cleanup can be retried after a database error.
+usersRouter.delete('/:id', withUser, requireOrganizer, async (req, res, next) => {
+  try {
+    if (!isObjectIdOrHexString(req.params.id)) {
+      res.status(400).json({ error: 'Identificador de usuario inválido.' }); return;
+    }
+    const id = req.params.id.toLowerCase();
+    if (id === req.userId) {
+      res.status(409).json({ error: 'No puedes eliminar tu propia cuenta desde Gestión.' }); return;
+    }
+    await User.findByIdAndDelete(id);
+    // Keep public artist profiles, works, uploads and review history intact.
+    await Workshop.updateMany({ 'registrations.userId': id }, { $pull: { registrations: { userId: id } } });
+    res.status(204).end();
   } catch (error) { next(error); }
 });
 

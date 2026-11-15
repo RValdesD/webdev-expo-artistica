@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useAuth } from '../auth/AuthContext';
 import axiosSecure from '../utils/axiosSecure';
 import { apiError } from '../services/auth';
 import '../styles/registered-users.css';
@@ -12,6 +13,10 @@ const roles = { organizador: 'Administrador', artista: 'Artista', visitante: 'Vi
 const origins = { console: 'Consola', registration: 'Registro público', unknown: 'No registrado' };
 
 export default function RegisteredUsers() {
+  const { user: currentUser } = useAuth();
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState('');
+  const [message, setMessage] = useState('');
   const [users, setUsers] = useState<Account[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -26,6 +31,17 @@ export default function RegisteredUsers() {
     return () => controller.abort();
   }, [attempt]);
 
+  async function deleteUser(account: Account) {
+    if (deleting || !window.confirm(`¿Eliminar la cuenta de ${account.name} (@${account.username})?\n\nSe eliminará su acceso y sus inscripciones a talleres. Su perfil de artista, obras e imágenes se conservarán. Esta acción no se puede deshacer.`)) return;
+    setDeleting(account.id); setDeleteError(''); setMessage('');
+    try {
+      await axiosSecure.delete(`/api/users/${account.id}`);
+      setUsers(list => list.filter(item => item.id !== account.id));
+      setMessage(`Cuenta de ${account.username} eliminada.`);
+    } catch (reason) { setDeleteError(apiError(reason)); }
+    finally { setDeleting(null); }
+  }
+
   const sections = [
     { title: 'Cuentas creadas por consola', users: users.filter(user => user.createdVia === 'console') },
     { title: 'Visitantes registrados', users: users.filter(user => user.createdVia === 'registration') },
@@ -33,7 +49,9 @@ export default function RegisteredUsers() {
   ];
   return <section className="registered-users" aria-labelledby="registered-users-title">
     <h2 id="registered-users-title">Usuarios registrados</h2>
-    <button className="button button--secondary" type="button" disabled={loading} onClick={() => setAttempt(value => value + 1)}>Actualizar listado</button>
+    <button className="button button--secondary" type="button" disabled={loading || deleting !== null} onClick={() => setAttempt(value => value + 1)}>Actualizar listado</button>
+    {deleteError && <p role="alert">{deleteError} Puedes reintentar la eliminación para completar la limpieza de inscripciones.</p>}
+    {message && <p role="status">{message}</p>}
     {loading ? <p role="status">Cargando cuentas…</p> : error ? <p role="alert">{error} Usa «Actualizar listado» para reintentar.</p> : <>
       <p>Las cuentas se agrupan por su origen; el rol indica sus permisos actuales. Las cuentas anteriores a esta actualización no tienen un origen registrado.</p>
       {sections.map(section => <section key={section.title}>
@@ -47,6 +65,13 @@ export default function RegisteredUsers() {
               <dt>Rol</dt><dd>{roles[user.role]}</dd>
               <dt>Origen</dt><dd>{origins[user.createdVia]}</dd>
             </dl>
+            <button className="button button--secondary registered-users__delete" type="button"
+              disabled={deleting !== null || user.id === currentUser?.id}
+              aria-label={`Eliminar usuario ${user.username}`}
+              onClick={() => void deleteUser(user)}>
+              {deleting === user.id ? 'Eliminando…' : 'Eliminar usuario'}
+            </button>
+            {user.id === currentUser?.id && <p>Tu cuenta actual</p>}
           </li>)}
         </ul>}
       </section>)}
