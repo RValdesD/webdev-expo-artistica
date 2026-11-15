@@ -11,9 +11,9 @@ interface Props {
 // los puntos, el teclado (← →) o deslizando el dedo en el celular. No avanza sola.
 export default function ArtworkGallery({ title, images }: Props) {
   const [index, setIndex] = useState(0);
-  const touchStart = useRef<number | null>(null);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
   const [failed, setFailed] = useState<string[]>([]);
-  const visible = images.filter(src => !failed.includes(src));
+  const visible = [...new Set(images.filter(Boolean))].filter(src => !failed.includes(src));
   const total = visible.length;
 
   if (total === 0) return <div className="gallery__placeholder">Imagen no disponible</div>;
@@ -28,9 +28,11 @@ export default function ArtworkGallery({ title, images }: Props) {
 
   function handleTouchEnd(event: TouchEvent<HTMLElement>) {
     if (touchStart.current === null) return;
-    const distance = event.changedTouches[0].clientX - touchStart.current;
+    const touch = event.changedTouches[0];
+    const distance = touch.clientX - touchStart.current.x;
+    const vertical = touch.clientY - touchStart.current.y;
     touchStart.current = null;
-    if (Math.abs(distance) >= SWIPE_PX) goTo(distance < 0 ? current + 1 : current - 1);
+    if (Math.abs(distance) >= SWIPE_PX && Math.abs(distance) > Math.abs(vertical)) goTo(distance < 0 ? current + 1 : current - 1);
   }
 
   return (
@@ -38,9 +40,11 @@ export default function ArtworkGallery({ title, images }: Props) {
       className="gallery"
       aria-roledescription="carousel"
       aria-label={`Imágenes de ${title}`}
+      tabIndex={0}
       onKeyDown={handleKeyDown}
-      onTouchStart={event => { touchStart.current = event.touches[0].clientX; }}
+      onTouchStart={event => { touchStart.current = { x: event.touches[0].clientX, y: event.touches[0].clientY }; }}
       onTouchEnd={handleTouchEnd}
+      onTouchCancel={() => { touchStart.current = null; }}
     >
       <div className="gallery__viewport" aria-live="polite">
         <img
@@ -62,6 +66,7 @@ export default function ArtworkGallery({ title, images }: Props) {
         )}
       </div>
 
+      <p className="gallery__counter" role="status">Imagen {current + 1} de {total}</p>
       {total > 1 && (
         <div className="gallery__thumbs">
           {visible.map((src, position) => (

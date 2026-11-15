@@ -1,7 +1,7 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
 import { User } from "../models/User.js";
-import { ADMIN_EMAIL_DOMAIN, isAdminEmail } from "../utils/config.js";
+import { ADMIN_EMAIL_DOMAIN, isAdminEmail, isArtistEmail } from "../utils/config.js";
 import { requireSameOrigin } from "../utils/middleware.js";
 
 const usersRouter = Router();
@@ -40,6 +40,7 @@ usersRouter.post("/", requireSameOrigin, async (req, res, next) => {
 
     // Los correos de organizador no se registran desde el sitio: los crea el equipo
     // con `npm run user:create-admin`. Así nadie se vuelve organizador solo por el correo.
+    if (isArtistEmail(email)) { res.status(403).json({ error: 'Las cuentas de artista se crean por el equipo de la exposición.' }); return; }
     if (isAdminEmail(email)) {
       const message = `Los correos @${ADMIN_EMAIL_DOMAIN} son solo para organizadores. Pide tu cuenta al equipo de la expo.`;
       res.status(403).json({ error: message, fields: { email: message } });

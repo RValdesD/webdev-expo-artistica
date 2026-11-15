@@ -3,9 +3,10 @@ import { Schema, model } from 'mongoose';
 export interface UserData {
   username: string;
   email?: string;
+  avatarUrl?: string;
   name: string;
   passwordHash: string;
-  role: 'visitante' | 'organizador';
+  role: 'visitante' | 'organizador' | 'artista';
 }
 
 const userSchema = new Schema<UserData>({
@@ -14,7 +15,8 @@ const userSchema = new Schema<UserData>({
   email: { type: String, unique: true, sparse: true, trim: true, lowercase: true, maxlength: 254, match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
   name: { type: String, required: true, trim: true, maxlength: 120 },
   passwordHash: { type: String, required: true, select: false },
-  role: { type: String, enum: ['visitante', 'organizador'], default: 'visitante', required: true },
+  avatarUrl: { type: String, default: '' },
+  role: { type: String, enum: ['visitante', 'organizador', 'artista'], default: 'visitante', required: true },
 }, { timestamps: true });
 
 userSchema.set('toJSON', {

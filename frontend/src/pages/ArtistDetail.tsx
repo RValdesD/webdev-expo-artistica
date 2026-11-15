@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
+import SocialImage from '../components/SocialImage';
 import ArtistPortrait from '../components/ArtistPortrait';
 import artistsService from '../services/artists';
-import { hasSocials, type Artist } from '../types/artist';
+import { type Artist } from '../types/artist';
 import { socialPlatforms } from '../components/socialPlatforms';
 import '../styles/artists.css';
 
@@ -69,37 +70,35 @@ function ArtistProfile({ id }: { id: string | undefined }) {
 
       {result.status === 'ready' && (
         <article className="artist-profile">
-          <ArtistPortrait name={result.artist.name} imageUrl={result.artist.imageUrl} />
+          <div className="artist-profile__media">
+            <ArtistPortrait name={result.artist.name} imageUrl={result.artist.imageUrl} />
+
+          </div>
           <div>
             <p className="artist-discipline">{result.artist.discipline}</p>
             <h1>{result.artist.name}</h1>
             {result.artist.isSample && <p className="artist-sample">Perfil ficticio de demostración</p>}
             <h2>Sobre el artista</h2>
             <p className="artist-biography">{result.artist.bio}</p>
-
-            {hasSocials(result.artist.socials) && (
-              <div className="artist-socials">
-                <h2>Redes y enlaces</h2>
-                <div className="artist-socials-links">
-                  {socialPlatforms.map(({ key, label, icon }) => {
-                    const href = result.artist.socials?.[key];
-                    return href && (
-                      <a
-                        key={key}
-                        href={href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="artist-social-link"
-                        aria-label={`${label} de ${result.artist.name}`}
-                      >
-                        {icon}
-                        <span>{label}</span>
-                      </a>
-                    );
-                  })}
-                </div>
+            <section className="artist-socials" aria-label="Redes y enlaces del artista">
+              <h2>Redes y enlaces</h2>
+              <div className="artist-socials-links">
+                {socialPlatforms.map(({ key, label }) => {
+                  const href = result.artist.socials?.[key];
+                  const content = <><SocialImage src={result.artist.socialImages?.[key]} fallback={<span aria-hidden="true">▧</span>} /><span>{label}</span></>;
+                  return href ? (
+                    <a key={key} href={href} target="_blank" rel="noopener noreferrer"
+                      className="artist-social-link artist-social-link--image" aria-label={`${label} de ${result.artist.name} (abre en otra pestaña)`}>{content}</a>
+                  ) : (
+                    <div key={key} className="artist-social-link artist-social-link--image artist-social-link--empty">
+                      {content}<small>Sin enlace</small>
+                    </div>
+                  );
+                })}
               </div>
-            )}
+            </section>
+
+
           </div>
         </article>
       )}

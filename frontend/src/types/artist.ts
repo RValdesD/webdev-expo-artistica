@@ -9,6 +9,7 @@ export interface Artist {
   discipline: string;
   imageUrl: string;
   socials?: ArtistSocials;
+  socialImages?: ArtistSocials;
   isSample: boolean;
 }
 

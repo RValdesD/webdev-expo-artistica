@@ -119,6 +119,7 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
     res.status(409).json(duplicateBody(error));
     return;
   }
+  if (error?.type === 'entity.too.large') { res.status(413).json({ error: 'El archivo supera el límite de 5 MB.' }); return; }
   if (error instanceof SyntaxError && 'status' in error && error.status === 400) {
     res.status(400).json({ error: 'El cuerpo JSON está mal formado.' });
     return;

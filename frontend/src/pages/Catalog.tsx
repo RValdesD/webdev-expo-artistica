@@ -70,7 +70,7 @@ export default function Catalog() {
         <p>Aún no hay obras publicadas.</p>
       ) : (
         <>
-          <ArtworkSlideshow artworks={artworks} />
+          <ArtworkSlideshow artworks={artworks.filter(artwork => artwork.inSlideshow === true)} />
 
           <div className="catalog-filters">
             <div>

@@ -265,3 +265,8 @@
     padding-block: 40px;
   }
 }
+
+/* Galería manual: permite scroll vertical y navegación por teclado. */
+.gallery { min-width: 0; touch-action: pan-y; }
+.gallery:focus-visible { outline: 2px solid var(--accent-hover); outline-offset: 4px; }
+.gallery__counter { margin: 12px 0; font-size: 14px; }

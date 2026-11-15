@@ -3,7 +3,8 @@ export interface User {
   name: string;
   username: string;
   email?: string;
-  role: 'visitante' | 'organizador';
+  avatarUrl?: string;
+  role: 'visitante' | 'organizador' | 'artista';
 }
 
 export interface LoginInput { username: string; password: string }

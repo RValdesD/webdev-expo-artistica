@@ -4,7 +4,8 @@ import type { Artwork } from '../types/artwork';
 
 export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
-  const hasImage = artwork.imageUrl && failedUrl !== artwork.imageUrl;
+  const preview = artwork.previewImageUrl || artwork.imageUrl;
+  const hasImage = preview && failedUrl !== preview;
   const detailUrl = `/catalog/${encodeURIComponent(artwork.id)}`;
   const extraImages = artwork.images?.length ?? 0;
 
@@ -14,13 +15,13 @@ export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
         {hasImage ? (
           <img
             className="artwork-card__image"
-            src={artwork.imageUrl}
+            src={preview}
             alt=""
             loading="lazy"
-            onError={() => setFailedUrl(artwork.imageUrl)}
+            onError={() => setFailedUrl(preview)}
           />
         ) : (
-          <div className="artwork-card__placeholder">Imagen no disponible</div>
+          <div className="artwork-card__placeholder">{artwork.title} — vista previa no disponible</div>
         )}
         {extraImages > 0 && <span className="artwork-card__count">+{extraImages} {extraImages === 1 ? 'imagen' : 'imágenes'}</span>}
       </Link>

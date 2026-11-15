@@ -6,8 +6,8 @@ import { withUser, requireOrganizer } from '../utils/middleware.js';
 import { pickFields } from '../utils/body.js';
 
 const artistsRouter = Router();
-const publicFields = 'id name bio discipline imageUrl socials isSample -_id';
-const allowed = ['id', 'name', 'bio', 'discipline', 'imageUrl', 'socials'] as const;
+const publicFields = 'id name bio discipline imageUrl socials socialImages isSample -_id';
+const allowed = ['id', 'name', 'bio', 'discipline', 'imageUrl', 'socials', 'socialImages'] as const;
 
 
 artistsRouter.get('/', async (_req, res, next) => {

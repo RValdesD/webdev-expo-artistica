@@ -26,3 +26,6 @@ export function isAdminEmail(email: string): boolean {
 export function assertRequiredConfig(): void {
   if (!JWT_SECRET) throw new Error('Falta JWT_SECRET en backend/.env.');
 }
+
+export const ARTIST_EMAIL_DOMAIN = (process.env.ARTIST_EMAIL_DOMAIN ?? 'artista.cl').trim().toLowerCase();
+export const isArtistEmail = (email: string) => email.trim().toLowerCase().endsWith(`@${ARTIST_EMAIL_DOMAIN}`);

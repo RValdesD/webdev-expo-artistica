@@ -13,6 +13,8 @@ import Login from './pages/Login';
 import AuthNav from './components/AuthNav';
 import ProtectedRoute from './components/ProtectedRoute';
 import MyVisit from './pages/MyVisit';
+import UserProfile from './pages/UserProfile';
+import SubmissionReview from './pages/SubmissionReview';
 import Management from './pages/Management';
 
 export default function App() {
@@ -50,6 +52,8 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/mi-visita" element={<ProtectedRoute><MyVisit /></ProtectedRoute>} />
           <Route path="/cuenta" element={<ProtectedRoute><MyVisit /></ProtectedRoute>} />
+          <Route path="/mi-perfil" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+          <Route path="/gestion/envios" element={<ProtectedRoute organizerOnly><SubmissionReview /></ProtectedRoute>} />
           <Route path="/gestion" element={<ProtectedRoute organizerOnly><Management /></ProtectedRoute>} />
           <Route path="*" element={<section className="status"><h1>Página no encontrada</h1><Link to="/">Volver al inicio</Link></section>} />
         </Routes>

@@ -30,7 +30,7 @@ export default function ArtworkDetail() {
   }, [id, attempt]);
 
   if (loading) return <section className="catalog-page" role="status">Cargando obra…</section>;
-  if (notFound || !artwork) {
+  if (error || notFound || !artwork) {
     return (
       <section className="catalog-page">
         {error ? (
@@ -50,7 +50,7 @@ export default function ArtworkDetail() {
     <section className="catalog-page artwork-detail" aria-labelledby="artwork-title">
       <Link to="/catalog">← Volver al catálogo</Link>
       <div className="artwork-detail__layout">
-        <ArtworkGallery title={artwork.title} images={images} />
+        <ArtworkGallery key={artwork.id} title={artwork.title} images={images} />
         <div className="artwork-detail__info">
           <p className="artwork-card__medium">{artwork.medium} · {artwork.year}</p>
           <h1 id="artwork-title">{artwork.title}</h1>

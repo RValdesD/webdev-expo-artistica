@@ -252,3 +252,6 @@
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+.management-form .management-slideshow-check { display: flex; align-items: center; gap: 12px; text-transform: none; letter-spacing: normal; }
+.management-form .management-slideshow-check input { width: 20px; height: 20px; flex: 0 0 20px; }

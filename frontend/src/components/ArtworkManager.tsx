@@ -13,6 +13,8 @@ const emptyArtwork = (): ArtworkInput => ({
   artistId: '',
   medium: '',
   imageUrl: '',
+  previewImageUrl: '',
+  inSlideshow: false,
   images: [],
   year: new Date().getFullYear(),
   description: '',
@@ -54,6 +56,8 @@ export default function ArtworkManager({ artists }: { artists: Artist[] }) {
       artistId: artwork.artistId,
       medium: artwork.medium,
       imageUrl: artwork.imageUrl,
+      previewImageUrl: artwork.previewImageUrl ?? '',
+      inSlideshow: artwork.inSlideshow === true,
       images: artwork.images ?? [],
       year: artwork.year,
       description: artwork.description,
@@ -140,6 +144,19 @@ export default function ArtworkManager({ artists }: { artists: Artist[] }) {
             value={form.year} onChange={event => setForm(current => ({ ...current, year: Number(event.target.value) }))} />
         <FieldError fields={fields} name="year" id="artwork-year" /></div>
         </div>
+
+        <label htmlFor="artwork-preview">Imagen de vista previa del catálogo</label>
+        <input id="artwork-preview" maxLength={1000} disabled={saving} placeholder="/images/obra-preview.jpg"
+          {...fieldProps(fields, 'previewImageUrl', 'artwork-preview')}
+          value={form.previewImageUrl ?? ''} onChange={event => setForm(current => ({ ...current, previewImageUrl: event.target.value }))} />
+        <FieldError fields={fields} name="previewImageUrl" id="artwork-preview" />
+        <small>Cada obra tiene su propia vista previa; si está vacía, se usa su imagen principal.</small>
+        <label className="management-slideshow-check" htmlFor="artwork-slideshow">
+          <input id="artwork-slideshow" type="checkbox" disabled={saving} checked={form.inSlideshow === true}
+            onChange={event => setForm(current => ({ ...current, inSlideshow: event.target.checked }))} />
+          Incluir esta obra en el slideshow del Catálogo
+        </label>
+        <small>La imagen principal se muestra en el slideshow. Las imágenes adicionales se muestran solo en la galería de esta obra.</small>
 
         <label htmlFor="artwork-image">Imagen principal (URL o ruta)</label>
         <input id="artwork-image" {...fieldProps(fields, 'imageUrl', 'artwork-image')} maxLength={1000} disabled={saving} placeholder="/images/obra.jpg"

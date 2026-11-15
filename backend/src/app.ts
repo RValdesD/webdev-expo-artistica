@@ -1,4 +1,7 @@
 import express from 'express';
+import artistAccountRouter from './controllers/artistAccount.js';
+import submissionsRouter from './controllers/submissions.js';
+import { uploadDirectory } from './utils/uploads.js';
 import exhibitionsRouter from './controllers/exhibitions.js';
 import { fileURLToPath } from 'node:url';
 import cookieParser from 'cookie-parser';
@@ -16,6 +19,9 @@ app.disable('x-powered-by');
 app.use(requestLogger);
 app.use(cookieParser());
 app.use(express.json({ limit: '20kb' }));
+app.use('/images/uploads', express.static(uploadDirectory, { dotfiles: 'deny', setHeaders: res => { res.setHeader('X-Content-Type-Options', 'nosniff'); } }));
+app.use('/api/artist-account', artistAccountRouter);
+app.use('/api/submissions', submissionsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/artists', artistsRouter);

@@ -4,7 +4,7 @@ import { Artist } from '../models/Artist.js';
 import { withUser, requireOrganizer } from '../utils/middleware.js';
 
 const artworksRouter = Router();
-const allowed = ['id', 'title', 'artistId', 'medium', 'imageUrl', 'images', 'year', 'description'] as const;
+const allowed = ['id', 'title', 'artistId', 'medium', 'imageUrl', 'previewImageUrl', 'inSlideshow', 'images', 'year', 'description'] as const;
 
 function artworkBody(body: unknown): Record<string, unknown> {
   const source = body && typeof body === 'object' ? body as Record<string, unknown> : {};
@@ -12,7 +12,7 @@ function artworkBody(body: unknown): Record<string, unknown> {
 }
 
 async function present(query: ReturnType<typeof Artwork.find>) {
-  const artworks = await query.select('id title artistId medium imageUrl images year description isSample -_id').lean();
+  const artworks = await query.select('id title artistId medium imageUrl previewImageUrl inSlideshow images year description isSample -_id').lean();
   const artists = await Artist.find({ id: { $in: artworks.map(item => item.artistId) } }).select('id name -_id').lean();
   const names = new Map(artists.map(artist => [artist.id, artist.name]));
   return artworks.map(item => ({ ...item, artist: names.has(item.artistId) ? { id: item.artistId, name: names.get(item.artistId) } : null }));

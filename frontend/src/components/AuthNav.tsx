@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { apiError } from '../services/auth';
 import '../styles/auth.css';
+import '../styles/profile.css';
 
 export default function AuthNav() {
   const { user, loading, unavailable, refresh, logout } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
@@ -25,10 +27,14 @@ export default function AuthNav() {
         <>
           <Link to="/mi-visita">Mi visita</Link>
           {user.role === 'organizador' && <Link to="/gestion">Gestión</Link>}
-          <span>{user.name}</span>
           <button type="button" disabled={busy} onClick={handleLogout}>
             {busy ? 'Cerrando…' : 'Cerrar sesión'}
           </button>
+          {user.role === 'artista' ? <details className="avatar-menu" open={menuOpen} onToggle={event => setMenuOpen(event.currentTarget.open)} onKeyDown={event => { if (event.key === 'Escape') setMenuOpen(false); }}>
+            <summary aria-label="Abrir menú de perfil">{user.avatarUrl ? <img className="header-avatar" src={user.avatarUrl} alt={user.name} /> : <span className="header-avatar">{user.name.slice(0, 1)}</span>}</summary>
+            <div className="avatar-dropdown"><span>{user.name}</span><Link to="/mi-perfil" onClick={() => setMenuOpen(false)}>Mi perfil</Link></div>
+          </details> : <span>{user.name}</span>}
+
         </>
       ) : (
         <><Link to="/registro">Crear cuenta</Link>|<Link to="/login">Iniciar sesión</Link></>

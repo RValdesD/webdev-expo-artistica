@@ -19,6 +19,7 @@ export interface ArtistData {
   discipline: string;
   imageUrl: string;
   socials?: ArtistSocials;
+  socialImages?: ArtistSocials;
   isSample: boolean;
 }
 
@@ -34,6 +35,25 @@ const socialsSchema = new Schema<ArtistSocials>(
   { _id: false },
 );
 
+// Imágenes opcionales de cada enlace; las cuentas existentes conservan sus iconos.
+const socialImagesSchema = new Schema<ArtistSocials>(
+  Object.fromEntries(socialKeys.map(key => [key, {
+    type: String,
+    trim: true,
+    maxlength: 1000,
+    validate: {
+      validator: (value: string) => {
+        if (!value) return true;
+        if (/^\/images\/[^\s\\]+$/.test(value)) return true;
+        try { const url = new URL(value); return url.protocol === 'https:' && Boolean(url.hostname) && !url.username && !url.password; }
+        catch { return false; }
+      },
+      message: `La imagen de ${socialLabels[key]} debe usar /images/... o una URL https:// válida.`,
+    },
+  }])),
+  { _id: false },
+);
+
 const artistSchema = new Schema<ArtistData>(
   {
     // Public string identifier, compatible with the original frontend types.
@@ -43,6 +63,7 @@ const artistSchema = new Schema<ArtistData>(
     discipline: { type: String, required: true, trim: true, maxlength: 100 },
     imageUrl: { type: String, default: '', trim: true },
     socials: { type: socialsSchema, default: () => ({}) },
+    socialImages: { type: socialImagesSchema, default: () => ({}) },
     isSample: { type: Boolean, default: false },
   },
   { timestamps: true },

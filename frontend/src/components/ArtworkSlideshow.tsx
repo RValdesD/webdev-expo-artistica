@@ -21,7 +21,7 @@ function ArtworkSlideshow({ artworks, autoPlayInterval = 5000 }: ArtworkSlidesho
   const validArtworks = useMemo(() => artworks.filter(artwork => Boolean(artwork.imageUrl)), [artworks]);
   const total = validArtworks.length;
 
-  const step = useCallback((delta: number) => setCurrentIndex(prev => (prev + delta + total) % total), [total]);
+  const step = useCallback((delta: number) => setCurrentIndex(prev => total ? (Math.min(prev, total - 1) + delta + total) % total : 0), [total]);
   const nextSlide = () => step(1);
   const prevSlide = () => step(-1);
 
@@ -43,8 +43,8 @@ function ArtworkSlideshow({ artworks, autoPlayInterval = 5000 }: ArtworkSlidesho
 
   // Keyboard navigation (← and →)
   const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === 'ArrowRight') nextSlide();
-    else if (event.key === 'ArrowLeft') prevSlide();
+    if (event.key === 'ArrowRight') { event.preventDefault(); nextSlide(); }
+    else if (event.key === 'ArrowLeft') { event.preventDefault(); prevSlide(); }
   };
 
   // Autoplay, paused on hover or when toggled off. It starts off for users who prefer reduced motion.
@@ -58,7 +58,8 @@ function ArtworkSlideshow({ artworks, autoPlayInterval = 5000 }: ArtworkSlidesho
     return null;
   }
 
-  const currentArtwork = validArtworks[currentIndex];
+  const selectedIndex = Math.min(currentIndex, total - 1);
+  const currentArtwork = validArtworks[selectedIndex];
 
   return (
     <section 
@@ -66,6 +67,7 @@ function ArtworkSlideshow({ artworks, autoPlayInterval = 5000 }: ArtworkSlidesho
       aria-roledescription="carousel" 
       aria-label="Galería destacada de obras"
       onKeyDown={handleKeyDown}
+      onFocusCapture={() => setIsPlaying(false)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       tabIndex={0}
@@ -80,12 +82,13 @@ function ArtworkSlideshow({ artworks, autoPlayInterval = 5000 }: ArtworkSlidesho
             type="button" 
             className="slideshow-autoplay-toggle"
             onClick={() => setIsPlaying(p => !p)}
+            disabled={total < 2}
             aria-label={isPlaying ? 'Pausar reproducción automática' : 'Reanudar reproducción automática'}
           >
             {isPlaying ? '⏸ Pausar' : '▶ Reproducir'}
           </button>
-          <span className="slideshow-counter" aria-live="polite">
-            {currentIndex + 1} de {total}
+          <span className="slideshow-counter" aria-live={isPlaying && !isHovered ? 'off' : 'polite'}>
+            {selectedIndex + 1} de {total}
           </span>
         </div>
       </div>
@@ -95,12 +98,13 @@ function ArtworkSlideshow({ artworks, autoPlayInterval = 5000 }: ArtworkSlidesho
           type="button" 
           className="slideshow-arrow slideshow-arrow--prev" 
           onClick={prevSlide}
+          disabled={total < 2}
           aria-label="Obra anterior"
         >
           ‹
         </button>
 
-        <div className="slideshow-slide" role="group" aria-roledescription="slide" aria-label={`${currentIndex + 1} de ${total}`}>
+        <div className="slideshow-slide" role="group" aria-roledescription="slide" aria-label={`${selectedIndex + 1} de ${total}`}>
           <div className="slideshow-image-wrapper">
             <img 
               src={currentArtwork.imageUrl} 
@@ -110,7 +114,7 @@ function ArtworkSlideshow({ artworks, autoPlayInterval = 5000 }: ArtworkSlidesho
           </div>
           <div className="slideshow-caption">
             <p className="slideshow-medium">{currentArtwork.medium} · {currentArtwork.year}</p>
-            <h3 className="slideshow-title">{currentArtwork.title}</h3>
+            <h3 className="slideshow-title"><Link to={`/catalog/${encodeURIComponent(currentArtwork.id)}`}>{currentArtwork.title}</Link></h3>
             {currentArtwork.artist ? (
               <p className="slideshow-artist">
                 Por <Link to={`/artists/${encodeURIComponent(currentArtwork.artist.id)}`}>{currentArtwork.artist.name}</Link>
@@ -119,6 +123,7 @@ function ArtworkSlideshow({ artworks, autoPlayInterval = 5000 }: ArtworkSlidesho
             {currentArtwork.description && (
               <p className="slideshow-description">{currentArtwork.description}</p>
             )}
+            <Link className="button" to={`/catalog/${encodeURIComponent(currentArtwork.id)}`}>Ver obra y sus imágenes</Link>
           </div>
         </div>
 
@@ -126,23 +131,26 @@ function ArtworkSlideshow({ artworks, autoPlayInterval = 5000 }: ArtworkSlidesho
           type="button" 
           className="slideshow-arrow slideshow-arrow--next" 
           onClick={nextSlide}
+          disabled={total < 2}
           aria-label="Siguiente obra"
         >
           ›
         </button>
       </div>
 
-      <div className="slideshow-dots" role="tablist" aria-label="Seleccionar diapositiva">
+      <div className="slideshow-dots" role="group" aria-label="Seleccionar diapositiva">
         {validArtworks.map((item, idx) => (
           <button
             key={item.id}
             type="button"
-            role="tab"
-            aria-selected={idx === currentIndex}
+            aria-current={idx === selectedIndex ? 'true' : undefined}
             aria-label={`Ver obra ${idx + 1}: ${item.title}`}
-            className={`slideshow-dot ${idx === currentIndex ? 'active' : ''}`}
+            className={`slideshow-dot slideshow-preview ${idx === selectedIndex ? 'active' : ''}`}
             onClick={() => setCurrentIndex(idx)}
-          />
+          >
+            <img src={item.previewImageUrl || item.imageUrl} alt="" loading="lazy" />
+            <span>{item.title}</span>
+          </button>
         ))}
       </div>
     </section>
