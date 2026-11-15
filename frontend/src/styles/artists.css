@@ -1,115 +1,150 @@
-/* Artists only: inherits the Information page's theme variables.
-   Fallback colors allow use with an older or customized stylesheet. */
+/* ==========================================================================
+   ARTISTS DIRECTORY & PROFILE — LUXURY ART GALLERY STYLING
+   ========================================================================== */
 .artists-page {
   padding: 64px var(--page-gutter, 6%);
   min-height: 65vh;
 }
 
 .artists-page h1 {
+  font-family: var(--heading-font);
   font-size: clamp(2.5rem, 5vw, 4.5rem);
   overflow-wrap: anywhere;
+  margin-bottom: 16px;
 }
 
 .artists-heading {
-  margin-bottom: 36px;
+  margin-bottom: 48px;
 }
 
 .artists-heading > p:last-child,
 .artist-card__bio,
 .artist-biography {
-  color: var(--muted, #bcb3a3);
+  color: var(--muted, #a6a39d);
+  line-height: 1.7;
 }
 
 .artist-socials {
-  margin-top: 32px;
+  margin-top: 36px;
   padding-top: 24px;
-  border-top: 1px solid var(--border, #514a3d);
+  border-top: 1px solid var(--border);
 }
 
 .artist-socials h2 {
-  font-size: 1.25rem;
-  margin-bottom: 16px;
+  font-family: var(--heading-font);
+  font-size: 1.3rem;
+  margin-bottom: 18px;
+  color: #f4f2ec;
 }
 
 .artist-socials-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 14px;
 }
 
 .artist-social-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  background: var(--surface-raised, #181613);
-  border: 1px solid var(--border, #514a3d);
-  color: var(--text, #eee5d4);
+  gap: 10px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text);
   text-decoration: none;
-  font-size: 0.95rem;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.25s ease;
 }
 
 .artist-social-link:hover {
   background: var(--surface-raised);
-  border-color: var(--accent, #c3a777);
-  color: #ffffff;
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .artist-social-link svg {
   flex-shrink: 0;
 }
 
-/* Search field and results counter. */
+/* Search field and results counter */
 .artists-search {
-  margin-bottom: 32px;
+  margin-bottom: 48px;
+  background: var(--surface);
+  padding: 24px 28px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
 .artists-search label {
   display: block;
-  margin-bottom: 8px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 10px;
 }
 
 .artists-search input {
   display: block;
   width: 100%;
-  max-width: 480px;
-  padding: 12px 14px;
+  max-width: 560px;
+  padding: 14px 16px;
   font: inherit;
-  color: var(--text, #eee5d4);
-  background: var(--surface-raised);
-  border: 1px solid var(--border, #514a3d);
-  border-radius: 0;
+  font-size: 1rem;
+  color: var(--text);
+  background: #101217;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  transition: all 0.2s ease;
 }
 
 .artists-search input::placeholder {
-  color: var(--muted, #bcb3a3);
+  color: var(--muted);
 }
 
 .artists-search input:focus-visible {
-  outline: 2px solid var(--accent, #c3a777);
-  outline-offset: 3px;
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(197, 160, 89, 0.25);
 }
 
 .artists-search p {
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   font-size: 13px;
-  color: var(--muted, #bcb3a3);
+  letter-spacing: 0.04em;
+  color: var(--muted);
 }
 
-/* List: three columns on desktop, then two, then one. */
+/* List: three columns on desktop, then two, then one */
 .artists-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 28px;
+  gap: 32px;
 }
 
 .artist-card {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  border: 1px solid var(--border, #514a3d);
-  background: #000000;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.artist-card:hover {
+  border-color: var(--border-gold);
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
 }
 
 .artist-portrait {
@@ -117,44 +152,58 @@
   width: 100%;
   aspect-ratio: 4 / 5;
   object-fit: cover;
-  object-position: center;
+  object-position: center top;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  background: #111317;
+}
+
+.artist-card:hover .artist-portrait {
+  transform: scale(1.03);
 }
 
 .artist-portrait--placeholder {
   display: grid;
   place-items: center;
-  color: var(--accent, #5ed3e2);
-  background: var(--surface-raised, #087996);
-  font-family: var(--heading-font, Georgia, serif);
-  font-size: 4rem;
+  color: var(--accent);
+  background: linear-gradient(135deg, #161920 0%, #20242e 100%);
+  font-family: var(--heading-font);
+  font-size: 4.5rem;
+  border-bottom: 1px solid var(--border);
 }
 
 .artist-card__body {
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding: 24px;
+  padding: 26px;
+  background: var(--surface);
+  position: relative;
+  z-index: 1;
 }
 
 .artist-card h2 {
-  font-size: 1.8rem;
-  margin-bottom: 14px;
+  font-family: var(--heading-font);
+  font-size: 1.85rem;
+  margin-bottom: 12px;
   overflow-wrap: anywhere;
+  color: #f4f2ec;
 }
 
 .artist-discipline {
-  color: var(--accent, #3797bd);
+  color: var(--accent);
   text-transform: uppercase;
-  letter-spacing: .12em;
+  letter-spacing: 0.16em;
   font-size: 11px;
-  margin-bottom: 12px;
+  font-weight: 600;
+  margin-bottom: 10px;
 }
 
 .artist-sample {
-  color: var(--agua-texto);
+  color: var(--accent-hover);
   font-size: 12px;
-  border-left: 2px solid var(--accent, #c3a777);
+  border-left: 2px solid var(--accent);
   padding-left: 10px;
+  margin-bottom: 12px;
 }
 
 .artist-card__bio {
@@ -163,37 +212,69 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   overflow-wrap: anywhere;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
 }
 
 .artist-profile-link {
   margin-top: auto;
-  color: var(--accent, #c3a777);
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s ease, gap 0.2s ease;
 }
 
-/* Profile: portrait alongside full biography. */
+.artist-profile-link:hover {
+  color: var(--accent-hover);
+  gap: 10px;
+}
+
+/* Profile: portrait alongside full biography */
 .artist-back {
-  display: inline-block;
-  margin-bottom: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 36px;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.artist-back:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
 }
 
 .artist-profile {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
   align-items: start;
-  gap: 48px;
+  gap: 56px;
 }
 
 .artist-profile h2 {
-  font-size: 1.6rem;
-  margin-top: 32px;
+  font-family: var(--heading-font);
+  font-size: 1.8rem;
+  margin-top: 36px;
 }
 
 .artist-biography {
   white-space: pre-line;
   overflow-wrap: anywhere;
+  font-size: 1.05rem;
+  line-height: 1.8;
 }
 
-/* Extra link text for screen readers. */
+/* Extra link text for screen readers */
 .artist-sr-only {
   position: absolute;
   width: 1px;
@@ -222,24 +303,81 @@
   }
 
   .artist-profile {
-    gap: 28px;
+    gap: 32px;
   }
 }
 
-/* Enlaces gráficos debajo del retrato, también en pantallas pequeñas. */
-.artist-profile__media { min-width: 0; width: 100%; }
-.artist-profile__media .artist-socials { margin-top: 20px; padding-top: 20px; }
-.artist-profile__media .artist-socials h2 { margin-top: 0; }
-.artist-social-link--image { flex-direction: column; padding: 10px; gap: 6px; min-width: 80px; max-width: 100%; text-align: center; }
-.artist-social-image { width: 56px; height: 56px; display: grid; place-items: center; flex-shrink: 0; }
-.artist-social-image img { display: block; width: 100%; height: 100%; object-fit: contain; }
-.artist-social-image svg { width: 36px; height: 36px; }
-.artist-social-preview { display: flex; align-items: center; gap: 12px; margin-block: 12px 20px; }
-@media (max-width: 767px) {
-  .artist-profile__media { max-width: 440px; justify-self: center; }
-  .artist-profile__media .artist-socials-links { gap: 10px; }
+.artist-profile__media {
+  min-width: 0;
+  width: 100%;
 }
 
-.artist-social-image { background: var(--surface-raised); border: 1px dashed var(--border); font-size: 30px; }
-.artist-social-link--empty { color: var(--muted); }
-.artist-social-link--empty small { font-size: 11px; }
+.artist-profile__media .artist-socials {
+  margin-top: 24px;
+  padding-top: 24px;
+}
+
+.artist-profile__media .artist-socials h2 {
+  margin-top: 0;
+}
+
+.artist-social-link--image {
+  flex-direction: column;
+  padding: 12px;
+  gap: 8px;
+  min-width: 88px;
+  max-width: 100%;
+  text-align: center;
+}
+
+.artist-social-image {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 4px;
+}
+
+.artist-social-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.artist-social-image svg {
+  width: 36px;
+  height: 36px;
+}
+
+.artist-social-preview {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-block: 14px 24px;
+}
+
+@media (max-width: 767px) {
+  .artist-profile__media {
+    max-width: 440px;
+    justify-self: center;
+  }
+  .artist-profile__media .artist-socials-links {
+    gap: 10px;
+  }
+}
+
+.artist-social-image {
+  background: var(--surface-raised);
+  border: 1px dashed var(--border-gold);
+  font-size: 28px;
+}
+
+.artist-social-link--empty {
+  color: var(--muted);
+}
+
+.artist-social-link--empty small {
+  font-size: 11px;
+}

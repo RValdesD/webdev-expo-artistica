@@ -1,202 +1,138 @@
-/* 01. THEME — edit these values first. No external fonts required. */
+/* ==========================================================================
+   01. THEME & PALETTE — LUXURY ART GALLERY & EXHIBITION DESIGN SYSTEM
+   ========================================================================== */
 :root {
-  --footer-surface: #3c0e3d;
-  --background: #000000;
-  --surface-raised: #0f0f0e;
-  --text: #d8d1cb;
-  --muted: #ffffff;
-  --accent: #d400ff;
-  --accent-hover: #0d82f0;
-  --border: #ffffff;
-  --danger: #ff6b6b;
-  --warning: #fa8c16;
-  --success: #73d13d;
-  --heading-font: 'MX1', 'Times New Roman', serif;
-  --body-font: 'Segoe UI', Arial, sans-serif;
-  --page-width: 1980px;
-  --page-gutter: 6%;
-  --agua: #0d21cf;        /* fondo de botones: texto blanco encima (9,8:1) */
-  --agua-texto: #7d8fff;  /* el mismo azul, más claro, para texto sobre negro (7,2:1) */
-  --section-space: 64px;
-  font-family:var(--body-font);
-  color:var(--text);
-  background:var(--background);
-  font-synthesis:none;
-  line-height:1.6;
-  font-weight:400;
+  --background: #0c0d10;
+  --surface: #14171d;
+  --surface-raised: #1c2028;
+  --footer-surface: #0a0b0d;
+  --text: #f4f2ec;
+  --muted: #a6a39d;
+  --accent: #c5a059;         /* Antique Champagne Gold */
+  --accent-hover: #e5c178;   /* Luminous Gold */
+  --border: rgba(255, 255, 255, 0.08);
+  --border-gold: rgba(197, 160, 89, 0.25);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --danger: #e05d5d;
+  --warning: #e59840;
+  --success: #52b788;
+  --heading-font: 'Playfair Display', 'Cormorant Garamond', 'Times New Roman', Georgia, serif;
+  --body-font: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --page-width: 1440px;
+  --page-gutter: max(5vw, 24px);
+  --agua: #c5a059;
+  --agua-texto: #e5c178;
+  --section-space: clamp(48px, 6vw, 84px);
+  font-family: var(--body-font);
+  color: var(--text);
+  background-color: var(--background);
+  font-synthesis: none;
+  line-height: 1.65;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* 02. GLOBAL DEFAULTS */
-
+/* ==========================================================================
+   02. GLOBAL DEFAULTS & EDITORIAL TYPOGRAPHY
+   ========================================================================== */
 * {
-  box-sizing:border-box;
+  box-sizing: border-box;
 }
 
 body {
-  margin:0;
+  margin: 0;
+  background-color: var(--background);
+  color: var(--text);
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(197, 160, 89, 0.06), transparent 70%),
+    radial-gradient(circle at 100% 60%, rgba(197, 160, 89, 0.03), transparent 40%);
+  background-attachment: fixed;
 }
 
 a {
-  color:inherit;
+  color: inherit;
+  transition: color 0.2s ease;
 }
 
 button {
-  font:inherit;
-  cursor:pointer;
+  font: inherit;
+  cursor: pointer;
 }
 
-a,button {
-  -webkit-tap-highlight-color:transparent;
+a, button {
+  -webkit-tap-highlight-color: transparent;
 }
 
-a:focus-visible,button:focus-visible {
-  outline:3px solid var(--accent-hover);
-  outline-offset:5px;
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }
 
-h1,h2,h3,p {
-  margin-top:0;
+h1, h2, h3, h4, p {
+  margin-top: 0;
 }
 
-h1,h2 {
-  font-family:var(--heading-font);
-  font-weight:500;
-  line-height:1.1;
+h1, h2, h3, h4 {
+  font-family: var(--heading-font);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: #f4f2ec;
+}
+
+h1 {
+  font-size: clamp(2.8rem, 5.5vw, 5.2rem);
+  letter-spacing: -0.025em;
+  margin-bottom: 24px;
+  font-weight: 600;
+}
+
+h1 em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
 }
 
 h2 {
-  font-size:clamp(2rem,3.4vw,3rem);
-  letter-spacing:-.035em;
+  font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+  margin-bottom: 16px;
 }
 
 h3 {
-  font-size:1rem;
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
 }
 
 p {
-  max-width:62ch;
+  max-width: 65ch;
+  color: var(--muted);
+  line-height: 1.7;
 }
 
-.site-header,.site-footer,main {
-  max-width:var(--page-width);
-  margin:auto;
+.site-header, .site-footer, main {
+  max-width: var(--page-width);
+  margin: auto;
 }
 
-/* 03. HEADER */
+/* ==========================================================================
+   03. HEADER (PRESERVING SELECTORS & FUNCTIONALITY WITHOUT TOUCHING MARKUP)
+   ========================================================================== */
 .site-header {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   flex-wrap: wrap;
-  gap: 16px 30px;
-  padding: 20px var(--page-gutter);
+  gap: 16px 36px;
+  padding: 24px var(--page-gutter);
   border-bottom: 1px solid var(--border);
-}
-
-.site-header nav {
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px 30px;
-  font-size:13px;
-  align-items: center;
-  flex: 1;
-}
-
-.site-header nav a {
-  text-decoration:none;
-}
-
-.site-header nav a:hover {
-  text-decoration:underline;
-}
-
-/* 04. DEMONSTRATION NOTICE */
-.sample-notice {
-  padding:9px var(--page-gutter);
-  background:var(--surface);
-  font-size:12px;
-  color:var(--muted);
-}
-
-/* 05. HERO LAYOUT */
-.hero {
-  padding:65px var(--page-gutter);
-  display:grid;
-  grid-template-columns:1.1fr 1fr;
-  gap:65px;
-  align-items:center;
-}
-
-.eyebrow {
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:.16em;
-  margin-bottom:50px;
-  color:#436fe9;
-}
-
-h1 {
-  font-size:clamp(3.3rem,6.5vw,6.4rem);
-  letter-spacing:-.055em;
-  margin-bottom:24px;
-}
-
-h1 em {
-  color:var(--agua-texto);
-  font-weight:500;
-}
-
-.intro {
-  font-size:16px;
-  color:var(--muted);
-  max-width:40ch;
-  margin-bottom:30px;
-}
-
-/* 06. BUTTONS */
-.button {
-  display:inline-flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:32px;
-  background:var(--agua);
-  color:#ffffff;
-  padding:13px 22px;
-  text-decoration:none;
-  border:0;
-  font-size:13px;
-}
-
-.button:hover {
-  background:var(--accent-hover);
-}
-
-.button--secondary {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text);
-}
-
-.button--secondary:hover {
-  background: var(--surface-raised);
-  border-color: var(--accent-hover);
-}
-
-.button--outline-danger {
-  background: transparent;
-  border: 1px solid var(--danger);
-  color: var(--danger);
-}
-
-.button--outline-danger:hover {
-  background: var(--danger);
-  color: var(--background);
-}
-
-.hero-caption {
-  margin:28px 0 0;
-  font-size:11px;
-  color:var(--muted);
+  background-color: rgba(12, 13, 16, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: border-color 0.3s ease;
 }
 
 .brand {
@@ -204,252 +140,385 @@ h1 em {
   align-items: center;
   gap: 12px;
   text-decoration: none;
-  font-size: 13px;
-  letter-spacing: 0.12em;
-  font-weight: 700;
+  font-family: var(--heading-font);
+  font-size: 1.15rem;
+  letter-spacing: 0.16em;
+  font-weight: 600;
+  color: #f4f2ec;
+  text-transform: uppercase;
 }
 
-/* 08. VISIT INFORMATION */
-.section {
-  padding:var(--section-space) var(--page-gutter);
-  border-top:1px solid var(--border);
-  scroll-margin-top:20px;
+.brand:hover {
+  color: var(--accent);
 }
 
-.section-heading>p:last-child,.faq-section>div>p:last-child {
-  color:var(--muted);
+.site-header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  align-items: center;
+  flex: 1;
 }
 
-.section-heading h2 {
-  margin-bottom:15px;
+.site-header nav a {
+  text-decoration: none;
+  color: var(--muted);
+  padding: 6px 0;
+  position: relative;
+  transition: color 0.25s ease;
 }
 
-.info-grid {
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  margin:36px 0 0;
-  gap:24px;
+.site-header nav a:hover {
+  color: var(--accent);
+  text-decoration: none;
 }
 
-.info-grid>div {
-  border-top:2px solid var(--accent);
-  padding-top:16px;
+.site-header nav a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background-color: var(--accent);
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.info-grid dt {
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.13em;
-  margin-bottom:10px;
-  color:var(--accent);
+.site-header nav a:hover::after {
+  width: 100%;
 }
 
-.info-grid dd {
-  margin:0;
-  font-size:16px;
+/* ==========================================================================
+   04. DEMONSTRATION & STATUS NOTICES
+   ========================================================================== */
+.sample-notice {
+  padding: 10px var(--page-gutter);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
 }
 
-.info-grid small {
-  display:block;
-  color:var(--muted);
-  margin-top:5px;
-}
-
-/* 10. FAQ */
-.faq-section {
-  display:grid;
-  grid-template-columns:1fr 1.3fr;
-  gap:65px;
-  padding-bottom:80px;
-}
-
-.faq-item {
-  border-bottom:1px solid var(--border);
-}
-
-.faq-item h3 {
-  margin:0;
-}
-
-.faq-item button {
-  display:flex;
-  justify-content:space-between;
-  gap:20px;
-  width:100%;
-  text-align:left;
-  border:0;
-  background:none;
-  color:inherit;
-  padding:20px 0;
-  font-weight:500;
-}
-
-.faq-item button span {
-  font-size:23px;
-  line-height:1;
-}
-
-.faq-item p {
-  font-size:14px;
-  color:var(--muted);
-  padding-right:25px;
-}
-
-/* 11. FOOTER */
-.site-footer {
-  background:var(--footer-surface);
-  color:#ffffff;
-  padding:30px var(--page-gutter);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:25px;
-}
-
-.site-footer span {
-  font-size:12px;
-  letter-spacing:.12em;
-}
-
-.site-footer p {
-  font-size:12px;
-  margin:0;
-}
-
-.site-footer small {
-  font-size:10px;
-  color:var(--muted);
-}
-
-/* 12. LOADING AND ERROR SCREENS */
 .status {
-  padding:100px var(--page-gutter);
-  min-height:65vh;
+  padding: 120px var(--page-gutter);
+  min-height: 65vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .status h1 {
-  font-size:3rem;
+  font-size: clamp(2.4rem, 4vw, 3.5rem);
 }
 
 .skip-link {
-  position:absolute;
-  left:12px;
-  top:-80px;
-  z-index:5;
-  background:var(--text);
-  color:var(--background);
-  padding:12px;
+  position: absolute;
+  left: 16px;
+  top: -80px;
+  z-index: 150;
+  background: var(--accent);
+  color: #0c0d10;
+  font-weight: 600;
+  padding: 12px 18px;
+  border-radius: 2px;
+  text-decoration: none;
 }
 
 .skip-link:focus {
-  top:10px;
+  top: 16px;
 }
 
-/* 13. MOBILE LAYOUT */
-@media(max-width:750px) {
-  .site-header {
-    padding:20px var(--page-gutter);
-    flex-wrap:wrap;
-  }
-
-  /* En pantallas angostas el menú baja y ocupa todo el ancho. */
-  .site-header nav {
-    flex-basis:100%;
-    gap:10px 20px;
-  }
-
-  .hero {
-    grid-template-columns:1fr;
-    gap:35px;
-    padding-top:40px;
-  }
-
-  .art-panel {
-    height:350px;
-  }
-
-  .info-grid {
-    grid-template-columns:1fr 1fr;
-  }
-
-  .visit-details,.faq-section {
-    grid-template-columns:1fr;
-    gap:25px;
-  }
-
-  .section {
-    padding-top:40px;
-    padding-bottom:40px;
-  }
-
-  .site-footer {
-    align-items:flex-start;
-    flex-direction:column;
-    gap:12px;
-  }
-
+/* ==========================================================================
+   05. HERO LAYOUT & EXHIBITION SECTIONS
+   ========================================================================== */
+.hero {
+  padding: clamp(50px, 7vw, 90px) var(--page-gutter);
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: clamp(40px, 5vw, 80px);
+  align-items: center;
 }
 
-@media(prefers-reduced-motion:no-preference) {
-  html {
-    scroll-behavior:smooth;
-  }
-
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.expo-title{
+.eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 1px;
+  background-color: var(--accent);
+}
 
+.texti {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+  font-weight: 600;
 }
-/* 14. FRAME AND IMAGE OPTIONS — see CUSTOMIZATION.md. */
-.accessibility {
-  border: 1px solid var(--border);
+
+.intro {
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 45ch;
+  margin-bottom: 36px;
+  line-height: 1.75;
 }
-.faq-item button:hover,
-.faq-item button[aria-expanded="true"] {
-  color: var(--accent-hover);
-}
+
 .hero-figure {
   margin: 0;
   min-width: 0;
+  position: relative;
 }
+
 .hero-image {
   display: block;
   width: 100%;
-  height: 475px;
-  object-fit: cover;
+  height: 480px;
+  object-fit: contain;
   object-position: center;
-  padding: 12px;
-    object-fit: contain;       
-  object-position: center;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border-gold);
+  border-radius: 4px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.hero-image:hover {
+  transform: scale(1.015);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7);
 }
 
 .hero-figure figcaption {
-  margin-top: 12px;
+  margin-top: 14px;
   color: var(--muted);
   font-size: 12px;
+  letter-spacing: 0.05em;
   text-align: center;
+  font-style: italic;
 }
 
-.section-image {
+.hero-caption {
+  margin: 28px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ==========================================================================
+   06. BUTTONS & ACTIONS (ART MUSEUM CTA STYLING)
+   ========================================================================== */
+.button {
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  background: var(--accent);
+  color: #0c0d10;
+  padding: 13px 26px;
+  text-decoration: none;
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: #0c0d10;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(197, 160, 89, 0.35);
+}
+
+.button--secondary {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  box-shadow: none;
+}
+
+.button--secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.button--outline-danger {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  box-shadow: none;
+}
+
+.button--outline-danger:hover {
+  background: var(--danger);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   07. VISIT INFORMATION & INFO GRID
+   ========================================================================== */
+.section {
+  padding: var(--section-space) var(--page-gutter);
+  border-top: 1px solid var(--border);
+  scroll-margin-top: 40px;
+}
+
+.section-heading > p:last-child, .faq-section > div > p:last-child {
+  color: var(--muted);
+}
+
+.section-heading h2 {
+  margin-bottom: 16px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 44px 0 0;
+  gap: 28px;
+}
+
+.info-grid > div {
+  border-top: 1.5px solid var(--accent);
+  padding-top: 20px;
+  background: var(--surface);
+  padding: 24px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--accent);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.info-grid > div:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-gold);
+  border-top-color: var(--accent-hover);
+}
+
+.info-grid dt {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  margin-bottom: 12px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.info-grid dd {
+  margin: 0;
+  font-family: var(--heading-font);
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #f4f2ec;
+}
+
+.info-grid small {
   display: block;
-  width: 100%;
-  height: auto;
-  margin-block: 24px;
-}
-@media (max-width: 750px) {
-  .hero-image {
-    height: 350px;
-  }
-}
-@media (max-width: 380px) {
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
+  font-family: var(--body-font);
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 6px;
 }
 
-/* Inicio: otras exposiciones */
+/* ==========================================================================
+   08. FAQ ACCORDION (MUSEUM GUIDE STYLE)
+   ========================================================================== */
+.faq-section {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 65px;
+  padding-bottom: 80px;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq-item {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  transition: border-color 0.25s ease;
+  overflow: hidden;
+}
+
+.faq-item:hover {
+  border-color: var(--border-gold);
+}
+
+.faq-item h3 {
+  margin: 0;
+}
+
+.faq-item button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: none;
+  color: #f4f2ec;
+  padding: 20px 24px;
+  font-family: var(--heading-font);
+  font-size: 1.15rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.faq-item button span {
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--accent);
+  font-family: var(--body-font);
+  font-weight: 300;
+}
+
+.faq-item button:hover,
+.faq-item button[aria-expanded="true"] {
+  color: var(--accent);
+}
+
+.faq-item p {
+  font-size: 0.95rem;
+  color: var(--muted);
+  padding: 0 24px 22px;
+  line-height: 1.65;
+}
+
+/* ==========================================================================
+   09. EXHIBITIONS & CARDS (CURATED GALLERY GRID)
+   ========================================================================== */
 .exhibitions {
-  padding: 24px var(--page-gutter) 72px;
+  padding: 36px var(--page-gutter) 84px;
   border-top: 1px solid var(--border);
 }
 
@@ -458,13 +527,13 @@ h1 em {
 }
 
 .exhibitions h2 {
-  font-size: clamp(2rem, 4vw, 3rem);
-  margin-bottom: 12px;
+  font-size: clamp(2rem, 3.8vw, 3.2rem);
+  margin-bottom: 14px;
 }
 
 .exhibitions__heading > p:last-child {
   color: var(--muted);
-  margin-bottom: 32px;
+  margin-bottom: 40px;
 }
 
 .exhibitions__grid {
@@ -472,37 +541,64 @@ h1 em {
   margin: 0 0 36px;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 28px;
 }
 
 .exhibition-card {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 24px;
-  background: var(--surface, #24221e);
+  gap: 14px;
+  padding: 28px;
+  background: var(--surface);
   border: 1px solid var(--border);
+  border-radius: 4px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.exhibition-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.exhibition-card:hover {
+  border-color: var(--border-gold);
+  transform: translateY(-4px);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+}
+
+.exhibition-card:hover::before {
+  opacity: 1;
 }
 
 .exhibition-card h3 {
   font-family: var(--heading-font);
   font-weight: 500;
-  font-size: 1.7rem;
-  line-height: 1.15;
+  font-size: 1.65rem;
+  line-height: 1.2;
   margin: 0;
 }
 
 .exhibition-card p {
   margin: 0;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 .exhibition-card__meta {
   font-size: 11px;
-  letter-spacing: .12em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--accent-hover);
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .exhibition-card__dates {
@@ -512,17 +608,118 @@ h1 em {
 
 .exhibition-card__link {
   margin-top: auto;
-  padding-top: 8px;
-  font-size: 14px;
+  padding-top: 12px;
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
-/* Error junto al campo que falló (formularios de Gestión, Registro e Inicio de sesión). */
+.exhibition-card__link:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   10. FOOTER & DETAILS
+   ========================================================================== */
+.site-footer {
+  background: var(--footer-surface);
+  color: #f4f2ec;
+  padding: 48px var(--page-gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  border-top: 1px solid var(--border);
+  margin-top: 60px;
+}
+
+.site-footer span {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.site-footer p {
+  font-size: 13px;
+  margin: 0;
+  color: var(--muted);
+}
+
+.site-footer small {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Form validation error styling */
 .field-error {
   margin: 4px 0 8px;
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--danger);
+  font-weight: 500;
 }
 
 [aria-invalid='true'] {
   border-color: var(--danger) !important;
+}
+
+/* ==========================================================================
+   11. RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+@media (max-width: 750px) {
+  .site-header {
+    padding: 20px var(--page-gutter);
+    flex-wrap: wrap;
+  }
+
+  .site-header nav {
+    flex-basis: 100%;
+    gap: 12px 20px;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding-top: 40px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .faq-section {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .section {
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+
+  .site-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }

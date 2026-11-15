@@ -1,79 +1,117 @@
-/* 1. Page: inherits the existing theme, without changing global rules. */
+/* ==========================================================================
+   CATALOG & ARTWORK GALLERY — FINE ART MUSEUM DISPLAY
+   ========================================================================== */
 .catalog-page {
   min-height: 65vh;
   padding: 64px var(--page-gutter, 6%);
 }
 
 .catalog-heading {
-  margin-bottom: 36px;
+  margin-bottom: 44px;
 }
 
 .catalog-heading h1 {
+  font-family: var(--heading-font);
   font-size: clamp(2.5rem, 5vw, 4.5rem);
   overflow-wrap: anywhere;
+  margin-bottom: 16px;
 }
 
 .catalog-heading > p:last-child,
 .catalog-count {
-  color: var(--muted, #bcb3a3);
+  color: var(--muted, #a6a39d);
+  font-size: 0.95rem;
 }
 
-/* 2. Search and medium filter. */
+/* 2. Search and medium filter */
 .catalog-filters {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
   align-items: end;
-  gap: 20px;
+  gap: 24px;
+  background: var(--surface);
+  padding: 24px 28px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
 .catalog-filters label {
   display: block;
   margin-bottom: 8px;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .catalog-filters input,
 .catalog-filters select {
   width: 100%;
   min-width: 0;
-  padding: 12px;
+  padding: 13px 16px;
   font: inherit;
-  color: var(--text, #eee5d4);
-  background: var(--surface, #24221e);
-  border: 1px solid var(--border, #514a3d);
-  border-radius: 0;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: #101217;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  transition: all 0.2s ease;
 }
 
 .catalog-filters input::placeholder {
-  color: var(--muted, #bcb3a3);
+  color: var(--muted);
 }
 
 .catalog-filters input:focus-visible,
 .catalog-filters select:focus-visible {
-  outline: 2px solid var(--accent, #c3a777);
-  outline-offset: 3px;
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(197, 160, 89, 0.25);
 }
 
 .catalog-filters button:disabled {
-  opacity: .55;
-  cursor: default;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .catalog-count {
-  margin-block: 20px 28px;
-  font-size: 13px;
+  margin-block: 24px 32px;
+  font-size: 13.5px;
+  letter-spacing: 0.04em;
 }
 
-/* 3. Cards and images. contain shows the entire artwork without cropping. */
+/* 3. Cards and images */
 .catalog-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 28px;
+  gap: 32px;
 }
 
 .artwork-card {
   min-width: 0;
-  border: 1px solid var(--border, #514a3d);
-  background: #000000;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.artwork-card:hover {
+  border-color: var(--border-gold);
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+
+.artwork-card__media {
+  position: relative;
+  display: block;
+  background: #0f1115;
+  overflow: hidden;
 }
 
 .artwork-card__image,
@@ -82,88 +120,117 @@
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: contain;
-  background: var(--surface-raised, #302c24);
+  background: radial-gradient(circle at center, #181b22 0%, #0d0f13 100%);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 12px;
+}
+
+.artwork-card:hover .artwork-card__image {
+  transform: scale(1.03);
 }
 
 .artwork-card__placeholder {
   display: grid;
   place-items: center;
-  padding: 20px;
-  color: var(--muted, #bcb3a3);
-  font-family: var(--heading-font, Georgia, serif);
-}
-
-.artwork-card__body {
   padding: 24px;
-}
-
-.artwork-card h2 {
-  font-size: 1.8rem;
-  overflow-wrap: anywhere;
-}
-
-.artwork-card__medium {
-  color: var(--accent, #c3a777);
-  font-size: 12px;
-  letter-spacing: .1em;
-}
-
-.artwork-card__description {
-  color: #ffffff;
-  white-space: pre-line;
-  overflow-wrap: anywhere;
-}
-
-.artwork-card__sample {
-  color: var(--muted, #bcb3a3);
-  font-size: 12px;
-  border-left: 2px solid var(--accent, #c3a777);
-  padding-left: 10px;
-}
-
-/* 4. Card link and artwork page with its image gallery. */
-.artwork-card__media {
-  position: relative;
-  display: block;
+  color: var(--muted);
+  font-family: var(--heading-font);
+  font-size: 1.1rem;
+  text-align: center;
+  font-style: italic;
 }
 
 .artwork-card__count {
   position: absolute;
-  right: 10px;
-  bottom: 10px;
-  padding: 4px 10px;
-  font-size: 12px;
-  color: #ffffff;
-  background: rgba(0, 0, 0, .75);
-  border: 1px solid var(--border, #514a3d);
+  right: 12px;
+  bottom: 12px;
+  padding: 5px 12px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #f4f2ec;
+  background: rgba(12, 13, 16, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-gold);
+  border-radius: 2px;
+}
+
+.artwork-card__body {
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.artwork-card h2 {
+  font-family: var(--heading-font);
+  font-size: 1.7rem;
+  margin: 6px 0 12px;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
 }
 
 .artwork-card h2 a {
-  color: inherit;
+  color: #f4f2ec;
   text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 .artwork-card h2 a:hover,
 .artwork-card h2 a:focus-visible {
-  text-decoration: underline;
+  color: var(--accent);
+  text-decoration: none;
 }
 
+.artwork-card__medium {
+  color: var(--accent);
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.artwork-card__description {
+  color: var(--muted);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 12px 0 0;
+}
+
+.artwork-card__sample {
+  color: var(--accent-hover);
+  font-size: 12px;
+  border-left: 2px solid var(--accent);
+  padding-left: 10px;
+  margin-top: 14px;
+}
+
+/* 4. Artwork page detail view */
 .artwork-detail__layout {
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-  gap: 40px;
-  margin-top: 28px;
+  gap: 48px;
+  margin-top: 36px;
 }
 
 .artwork-detail__info h1 {
-  font-size: clamp(2.2rem, 4vw, 3.6rem);
+  font-family: var(--heading-font);
+  font-size: clamp(2.4rem, 4vw, 3.8rem);
   overflow-wrap: anywhere;
+  margin-bottom: 20px;
 }
 
 .gallery__viewport {
   position: relative;
-  border: 1px solid var(--border, #514a3d);
-  background: var(--surface-raised, #302c24);
+  border: 1px solid var(--border-gold);
+  border-radius: 4px;
+  background: radial-gradient(circle at center, #181b22 0%, #0d0f13 100%);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
 }
 
 .gallery__image,
@@ -172,13 +239,15 @@
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: contain;
+  padding: 16px;
 }
 
 .gallery__placeholder {
   display: grid;
   place-items: center;
-  color: var(--muted, #bcb3a3);
-  background: var(--surface-raised, #302c24);
+  color: var(--muted);
+  background: #14171d;
+  font-family: var(--heading-font);
 }
 
 .gallery__arrow {
@@ -187,31 +256,46 @@
   transform: translateY(-50%);
   width: 48px;
   height: 48px;
-  font-size: 32px;
+  font-size: 28px;
   line-height: 1;
-  color: #ffffff;
-  background: rgba(0, 0, 0, .65);
-  border: 1px solid var(--border, #514a3d);
+  color: #f4f2ec;
+  background: rgba(12, 13, 16, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-gold);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
   cursor: pointer;
+  transition: all 0.25s ease;
 }
 
-.gallery__arrow--prev { left: 10px; }
-.gallery__arrow--next { right: 10px; }
+.gallery__arrow:hover {
+  background: var(--accent);
+  color: #0c0d10;
+  border-color: var(--accent);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.gallery__arrow--prev { left: 16px; }
+.gallery__arrow--next { right: 16px; }
 
 .gallery__thumbs {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .gallery__thumb {
-  width: 72px;
-  height: 54px;
+  width: 80px;
+  height: 60px;
   padding: 0;
-  background: var(--surface-raised, #302c24);
+  background: #14171d;
   border: 2px solid transparent;
+  border-radius: 3px;
+  overflow: hidden;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .gallery__thumb img {
@@ -219,35 +303,38 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: .6;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
 }
 
 .gallery__thumb[aria-current='true'] {
-  border-color: var(--accent, #c3a777);
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(197, 160, 89, 0.4);
 }
 
-.gallery__thumb[aria-current='true'] img {
+.gallery__thumb[aria-current='true'] img,
+.gallery__thumb:hover img {
   opacity: 1;
 }
 
 .gallery button:focus-visible,
 .artwork-card__media:focus-visible {
-  outline: 2px solid var(--accent-hover, #0d82f0);
-  outline-offset: 2px;
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .gallery__image {
-    animation: gallery-fade .3s ease;
+    animation: gallery-fade 0.35s ease;
   }
 }
 
 @keyframes gallery-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-/* 5. Responsive layout. */
+/* 5. Responsive layout */
 @media (max-width: 1000px) {
   .catalog-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -266,7 +353,19 @@
   }
 }
 
-/* Galería manual: permite scroll vertical y navegación por teclado. */
-.gallery { min-width: 0; touch-action: pan-y; }
-.gallery:focus-visible { outline: 2px solid var(--accent-hover); outline-offset: 4px; }
-.gallery__counter { margin: 12px 0; font-size: 14px; }
+.gallery {
+  min-width: 0;
+  touch-action: pan-y;
+}
+
+.gallery:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.gallery__counter {
+  margin: 14px 0;
+  font-size: 13.5px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
