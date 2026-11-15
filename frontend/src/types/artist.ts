@@ -1,4 +1,4 @@
-export const socialKeys = ['instagram', 'website', 'twitter', 'behance'] as const;
+export const socialKeys = ['instagram', 'website', 'twitter', 'behance', 'pixiv'] as const;
 export type SocialKey = (typeof socialKeys)[number];
 export type ArtistSocials = Partial<Record<SocialKey, string>>;
 

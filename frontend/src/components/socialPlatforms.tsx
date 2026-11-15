@@ -36,7 +36,7 @@ const platforms: Record<SocialKey, SocialPlatform> = {
     ),
   },
   twitter: {
-    label: 'X / Twitter', inputLabel: 'X / Twitter URL', placeholder: 'https://x.com/...',
+    label: 'Twitter', inputLabel: 'X / Twitter URL', placeholder: 'https://x.com/...',
     icon: (
       <svg {...iconProps}>
         <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
@@ -54,6 +54,12 @@ const platforms: Record<SocialKey, SocialPlatform> = {
         <line x1="15" y1="9" x2="22" y2="9" />
       </svg>
     ),
+  },
+  pixiv: {
+  label: 'Pixiv',
+  inputLabel: 'Pixiv URL',
+  placeholder: 'https://www.pixiv.net/...',
+  icon: <span aria-hidden="true">▶</span>,
   },
 };
 
