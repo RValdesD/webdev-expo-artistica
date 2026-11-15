@@ -64,7 +64,7 @@ if (!username || !email || !name || extra.length) {
       throw new Error('Ya existe una cuenta con ese usuario o correo.');
     }
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = await User.create({ username, email, name, passwordHash, role: 'artista' });
+    const user = await User.create({ createdVia: 'console', username, email, name, passwordHash, role: 'artista' });
     console.log(`Artista creado: ${user.username} (${user.email}). Ya puede iniciar sesión.`);
   } catch (error: unknown) {
     console.error(error instanceof Error ? error.message : 'No se pudo crear el artista.');

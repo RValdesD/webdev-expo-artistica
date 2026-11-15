@@ -2,9 +2,21 @@ import { Router } from "express";
 import bcrypt from "bcrypt";
 import { User } from "../models/User.js";
 import { ADMIN_EMAIL_DOMAIN, isAdminEmail, isArtistEmail } from "../utils/config.js";
-import { requireSameOrigin } from "../utils/middleware.js";
+import { requireSameOrigin, withUser, requireOrganizer } from "../utils/middleware.js";
 
 const usersRouter = Router();
+
+usersRouter.get('/', withUser, requireOrganizer, async (_req, res, next) => {
+  try {
+    res.set('Cache-Control', 'no-store');
+    const users = await User.find().select('_id username name email role createdVia createdAt').sort({ createdAt: -1, _id: -1 }).lean();
+    // Explicit response fields prevent authentication data from leaking.
+    res.json(users.map(user => ({
+      id: String(user._id), username: user.username, name: user.name,
+      email: user.email, role: user.role, createdVia: user.createdVia ?? 'unknown',
+    })));
+  } catch (error) { next(error); }
+});
 
 usersRouter.post("/", requireSameOrigin, async (req, res, next) => {
   try {
@@ -55,6 +67,7 @@ usersRouter.post("/", requireSameOrigin, async (req, res, next) => {
       name,
       passwordHash,
       role: "visitante",
+      createdVia: "registration",
     });
     res.status(201).json({ user });
   } catch (error: unknown) {

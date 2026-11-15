@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import SocialImage from '../components/SocialImage';
 import ArtistPortrait from '../components/ArtistPortrait';
@@ -45,6 +45,10 @@ function ArtistProfile({ id }: { id: string | undefined }) {
 
     return () => controller.abort();
   }, [id, attempt]);
+
+  if (result.status === 'ready' && result.artist.slug && id !== result.artist.slug) {
+    return <Navigate to={`/artists/${result.artist.slug}`} replace />;
+  }
 
   return (
     <section className="artists-page">

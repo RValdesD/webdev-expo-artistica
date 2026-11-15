@@ -1,6 +1,7 @@
 import { Schema, model } from 'mongoose';
 
 export interface UserData {
+  createdVia?: 'console' | 'registration';
   username: string;
   email?: string;
   avatarUrl?: string;
@@ -15,6 +16,7 @@ const userSchema = new Schema<UserData>({
   email: { type: String, unique: true, sparse: true, trim: true, lowercase: true, maxlength: 254, match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
   name: { type: String, required: true, trim: true, maxlength: 120 },
   passwordHash: { type: String, required: true, select: false },
+  createdVia: { type: String, enum: ['console', 'registration'] },
   avatarUrl: { type: String, default: '' },
   role: { type: String, enum: ['visitante', 'organizador', 'artista'], default: 'visitante', required: true },
 }, { timestamps: true });

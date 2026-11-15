@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import { Artist } from '../models/Artist.js';
+import { ensureArtistSlug } from '../utils/artistSlug.js';
 import { Artwork } from '../models/Artwork.js';
 import { Workshop } from '../models/Workshop.js';
 import { withUser, requireOrganizer } from '../utils/middleware.js';
 import { pickFields } from '../utils/body.js';
 
 const artistsRouter = Router();
-const publicFields = 'id name bio discipline imageUrl socials socialImages isSample -_id';
+const publicFields = 'id slug name bio discipline imageUrl socials socialImages isSample -_id';
 const allowed = ['id', 'name', 'bio', 'discipline', 'imageUrl', 'socials', 'socialImages'] as const;
 
 
@@ -17,8 +18,10 @@ artistsRouter.get('/', async (_req, res, next) => {
 
 artistsRouter.get('/:id', async (req, res, next) => {
   try {
-    const artist = await Artist.findOne({ id: req.params.id }).select(publicFields).lean();
+    const artist = await Artist.findOne({ id: req.params.id }).select(publicFields).lean()
+      ?? await Artist.findOne({ slug: req.params.id }).select(publicFields).lean();
     if (!artist) { res.status(404).json({ error: 'Artista no encontrado.' }); return; }
+    artist.slug = await ensureArtistSlug(artist.id, artist.name);
     res.json(artist);
   } catch (error: unknown) { next(error); }
 });
@@ -38,6 +41,7 @@ artistsRouter.put('/:id', withUser, requireOrganizer, async (req, res, next) => 
     delete changes.id;
     const artist = await Artist.findOneAndUpdate({ id: req.params.id }, changes, { new: true, runValidators: true });
     if (!artist) { res.status(404).json({ error: 'Artista no encontrado.' }); return; }
+    artist.slug = await ensureArtistSlug(artist.id, artist.name);
     res.json(artist);
   } catch (error: unknown) { next(error); }
 });

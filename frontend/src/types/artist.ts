@@ -4,6 +4,7 @@ export type ArtistSocials = Partial<Record<SocialKey, string>>;
 
 export interface Artist {
   id: string;
+  slug?: string;
   name: string;
   bio: string;
   discipline: string;

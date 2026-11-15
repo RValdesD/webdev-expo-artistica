@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import RegisteredUsers from '../components/RegisteredUsers';
 import ArtistManager from '../components/ArtistManager';
 import ArtworkManager from '../components/ArtworkManager';
 import WorkshopManager from '../components/WorkshopManager';
@@ -8,7 +9,7 @@ import { apiError } from '../services/auth';
 import type { Artist } from '../types/artist';
 import '../styles/management.css';
 
-type ManagementTab = 'artworks' | 'workshops' | 'artists';
+type ManagementTab = 'artworks' | 'workshops' | 'artists' | 'users';
 
 export default function Management() {
   const [activeTab, setActiveTab] = useState<ManagementTab>('artworks');
@@ -50,9 +51,11 @@ export default function Management() {
           onClick={() => setActiveTab('workshops')}>Talleres</button>
         <button type="button" role="tab" aria-selected={activeTab === 'artists'}
           onClick={() => setActiveTab('artists')}>Artistas y Redes</button>
+        <button type="button" role="tab" aria-selected={activeTab === 'users'}
+          onClick={() => setActiveTab('users')}>Usuarios registrados</button>
       </div>
 
-      {error && (
+      {activeTab !== 'users' && error && (
         <p role="alert">
           {error}{' '}
           <button className="button button--secondary" type="button" onClick={reloadArtists}>
@@ -61,7 +64,7 @@ export default function Management() {
         </p>
       )}
 
-      {!loaded ? (!error && <p role="status">Cargando artistas…</p>) : (
+      {activeTab === 'users' ? <RegisteredUsers /> : !loaded ? (!error && <p role="status">Cargando artistas…</p>) : (
         activeTab === 'artists' ? (
           <ArtistManager artists={artists} onChanged={reloadArtists} />
         ) : artists.length === 0 ? (

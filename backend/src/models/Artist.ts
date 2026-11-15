@@ -14,6 +14,7 @@ export type ArtistSocials = Partial<Record<SocialKey, string>>;
 
 export interface ArtistData {
   id: string;
+  slug?: string;
   name: string;
   bio: string;
   discipline: string;
@@ -58,6 +59,7 @@ const artistSchema = new Schema<ArtistData>(
   {
     // Public string identifier, compatible with the original frontend types.
     id: { type: String, required: true, unique: true, match: /^[a-z0-9-]+$/ },
+    slug: { type: String, unique: true, sparse: true, match: /^[a-z0-9-]+$/ },
     name: { type: String, required: true, trim: true, maxlength: 120 },
     bio: { type: String, required: true, trim: true, maxlength: 5000 },
     discipline: { type: String, required: true, trim: true, maxlength: 100 },

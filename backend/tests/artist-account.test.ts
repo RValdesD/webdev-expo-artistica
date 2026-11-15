@@ -13,16 +13,18 @@ const { User } = await import('../src/models/User.js');
 const { Artist } = await import('../src/models/Artist.js');
 const { Submission } = await import('../src/models/Submission.js');
 const { Artwork } = await import('../src/models/Artwork.js');
-const originals = { findUser: User.findById, updateUser: User.findByIdAndUpdate, profile: Artist.findOneAndUpdate, exists: Artist.exists, create: Submission.create, review: Submission.findOneAndUpdate, approve: Submission.findByIdAndUpdate, publish: Artwork.updateOne };
+const originals = { init: Artist.init, findArtist: Artist.findOne, findUser: User.findById, updateUser: User.findByIdAndUpdate, profile: Artist.findOneAndUpdate, exists: Artist.exists, create: Submission.create, review: Submission.findOneAndUpdate, approve: Submission.findByIdAndUpdate, publish: Artwork.updateOne };
 const id = '507f1f77bcf86cd799439011'; const csrf = 'artist-csrf';
 const token = jwt.sign({ id, username: 'artist', csrf }, process.env.JWT_SECRET, { expiresIn: '1h' });
 let role = 'artista'; let profileFilter: unknown; let submitted: Record<string, unknown> | undefined; let published = false; let reviewFilter: unknown;
 const auth = (req: request.Test) => req.set('Cookie', `token=${token}`).set('X-CSRF-Token', csrf);
 beforeEach(() => {
+  Artist.init = (async () => Artist) as typeof Artist.init;
+  Artist.findOne = (async () => ({ slug: 'artist' })) as unknown as typeof Artist.findOne;
   role = 'artista'; published = false; submitted = undefined; profileFilter = undefined;
   User.findById = (async () => ({ id, role, name: 'Artista' })) as unknown as typeof User.findById;
   User.findByIdAndUpdate = (async () => ({})) as unknown as typeof User.findByIdAndUpdate;
-  Artist.findOneAndUpdate = (async (filter: unknown, update: { $set: object }) => { profileFilter = filter; return update.$set; }) as unknown as typeof Artist.findOneAndUpdate;
+  Artist.findOneAndUpdate = (async (filter: unknown, update: { $set: object }) => { profileFilter = filter; return { ...update.$set, id: `artist-${id}` }; }) as unknown as typeof Artist.findOneAndUpdate;
   Artist.exists = (async () => ({ _id: id })) as unknown as typeof Artist.exists;
   Submission.create = (async (value: Record<string, unknown>) => { submitted = value; return value; }) as unknown as typeof Submission.create;
   Submission.findOneAndUpdate = (async (filter: unknown) => { reviewFilter = filter; return { id, title: 'Obra', artistId: `artist-${id}`, medium: 'Pintura', year: 2026, imageUrl: '/images/test.webp' }; }) as unknown as typeof Submission.findOneAndUpdate;
@@ -30,6 +32,7 @@ beforeEach(() => {
   Artwork.updateOne = (async () => { published = true; return {}; }) as unknown as typeof Artwork.updateOne;
 });
 after(async () => {
+  Artist.init = originals.init; Artist.findOne = originals.findArtist;
   User.findById = originals.findUser; User.findByIdAndUpdate = originals.updateUser;
   Artist.findOneAndUpdate = originals.profile; Artist.exists = originals.exists;
   Submission.create = originals.create; Submission.findOneAndUpdate = originals.review; Submission.findByIdAndUpdate = originals.approve; Artwork.updateOne = originals.publish;

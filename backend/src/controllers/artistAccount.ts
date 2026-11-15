@@ -3,6 +3,7 @@ import { existsSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { User } from '../models/User.js';
 import { Artist } from '../models/Artist.js';
+import { ensureArtistSlug } from '../utils/artistSlug.js';
 import { Submission } from '../models/Submission.js';
 import { withUser } from '../utils/middleware.js';
 import { ownsImage, saveImage, uploadDirectory } from '../utils/uploads.js';
@@ -27,6 +28,7 @@ router.get('/profile', async (req, res, next) => {
   try {
     const user = await User.findById(req.userId);
     const profile = await Artist.findOne({ id: `artist-${req.userId}` });
+    if (profile) profile.slug = await ensureArtistSlug(profile.id, profile.name);
     res.json(profile ?? { name: user?.name, bio: '', discipline: '', imageUrl: '' });
   } catch (error) { next(error); }
 });
@@ -41,6 +43,7 @@ router.put('/profile', async (req, res, next) => {
     }
     const profile = await Artist.findOneAndUpdate({ id: `artist-${req.userId}` },
       { $set: { name, bio, discipline, imageUrl: imageUrl || '' } }, { upsert: true, new: true, runValidators: true });
+    profile.slug = await ensureArtistSlug(profile.id, profile.name);
     await User.findByIdAndUpdate(req.userId, { avatarUrl: profile.imageUrl }, { runValidators: true });
     res.json(profile);
   } catch (error) { next(error); }
