@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from '../auth/AuthContext';
+import { useAuthStore } from '../stores/authStore';
 import axiosSecure from '../utils/axiosSecure';
 import { apiError } from '../services/auth';
 import '../styles/registered-users.css';
@@ -13,7 +13,7 @@ const roles = { organizador: 'Administrador', artista: 'Artista', visitante: 'Vi
 const origins = { console: 'Consola', registration: 'Registro público', unknown: 'No registrado' };
 
 export default function RegisteredUsers() {
-  const { user: currentUser } = useAuth();
+  const { user: currentUser } = useAuthStore();
   const [deleting, setDeleting] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState('');
   const [message, setMessage] = useState('');

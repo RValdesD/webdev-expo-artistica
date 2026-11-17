@@ -13,6 +13,8 @@ import workshopsRouter from './controllers/workshopsController.js';
 import expoRouter from './controllers/expoController.js';
 import registrationsRouter from './controllers/registrations.js';
 import { errorHandler, requestLogger, unknownEndpoint } from './utils/middleware.js';
+import testingRouter from './controllers/testing.js';
+import { NODE_ENV } from './utils/config.js';
 
 const app = express();
 app.disable('x-powered-by');
@@ -30,6 +32,8 @@ app.use('/api/workshops', workshopsRouter);
 app.use('/api/registrations', registrationsRouter);
 app.use('/api/expo', expoRouter);
 app.use('/api/exhibitions', exhibitionsRouter);
+// Ruta para reiniciar la base de datos en las pruebas E2E; no existe en desarrollo ni en producción.
+if (NODE_ENV === 'test') app.use('/api/testing', testingRouter);
 // Production serves the built React application and API on the same origin.
 // Keep unknown API URLs as JSON errors rather than returning the SPA.
 app.use('/api', unknownEndpoint);

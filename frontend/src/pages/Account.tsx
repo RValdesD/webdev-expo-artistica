@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
-import { useAuth } from '../auth/AuthContext';
+import { useAuthStore } from '../stores/authStore';
 
 export default function Account() {
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   return (
     <section className="status" aria-labelledby="account-title">
       <p className="eyebrow">EXPO / CUENTA</p>

@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../auth/AuthContext';
+import { useAuthStore } from '../stores/authStore';
+import { useArtistsStore } from '../stores/artistsStore';
 import axiosSecure from '../utils/axiosSecure';
 import { apiError } from '../services/auth';
 import ImageUpload from '../components/ImageUpload';
@@ -10,7 +11,7 @@ interface Submission { _id: string; title: string; status: string; reviewNote: s
 const emptyWork = () => ({ title: '', medium: '', year: new Date().getFullYear(), description: '', imageUrl: '' });
 const statusLabels: Record<string, string> = { pending: 'Pendiente de revisión', publishing: 'Publicación en proceso', approved: 'Publicada', rejected: 'Rechazada' };
 export default function UserProfile() {
-  const { user, refresh } = useAuth();
+  const { user, refresh } = useAuthStore();
   const [profile, setProfile] = useState<Profile>({ name: '', discipline: '', bio: '', imageUrl: '' });
   const [work, setWork] = useState(emptyWork);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
@@ -35,7 +36,7 @@ export default function UserProfile() {
   }, [user?.role, attempt]);
   async function saveProfile(event: FormEvent) {
     event.preventDefault(); if (saving || profileUpload || workUpload) return; setSaving(true); setError(''); setMessage('');
-    try { const { data } = await axiosSecure.put<Profile>('/api/artist-account/profile', profile); setProfile(data); setMessage('Perfil guardado.'); await refresh(); }
+    try { const { data } = await axiosSecure.put<Profile>('/api/artist-account/profile', profile); setProfile(data); setMessage('Perfil guardado.'); void useArtistsStore.getState().load(true); await refresh(); }
     catch (reason) { setError(apiError(reason)); } finally { setSaving(false); }
   }
   async function submitWork(event: FormEvent) {

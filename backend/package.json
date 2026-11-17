@@ -14,7 +14,8 @@
     "user:create-admin": "node --import tsx src/createAdmin.ts",
     "test": "node --import tsx --test tests/*.test.ts",
     "test:integration": "node --import tsx --test tests/integration/*.test.ts",
-    "user:create-artist": "node --import tsx src/createArtist.ts"
+    "user:create-artist": "node --import tsx src/createArtist.ts",
+    "start:e2e": "node --import tsx tests/e2eServer.ts"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

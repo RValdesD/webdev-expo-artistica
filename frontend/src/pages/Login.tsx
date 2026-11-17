@@ -1,13 +1,13 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../auth/AuthContext';
+import { useAuthStore } from '../stores/authStore';
 import axios from 'axios';
 import { apiError } from '../services/auth';
 import FieldError, { fieldProps, type FieldErrors } from '../components/FieldError';
 import '../styles/auth.css';
 
 export default function Login() {
-  const { user, login } = useAuth();
+  const { user, login } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
   const [username, setUsername] = useState('');

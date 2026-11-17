@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../auth/AuthContext';
+import { useAuthStore } from '../stores/authStore';
 import { apiError } from '../services/auth';
 import '../styles/auth.css';
 import '../styles/profile.css';
 
 export default function AuthNav() {
-  const { user, loading, unavailable, refresh, logout } = useAuth();
+  const { user, loading, unavailable, refresh, logout } = useAuthStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');

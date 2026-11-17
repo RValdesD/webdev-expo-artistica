@@ -3,6 +3,8 @@
 Diagnóstico y plan de trabajo para completar los requerimientos del Hito 3.
 
 > Fecha del diagnóstico: 17 de noviembre de 2026.
+>
+> **Actualización 17-11-2026:** Fases 1 y 2 terminadas (Zustand y Playwright). En la fase 3 ya está verificado el ruteo; quedan el despliegue (2.4) y la presentación (fase 4).
 
 ---
 
@@ -10,9 +12,9 @@ Diagnóstico y plan de trabajo para completar los requerimientos del Hito 3.
 
 | # | Requerimiento | Estado | Notas |
 |---|---|---|---|
-| 1 | Estado global (Zustand o Redux) | ❌ **No implementado** | Se usa React Context, no Zustand ni Redux |
-| 2 | Ruteo (React Router) | ✅ **Implementado** (parcial) | Router funciona; falta verificar back/forward/F5 en todas las rutas |
-| 3 | Pruebas E2E (Playwright) | ❌ **No implementado** | No existe carpeta `e2etests/`, ni Playwright instalado |
+| 1 | Estado global (Zustand o Redux) | ✅ **Implementado** | Zustand: `useAuthStore` y `useArtistsStore` en `frontend/src/stores/` |
+| 2 | Ruteo (React Router) | ✅ **Implementado** | Back/forward/F5 y vuelta tras login verificados en `e2etests/` |
+| 3 | Pruebas E2E (Playwright) | ✅ **Implementado** | `e2etests/` con 10 pruebas (login + ruta protegida, CRUD de artistas, ruteo); `npm run test:e2e` |
 | 4 | Librería de estilos | ✅ **Implementado** | Material UI instalado y en uso (tema, `ThemeProvider`, `CssBaseline`) |
 | 5a | TypeScript estricto | ✅ **Implementado** | `"strict": true` en ambos `tsconfig.json`; sin `any` detectados |
 | 5b | Errores JSON + códigos HTTP | ✅ **Implementado** | Error handler centralizado con códigos 400/401/403/404/409/500 |
@@ -45,13 +47,13 @@ Se deben crear **al menos dos stores**:
 
 #### Tareas
 
-- [ ] **1.1** Instalar Zustand: `npm install zustand --workspace frontend`
-- [ ] **1.2** Crear `frontend/src/stores/authStore.ts` — migrar la lógica de `AuthContext.tsx` a una store Zustand con estado (`user`, `loading`, `unavailable`) y acciones (`login`, `logout`, `refresh`)
-- [ ] **1.3** Crear `frontend/src/stores/expoStore.ts` (o `artistsStore.ts` / `artworksStore.ts`) — un segundo store para la entidad principal del proyecto. Por ejemplo: lista de artistas cacheada, o datos de la exposición
-- [ ] **1.4** Reemplazar `useAuth()` por `useAuthStore()` en todos los componentes que lo usan (`AuthNav`, `ProtectedRoute`, `Login`, `MyVisit`, `Management`, etc.)
-- [ ] **1.5** Eliminar `AuthContext.tsx` y el `<AuthProvider>` de `main.tsx` una vez migrado
-- [ ] **1.6** Verificar que login, logout, restauración de sesión y protección de rutas siguen funcionando
-- [ ] **1.7** Verificar que el segundo store se usa en al menos una vista (p.ej., que la lista de artistas no se re-fetch si ya está en memoria)
+- [x] **1.1** Instalar Zustand: `npm install zustand --workspace frontend`
+- [x] **1.2** Crear `frontend/src/stores/authStore.ts` — migrar la lógica de `AuthContext.tsx` a una store Zustand con estado (`user`, `loading`, `unavailable`) y acciones (`login`, `logout`, `refresh`)
+- [x] **1.3** Crear `frontend/src/stores/expoStore.ts` (o `artistsStore.ts` / `artworksStore.ts`) — un segundo store para la entidad principal del proyecto. Por ejemplo: lista de artistas cacheada, o datos de la exposición
+- [x] **1.4** Reemplazar `useAuth()` por `useAuthStore()` en todos los componentes que lo usan (`AuthNav`, `ProtectedRoute`, `Login`, `MyVisit`, `Management`, etc.)
+- [x] **1.5** Eliminar `AuthContext.tsx` y el `<AuthProvider>` de `main.tsx` una vez migrado
+- [x] **1.6** Verificar que login, logout, restauración de sesión y protección de rutas siguen funcionando
+- [x] **1.7** Verificar que el segundo store se usa en al menos una vista (p.ej., que la lista de artistas no se re-fetch si ya está en memoria)
 
 ---
 
@@ -68,9 +70,9 @@ Se deben crear **al menos dos stores**:
 
 ### Qué verificar
 
-- [ ] **2.1** Que los botones **back** y **forward** del navegador funcionan correctamente entre vistas (no se pierda estado ni se rompa la navegación)
-- [ ] **2.2** Que **F5 (reload)** en cualquier ruta (incluidas `/catalog/abc123`, `/artists/slug`, `/mi-visita`) recarga correctamente gracias al SPA fallback del servidor o de Vite
-- [ ] **2.3** Que después del login, el usuario vuelve a la ruta desde la que fue redirigido (el `state.from` en `Login.tsx`)
+- [x] **2.1** Que los botones **back** y **forward** del navegador funcionan correctamente entre vistas (no se pierda estado ni se rompa la navegación)
+- [x] **2.2** Que **F5 (reload)** en cualquier ruta (incluidas `/catalog/abc123`, `/artists/slug`, `/mi-visita`) recarga correctamente gracias al SPA fallback del servidor o de Vite
+- [x] **2.3** Que después del login, el usuario vuelve a la ruta desde la que fue redirigido (el `state.from` en `Login.tsx`)
 - [ ] **2.4** En producción/deploy: verificar que el servidor sirve `index.html` para cualquier ruta (SPA fallback), o las rutas directas darán 404
 
 > [!IMPORTANT]
@@ -93,23 +95,23 @@ Se deben crear **al menos dos stores**:
 
 #### Tareas
 
-- [ ] **3.1** Instalar Playwright: `npm init playwright@latest` en la raíz, configurando la carpeta `e2etests/`
-- [ ] **3.2** Crear `playwright.config.ts` en la raíz del proyecto, apuntando los tests a `e2etests/`
-- [ ] **3.3** Crear `e2etests/` con al menos estos archivos:
+- [x] **3.1** Instalar Playwright: `npm init playwright@latest` en la raíz, configurando la carpeta `e2etests/`
+- [x] **3.2** Crear `playwright.config.ts` en la raíz del proyecto, apuntando los tests a `e2etests/`
+- [x] **3.3** Crear `e2etests/` con al menos estos archivos:
 
 | Archivo | Caso de prueba |
 |---|---|
 | `auth.spec.ts` | Login con credenciales válidas → verificar acceso a ruta protegida (`/mi-visita`). Intentar acceder sin login → redirige a `/login` |
 | `crud-artists.spec.ts` *(o artworks/workshops)* | Loguearse como organizador → Crear un artista → Verificar que aparece en la lista → Editarlo → Verificar cambios → Eliminarlo → Verificar que desapareció |
 
-- [ ] **3.4** Configurar un script de npm para correr los tests: por ejemplo `"test:e2e": "npx playwright test"` en el `package.json` raíz
-- [ ] **3.5** Agregar instrucciones en el `README.md` (o en un `e2etests/README.md`) para correr los tests:
+- [x] **3.4** Configurar un script de npm para correr los tests: por ejemplo `"test:e2e": "npx playwright test"` en el `package.json` raíz
+- [x] **3.5** Agregar instrucciones en el `README.md` (o en un `e2etests/README.md`) para correr los tests:
   ```
   ## Tests E2E
   Requiere que el backend y frontend estén corriendo.
   npm run test:e2e
   ```
-- [ ] **3.6** Verificar que los tests pasan con la app levantada (backend + frontend + MongoDB)
+- [x] **3.6** Verificar que los tests pasan con la app levantada (backend + frontend + MongoDB)
 
 > [!TIP]
 > Los tests E2E necesitan la app corriendo. Considerar usar `webServer` en `playwright.config.ts` para levantar el frontend automáticamente durante los tests.

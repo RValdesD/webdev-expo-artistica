@@ -75,9 +75,9 @@ test('el esquema de artista rechaza enlaces http sin cifrar', async () => {
 
 const artworkBase = { id: 'obra-prueba', title: 'Obra', artistId: 'artista', medium: 'Óleo', year: 2024 };
 
-test('una obra acepta imágenes extra con rutas o URLs http(s)', async () => {
+test('una obra acepta imágenes extra dentro de /images/', async () => {
   const { Artwork } = await import('../src/models/Artwork.js');
-  await new Artwork({ ...artworkBase, images: ['/images/detalle.jpg', 'https://example.com/obra.jpg'] }).validate();
+  await new Artwork({ ...artworkBase, images: ['/images/detalle.jpg', '/images/obras/vista-2.jpg'] }).validate();
 });
 
 test('una obra rechaza imágenes extra peligrosas o demasiadas', async () => {

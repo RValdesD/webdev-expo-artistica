@@ -157,12 +157,20 @@ backend/src/
   utils/                 configuración, logger y middleware
   seed.ts                seed único
 frontend/src/
-  auth/AuthContext.tsx   estado global de sesión
+  stores/authStore.ts    estado global de sesión (Zustand)
+  stores/artistsStore.ts estado global de artistas (Zustand, lista en memoria)
   components/            UI y ProtectedRoute
   pages/                 vistas del Router
   services/              solicitudes HTTP por recurso
   utils/axiosSecure.ts   cookie + encabezado CSRF
+e2etests/                pruebas E2E con Playwright
+playwright.config.ts     configuración de Playwright
 ```
+
+## Estado global (Zustand)
+
+- `useAuthStore` (`frontend/src/stores/authStore.ts`): usuario conectado, `loading`, `unavailable` y las acciones `login`, `logout` y `refresh`. Al abrir o recargar la página, `main.tsx` llama a `refresh()` para restaurar la sesión desde la cookie. Lo usan `AuthNav`, `ProtectedRoute`, `Login`, `MyVisit`, `Workshops`, `WorkshopCard` y otras vistas.
+- `useArtistsStore` (`frontend/src/stores/artistsStore.ts`): lista de artistas compartida por `/artists`, `/gestion`, `/gestion/exposiciones` y `/otras-exposiciones`. Si la lista se cargó hace menos de un minuto, no se vuelve a pedir; después de crear, editar o borrar un artista se recarga con `load(true)`.
 
 ## Verificación
 
@@ -171,6 +179,23 @@ npm run build
 npm test
 npm run test:integration
 ```
+
+### Pruebas E2E (Playwright)
+
+```sh
+npx playwright install chromium   # solo la primera vez
+npm run test:e2e
+```
+
+No hace falta tener levantados el backend ni MongoDB: Playwright compila el frontend y levanta `backend/tests/e2eServer.ts` en `http://127.0.0.1:3002` con un MongoDB en memoria (no toca la base de datos real). Antes de cada prueba se reinicia la base con `POST /api/testing/reset`, ruta que solo existe con `NODE_ENV=test`.
+
+| Archivo | Qué prueba |
+|---|---|
+| `e2etests/auth.spec.ts` | Login y acceso a `/mi-visita` (ruta protegida); la sesión sigue tras F5; sin sesión redirige a `/login`; contraseña incorrecta; un visitante no entra a `/gestion` |
+| `e2etests/artists-crud.spec.ts` | CRUD de artistas desde `/gestion`: crear, verlo en `/artists`, editar y eliminar |
+| `e2etests/router.spec.ts` | Atrás, adelante y F5 en `/artists/:id`; ruta inexistente; la lista de artistas sale del store sin pedirla otra vez |
+
+Para ver las pruebas en el navegador: `npx playwright test --headed` o `npx playwright test --ui`.
 
 `npm test` no necesita un servidor MongoDB real. `npm run test:integration` inicia un MongoDB temporal aislado y puede descargar su binario la primera vez; necesita permiso para ejecutarlo. Para comprobar el recorrido completo, inicia MongoDB, ejecuta el seed, levanta ambos procesos, crea una cuenta en `/registro`, inicia sesión en `/login`, inscríbete desde `/workshops`, revisa la inscripción en `/mi-visita` y prueba el CRUD desde `/gestion`.
 

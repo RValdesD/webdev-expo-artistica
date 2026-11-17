@@ -1,9 +1,9 @@
 import type { ReactElement } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../auth/AuthContext';
+import { useAuthStore } from '../stores/authStore';
 
 export default function ProtectedRoute({ children, organizerOnly = false }: { children: ReactElement; organizerOnly?: boolean }) {
-  const { user, loading, unavailable, refresh } = useAuth();
+  const { user, loading, unavailable, refresh } = useAuthStore();
   const location = useLocation();
   if (loading) return <section className="status" role="status">Comprobando sesión…</section>;
   if (unavailable) return <section className="status"><p role="alert">No pudimos comprobar tu sesión.</p><button onClick={() => void refresh()}>Reintentar</button></section>;

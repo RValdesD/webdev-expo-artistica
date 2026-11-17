@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../auth/AuthContext';
+import { useAuthStore } from '../stores/authStore';
 import registrationsService from '../services/registrations';
 import { apiError } from '../services/auth';
 import type { Workshop } from '../types/workshop';
@@ -14,7 +14,7 @@ const dateFormatter = new Intl.DateTimeFormat('es-CL', {
 });
 
 export default function MyVisit() {
-  const { user, refresh } = useAuth();
+  const { user, refresh } = useAuthStore();
   const [registrations, setRegistrations] = useState<Workshop[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

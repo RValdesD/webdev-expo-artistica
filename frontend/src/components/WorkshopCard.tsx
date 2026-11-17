@@ -5,7 +5,7 @@ import type { Workshop } from '../types/workshop';
 import workshopsService from '../services/workshops';
 import registrationsService from '../services/registrations';
 import { apiError } from '../services/auth';
-import { useAuth } from '../auth/AuthContext';
+import { useAuthStore } from '../stores/authStore';
 
 interface Props {
   workshop: Workshop;
@@ -19,7 +19,7 @@ const dateFormatter = new Intl.DateTimeFormat('es-CL', {
 });
 
 export default function WorkshopCard({ workshop, onChange }: Props) {
-  const { user, refresh } = useAuth();
+  const { user, refresh } = useAuthStore();
   const [pending, setPending] = useState<PendingAction | null>(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');

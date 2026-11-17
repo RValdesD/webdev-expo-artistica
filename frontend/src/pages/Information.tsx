@@ -1,12 +1,12 @@
 import { Fragment, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../auth/AuthContext';
+import { useAuthStore } from '../stores/authStore';
 import exhibitionsService from '../services/exhibitions';
 import type { Exhibition } from '../types/exhibition';
 import '../styles/exhibitions.css';
 
 export default function Information() {
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const [items, setItems] = useState<Exhibition[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);

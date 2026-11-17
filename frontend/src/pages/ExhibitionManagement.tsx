@@ -1,8 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import service from '../services/exhibitions';
-import artistsService from '../services/artists';
-import type { Artist } from '../types/artist';
+import { useArtistsStore } from '../stores/artistsStore';
 import { apiError, apiFields, apiMessage } from '../services/auth';
 import FieldError, { fieldProps, type FieldErrors } from '../components/FieldError';
 import type { Exhibition, ExhibitionInput } from '../types/exhibition';
@@ -26,8 +25,9 @@ export default function ExhibitionManagement() {
   const [notice, setNotice] = useState('');
   const [fields, setFields] = useState<FieldErrors>({});
   const [attempt, setAttempt] = useState(0);
-  const [artists, setArtists] = useState<Artist[]>([]);
-  useEffect(() => { artistsService.getAll().then(setArtists).catch(() => setArtists([])); }, []);
+  // Artistas para elegir en el formulario, desde el store global.
+  const { artists, load: loadArtists } = useArtistsStore();
+  useEffect(() => { void loadArtists(); }, [loadArtists]);
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true); setError('');

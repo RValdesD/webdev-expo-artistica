@@ -15,9 +15,7 @@ export interface ArtworkData {
 }
 
 export const MAX_ARTWORK_IMAGES = 10;
-// Una ruta del sitio (/images/...) o una URL http(s); nunca javascript: ni data:
-
-// Only files inside frontend/public/images/, including subfolders.
+// Solo archivos dentro de /images/ (frontend/public/images/, con subcarpetas); nunca URLs externas, javascript: ni data:.
 const isImageUrl = (value: string): boolean => {
   if (!value.startsWith('/images/')) return false;
 
@@ -47,7 +45,7 @@ const artworkSchema = new Schema<ArtworkData>(
     images: {
       type: [{
         type: String, trim: true, maxlength: 1000,
-        validate: { validator: isImageUrl, message: 'Cada imagen debe ser una ruta (/images/...) o una URL http(s).' },
+        validate: { validator: isImageUrl, message: 'Cada imagen debe ser una ruta dentro de /images/.' },
       }],
       default: [],
       validate: { validator: (list: string[]) => list.length <= MAX_ARTWORK_IMAGES, message: `Una obra puede tener hasta ${MAX_ARTWORK_IMAGES} imágenes extra.` },

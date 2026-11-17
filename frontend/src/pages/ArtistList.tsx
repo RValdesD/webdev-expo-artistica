@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import ArtistCard from '../components/ArtistCard';
-import artistsService from '../services/artists';
-import type { Artist } from '../types/artist';
+import { useArtistsStore } from '../stores/artistsStore';
 import '../styles/artists.css';
 
 // Search ignores case, accents and surrounding whitespace.
@@ -9,30 +8,13 @@ const normalize = (text: string) =>
   text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
 
 export default function ArtistList() {
-  const [artists, setArtists] = useState<Artist[]>([]);
+  // La lista viene del store global: si ya se cargó en otra vista, no se pide otra vez.
+  const { artists, status, load } = useArtistsStore();
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [attempt, setAttempt] = useState(0);
+  const loading = status === 'idle' || status === 'loading';
+  const error = status === 'error';
 
-  useEffect(() => {
-    const controller = new AbortController();
-    setLoading(true);
-    setError(false);
-
-    artistsService.getAll(controller.signal)
-      .then(data => {
-        if (!controller.signal.aborted) setArtists(data);
-      })
-      .catch(() => {
-        if (!controller.signal.aborted) setError(true);
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) setLoading(false);
-      });
-
-    return () => controller.abort();
-  }, [attempt]);
+  useEffect(() => { void load(); }, [load]);
 
   const filteredArtists = artists.filter(artist =>
     normalize(artist.name).includes(normalize(search)),
@@ -50,7 +32,7 @@ export default function ArtistList() {
       ) : error ? (
         <div role="alert">
           <p>No pudimos cargar los artistas. Inténtalo nuevamente.</p>
-          <button className="button" type="button" onClick={() => setAttempt(value => value + 1)}>
+          <button className="button" type="button" onClick={() => void load(true)}>
             Reintentar
           </button>
         </div>

@@ -4,35 +4,20 @@ import RegisteredUsers from '../components/RegisteredUsers';
 import ArtistManager from '../components/ArtistManager';
 import ArtworkManager from '../components/ArtworkManager';
 import WorkshopManager from '../components/WorkshopManager';
-import artistsService from '../services/artists';
-import { apiError } from '../services/auth';
-import type { Artist } from '../types/artist';
+import { useArtistsStore } from '../stores/artistsStore';
 import '../styles/management.css';
 
 type ManagementTab = 'artworks' | 'workshops' | 'artists' | 'users';
 
 export default function Management() {
   const [activeTab, setActiveTab] = useState<ManagementTab>('artworks');
-  const [artists, setArtists] = useState<Artist[]>([]);
-  // True once the first list arrives; later reload failures keep the managers visible.
-  const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState('');
-  // Bumped after artist changes; the server owns the list and its order.
-  const [artistsVersion, setArtistsVersion] = useState(0);
-  const reloadArtists = () => setArtistsVersion(value => value + 1);
+  // Lista de artistas del store global; si falla una recarga, los paneles siguen visibles.
+  const { artists, status, error, load } = useArtistsStore();
+  const loaded = status === 'ready';
+  // Después de crear, editar o borrar un artista se pide de nuevo: el servidor define la lista y su orden.
+  const reloadArtists = () => void load(true);
 
-  useEffect(() => {
-    const controller = new AbortController();
-    artistsService.getAll(controller.signal)
-      .then(data => {
-        if (controller.signal.aborted) return;
-        setArtists(data);
-        setLoaded(true);
-        setError('');
-      })
-      .catch(reason => { if (!controller.signal.aborted) setError(apiError(reason)); });
-    return () => controller.abort();
-  }, [artistsVersion]);
+  useEffect(() => { void load(); }, [load]);
 
   return (
     <section className="management-page" aria-labelledby="management-title">

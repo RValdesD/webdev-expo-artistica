@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import exhibitionsService from '../services/exhibitions';
-import artistsService from '../services/artists';
+import { useArtistsStore } from '../stores/artistsStore';
 import type { Exhibition } from '../types/exhibition';
-import type { Artist } from '../types/artist';
 import '../styles/exhibitions.css';
 
 const dateFormatter = new Intl.DateTimeFormat('es-CL', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'America/Santiago' });
@@ -15,10 +14,12 @@ function dateRange(item: Exhibition): string {
   return start && end ? `${start} – ${end}` : start ? `Desde el ${start}` : end ? `Hasta el ${end}` : '';
 }
 
-// Carga las exposiciones (o una sola) y los artistas, para mostrar el nombre de cada artista.
+// Carga las exposiciones (o una sola); los artistas salen del store para mostrar su nombre.
 function useExhibitions(id?: string) {
   const [items, setItems] = useState<Exhibition[]>([]);
-  const [artists, setArtists] = useState<Artist[]>([]);
+  // Los artistas vienen del store global (solo para mostrar el nombre de cada uno).
+  const { artists, load } = useArtistsStore();
+  useEffect(() => { void load(); }, [load]);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error' | 'missing'>('loading');
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
@@ -27,8 +28,8 @@ function useExhibitions(id?: string) {
     const request = id
       ? exhibitionsService.getOne(id, controller.signal).then(item => [item])
       : exhibitionsService.getAll(controller.signal).then(all => all.filter(item => item.featured === false));
-    Promise.all([request, artistsService.getAll(controller.signal).catch(() => [] as Artist[])])
-      .then(([data, people]) => { if (!controller.signal.aborted) { setItems(data); setArtists(people); setStatus('ready'); } })
+    request
+      .then(data => { if (!controller.signal.aborted) { setItems(data); setStatus('ready'); } })
       .catch((reason: unknown) => {
         if (controller.signal.aborted) return;
         const notFound = (reason as { response?: { status?: number } }).response?.status === 404;
