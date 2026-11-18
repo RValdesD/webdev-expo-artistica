@@ -2,7 +2,7 @@ import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import Information from './pages/Information';
 import OtherExhibitions, { ExhibitionDetail } from './pages/OtherExhibitions';
 import ExhibitionManagement from './pages/ExhibitionManagement';
-import Visits from './pages/Visits';
+import Visits, { ExhibitionVisit } from './pages/Visits';
 import ArtistList from "./pages/ArtistList";
 import ArtistDetail from "./pages/ArtistDetail";
 import ArtworkDetail from './pages/ArtworkDetail';
@@ -42,6 +42,7 @@ export default function App() {
           <Route path="/otras-exposiciones/:id" element={<ExhibitionDetail />} />
           <Route path="/gestion/exposiciones" element={<ProtectedRoute organizerOnly><ExhibitionManagement /></ProtectedRoute>} />
           <Route path="/visitas" element={<Visits />} />
+          <Route path="/visitas/:id" element={<ExhibitionVisit />} />
           <Route path="/artists" element={<ArtistList />} />
           <Route path="/artists/:id" element={<ArtistDetail />} />
           <Route path="/catalog" element={<Catalog />} />

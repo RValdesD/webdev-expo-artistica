@@ -4,11 +4,12 @@ import service from '../services/exhibitions';
 import { useArtistsStore } from '../stores/artistsStore';
 import { apiError, apiFields, apiMessage } from '../services/auth';
 import FieldError, { fieldProps, type FieldErrors } from '../components/FieldError';
+import CoverPicker from '../components/CoverPicker';
 import type { Exhibition, ExhibitionInput } from '../types/exhibition';
 import '../styles/exhibitions.css';
 const blank: ExhibitionInput = {
   title: '', heading: '', description: '', theme: 'sea', imageUrl: '', imageAlt: '', caption: '', order: 2,
-  featured: true, discipline: '', room: '', artistId: '', startDate: '', endDate: '',
+  featured: true, discipline: '', room: '', artistId: '', startDate: '', endDate: '', visitHours: '', visitNotes: '',
 };
 // "2027-06-12T16:00:00.000Z" -> "2027-06-12", que es lo que usa <input type="date">.
 const day = (value?: string) => value ? value.slice(0, 10) : '';
@@ -66,9 +67,11 @@ export default function ExhibitionManagement() {
         <label>Descripción<textarea id="exhibition-description" {...fieldProps(fields, 'description', 'exhibition-description')} rows={7} maxLength={5000} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} /></label><FieldError fields={fields} name="description" id="exhibition-description" />
         <label>Tema<select id="exhibition-theme" {...fieldProps(fields, 'theme', 'exhibition-theme')} value={form.theme} onChange={e => setForm({ ...form, theme: e.target.value as ExhibitionInput['theme'] })}><option value="sea">Mar / azul</option><option value="green">Verde</option></select></label><FieldError fields={fields} name="theme" id="exhibition-theme" />
         <label>Orden (menor primero)<input id="exhibition-order" {...fieldProps(fields, 'order', 'exhibition-order')} type="number" min={0} max={10000} step={1} required value={form.order} onChange={e => setForm({ ...form, order: Number(e.target.value) })} /></label><FieldError fields={fields} name="order" id="exhibition-order" />
-        <label>URL de imagen (opcional)<input id="exhibition-imageUrl" {...fieldProps(fields, 'imageUrl', 'exhibition-imageUrl')} maxLength={1000} placeholder="/images/imagen.jpg" value={form.imageUrl} onChange={e => setForm({ ...form, imageUrl: e.target.value })} /></label><FieldError fields={fields} name="imageUrl" id="exhibition-imageUrl" />
-        <label>Descripción de imagen<input id="exhibition-imageAlt" {...fieldProps(fields, 'imageAlt', 'exhibition-imageAlt')} maxLength={300} value={form.imageAlt} onChange={e => setForm({ ...form, imageAlt: e.target.value })} /></label><FieldError fields={fields} name="imageAlt" id="exhibition-imageAlt" />
-        <label>Pie de imagen<input id="exhibition-caption" {...fieldProps(fields, 'caption', 'exhibition-caption')} maxLength={300} value={form.caption} onChange={e => setForm({ ...form, caption: e.target.value })} /></label><FieldError fields={fields} name="caption" id="exhibition-caption" />
+        <CoverPicker value={form.imageUrl} error={fields.imageUrl} onChange={imageUrl => setForm({ ...form, imageUrl })} /><FieldError fields={fields} name="imageUrl" id="exhibition-imageUrl" />
+        {form.imageUrl && <>
+          <label>Descripción de la portada (para lectores de pantalla)<input id="exhibition-imageAlt" {...fieldProps(fields, 'imageAlt', 'exhibition-imageAlt')} required maxLength={300} value={form.imageAlt} onChange={e => setForm({ ...form, imageAlt: e.target.value })} /></label><FieldError fields={fields} name="imageAlt" id="exhibition-imageAlt" />
+          <label>Pie de la portada (opcional)<input id="exhibition-caption" {...fieldProps(fields, 'caption', 'exhibition-caption')} maxLength={300} value={form.caption} onChange={e => setForm({ ...form, caption: e.target.value })} /></label><FieldError fields={fields} name="caption" id="exhibition-caption" />
+        </>}
         <label className="expo-editor__check"><input type="checkbox" checked={form.featured} onChange={e => setForm({ ...form, featured: e.target.checked })} />Mostrar grande en el inicio (si no, va en «Otras exposiciones»)</label>
         <label>Disciplina<input id="exhibition-discipline" {...fieldProps(fields, 'discipline', 'exhibition-discipline')} maxLength={100} placeholder="Pintura, Escultura…" value={form.discipline} onChange={e => setForm({ ...form, discipline: e.target.value })} /></label><FieldError fields={fields} name="discipline" id="exhibition-discipline" />
         <label>Sala<input id="exhibition-room" {...fieldProps(fields, 'room', 'exhibition-room')} maxLength={80} placeholder="Sala A" value={form.room} onChange={e => setForm({ ...form, room: e.target.value })} /></label><FieldError fields={fields} name="room" id="exhibition-room" />
@@ -78,6 +81,8 @@ export default function ExhibitionManagement() {
           <label>Hasta<input id="exhibition-endDate" {...fieldProps(fields, 'endDate', 'exhibition-endDate')} type="date" min={form.startDate || undefined} value={form.endDate} onChange={e => setForm({ ...form, endDate: e.target.value })} /></label>
         </div>
         <FieldError fields={fields} name="startDate" id="exhibition-startDate" /><FieldError fields={fields} name="endDate" id="exhibition-endDate" />
+        <label>Horario de visita<input id="exhibition-visitHours" {...fieldProps(fields, 'visitHours', 'exhibition-visitHours')} maxLength={200} placeholder="Martes a domingo, 10:00 a 19:00" value={form.visitHours} onChange={e => setForm({ ...form, visitHours: e.target.value })} /></label><FieldError fields={fields} name="visitHours" id="exhibition-visitHours" />
+        <label>Recomendaciones para la visita<textarea id="exhibition-visitNotes" {...fieldProps(fields, 'visitNotes', 'exhibition-visitNotes')} rows={4} maxLength={2000} placeholder="Duración sugerida, qué traer, restricciones…" value={form.visitNotes} onChange={e => setForm({ ...form, visitNotes: e.target.value })} /></label><FieldError fields={fields} name="visitNotes" id="exhibition-visitNotes" />
         <div className="expo-editor__actions"><button className="button" type="submit">{busy ? 'Guardando…' : editing ? 'Guardar cambios' : 'Agregar exposición'}</button>{editing && <button type="button" onClick={reset}>Cancelar edición</button>}</div>
       </fieldset>
     </form>

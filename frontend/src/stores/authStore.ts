@@ -23,7 +23,9 @@ export const useAuthStore = create<AuthState>()(set => ({
 
   async refresh() {
     const version = ++request;
-    set({ loading: true });
+    // Con una sesión ya conocida se revalida sin pasar a "cargando": si no, las rutas protegidas
+    // desmontarían la página (y su formulario) mientras llega la respuesta.
+    set(state => (state.user ? {} : { loading: true }));
     try {
       const user = await loginService.restoreLogin();
       if (version === request) set({ user, loading: false, unavailable: false });

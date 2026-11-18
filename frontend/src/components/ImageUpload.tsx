@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import axiosSecure from "../utils/axiosSecure";
+import { imageFileError, uploadArtistImage } from "../services/artistImages";
 import { apiError } from "../services/auth";
 interface Props {
   value: string;
@@ -25,22 +25,15 @@ export default function ImageUpload({
   async function upload(file?: File) {
     if (!file || busy || disabled) return;
     setError("");
-    if (
-      !["image/jpeg", "image/png", "image/webp"].includes(file.type) ||
-      file.size > 5 * 1024 * 1024
-    ) {
-      setError("Selecciona JPG, PNG o WebP de hasta 5 MB.");
+    const fileError = imageFileError(file);
+    if (fileError) {
+      setError(fileError);
       return;
     }
     setBusy(true);
     onBusy(true);
     try {
-      const { data } = await axiosSecure.post<{ url: string }>(
-        "/api/artist-account/images",
-        file,
-        { headers: { "Content-Type": "application/octet-stream" } },
-      );
-      onChange(data.url);
+      onChange(await uploadArtistImage(file));
     } catch (reason) {
       setError(apiError(reason));
     } finally {

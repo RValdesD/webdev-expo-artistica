@@ -52,3 +52,35 @@ test.describe('Navegación', () => {
     await expect(page.getByRole('heading', { name: 'Obra no encontrada' })).toBeVisible();
   });
 });
+
+// El servidor de producción devuelve index.html para las rutas de la app (SPA fallback),
+// pero no para archivos que no existen: esos deben dar 404.
+test.describe('Servidor de producción', () => {
+  test('abrir directamente una ruta anidada carga la app', async ({ page }) => {
+    await resetDatabase(page.request, [artist]);
+    await page.goto(`/artists/${artist.id}`);
+    await expect(page.getByRole('heading', { name: artist.name, level: 1 })).toBeVisible();
+  });
+
+  test('index.html no queda en caché y los assets con hash sí', async ({ page, request }) => {
+    const html = await request.get('/catalog/abc123');
+    expect(html.status()).toBe(200);
+    expect(html.headers()['content-type']).toContain('text/html');
+    expect(html.headers()['cache-control']).toBe('no-cache');
+
+    const scripts: string[] = [];
+    page.on('response', response => { if (new URL(response.url()).pathname.startsWith('/assets/')) scripts.push(response.url()); });
+    await page.goto('/');
+    await expect.poll(() => scripts.length).toBeGreaterThan(0);
+    const asset = await request.get(scripts[0]);
+    expect(asset.headers()['cache-control']).toBe('public, max-age=31536000, immutable');
+  });
+
+  for (const path of ['/assets/index-viejo.js', '/images/uploads/no-existe.png', '/favicon-inexistente.ico']) {
+    test(`un archivo inexistente (${path}) responde 404 y no la app`, async ({ request }) => {
+      const response = await request.get(path);
+      expect(response.status()).toBe(404);
+      expect(response.headers()['content-type']).not.toContain('text/html');
+    });
+  }
+});

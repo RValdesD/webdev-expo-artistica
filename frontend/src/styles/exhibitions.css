@@ -200,8 +200,10 @@
 }
 
 .other-expos__card {
+  --card-pad: 32px;
   min-width: 0;
-  padding: 32px;
+  padding: var(--card-pad);
+  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 4px;
   background: var(--surface);
@@ -295,4 +297,116 @@
   .expo-item .hero-copy {
     min-width: 0;
   }
+}
+
+/* Selector de portada (Gestión → Exposiciones) */
+.expo-editor .cover-picker {
+  margin: 18px 0;
+  padding: 20px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.expo-editor .cover-picker legend {
+  font-family: var(--body-font);
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  padding: 0 6px;
+}
+
+.cover-picker__help {
+  margin: 0 0 16px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.cover-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.expo-editor .cover-picker__option {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 8px;
+  margin: 0;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #111318;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* El radio, transparente, cubre toda la tarjeta: el clic cae en él y el foco se ve en la tarjeta. */
+.expo-editor .cover-picker__option input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.cover-picker__option:hover {
+  border-color: var(--border-strong);
+}
+
+.expo-editor .cover-picker__option--selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.cover-picker__option:has(input:focus-visible) {
+  outline: 2px solid var(--accent-hover);
+  outline-offset: 2px;
+}
+
+.cover-picker__option img,
+.cover-picker__none {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 2px;
+  background: var(--surface-raised);
+}
+
+.cover-picker__none {
+  display: grid;
+  place-items: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+  border: 1px dashed var(--border-strong);
+}
+
+.cover-picker__name {
+  font-size: 0.8rem;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.cover-picker__option--selected .cover-picker__name {
+  color: var(--accent-hover);
+}
+
+.other-expos__cover {
+  display: block;
+  width: calc(100% + 2 * var(--card-pad));
+  max-width: none;
+  margin: calc(-1 * var(--card-pad)) calc(-1 * var(--card-pad)) 24px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-bottom: 1px solid var(--border);
+}
+
+.other-expos__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 32px;
 }

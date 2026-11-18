@@ -3,16 +3,9 @@ import { Link, useParams } from 'react-router-dom';
 import exhibitionsService from '../services/exhibitions';
 import { useArtistsStore } from '../stores/artistsStore';
 import type { Exhibition } from '../types/exhibition';
+import { dateRange } from '../utils/exhibitionDates';
 import '../styles/exhibitions.css';
 
-const dateFormatter = new Intl.DateTimeFormat('es-CL', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'America/Santiago' });
-
-// "12 jun 2027 – 31 jul 2027"; si falta una fecha, se muestra solo la otra.
-function dateRange(item: Exhibition): string {
-  const start = item.startDate ? dateFormatter.format(new Date(item.startDate)) : '';
-  const end = item.endDate ? dateFormatter.format(new Date(item.endDate)) : '';
-  return start && end ? `${start} – ${end}` : start ? `Desde el ${start}` : end ? `Hasta el ${end}` : '';
-}
 
 // Carga las exposiciones (o una sola); los artistas salen del store para mostrar su nombre.
 function useExhibitions(id?: string) {
@@ -56,6 +49,7 @@ export default function OtherExhibitions() {
           const artist = artistOf(item);
           const meta = [item.room, item.discipline].filter(Boolean).join(' · ');
           return <li key={item.id} className="other-expos__card">
+            {item.imageUrl && <img className="other-expos__cover" src={item.imageUrl} alt={item.imageAlt} loading="lazy" />}
             {meta && <p className="other-expos__meta">{meta}</p>}
             <h2><Link to={`/otras-exposiciones/${encodeURIComponent(item.id)}`}>{item.title}</Link></h2>
             {dateRange(item) && <p className="other-expos__dates">{dateRange(item)}</p>}
@@ -93,6 +87,9 @@ export function ExhibitionDetail() {
       {item.caption && <figcaption>{item.caption}</figcaption>}
     </figure>}
     <p className="expo-item__description">{item.description}</p>
-    {artist && <Link className="button" to={`/artists/${encodeURIComponent(artist.id)}`}>Conoce a {artist.name}</Link>}
+    <div className="other-expos__actions">
+      <Link className="button" to={`/visitas/${encodeURIComponent(item.id)}`}>Planifica tu visita</Link>
+      {artist && <Link className="button button--secondary" to={`/artists/${encodeURIComponent(artist.id)}`}>Conoce a {artist.name}</Link>}
+    </div>
   </section>;
 }

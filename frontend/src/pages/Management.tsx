@@ -4,10 +4,11 @@ import RegisteredUsers from '../components/RegisteredUsers';
 import ArtistManager from '../components/ArtistManager';
 import ArtworkManager from '../components/ArtworkManager';
 import WorkshopManager from '../components/WorkshopManager';
+import GuidedTourManager from '../components/GuidedTourManager';
 import { useArtistsStore } from '../stores/artistsStore';
 import '../styles/management.css';
 
-type ManagementTab = 'artworks' | 'workshops' | 'artists' | 'users';
+type ManagementTab = 'artworks' | 'workshops' | 'tours' | 'artists' | 'users';
 
 export default function Management() {
   const [activeTab, setActiveTab] = useState<ManagementTab>('artworks');
@@ -34,13 +35,15 @@ export default function Management() {
           onClick={() => setActiveTab('artworks')}>Obras</button>
         <button type="button" role="tab" aria-selected={activeTab === 'workshops'}
           onClick={() => setActiveTab('workshops')}>Talleres</button>
+        <button type="button" role="tab" aria-selected={activeTab === 'tours'}
+          onClick={() => setActiveTab('tours')}>Visitas guiadas</button>
         <button type="button" role="tab" aria-selected={activeTab === 'artists'}
           onClick={() => setActiveTab('artists')}>Artistas y Redes</button>
         <button type="button" role="tab" aria-selected={activeTab === 'users'}
           onClick={() => setActiveTab('users')}>Usuarios registrados</button>
       </div>
 
-      {activeTab !== 'users' && error && (
+      {activeTab !== 'users' && activeTab !== 'tours' && error && (
         <p role="alert">
           {error}{' '}
           <button className="button button--secondary" type="button" onClick={reloadArtists}>
@@ -49,7 +52,7 @@ export default function Management() {
         </p>
       )}
 
-      {activeTab === 'users' ? <RegisteredUsers /> : !loaded ? (!error && <p role="status">Cargando artistas…</p>) : (
+      {activeTab === 'users' ? <RegisteredUsers /> : activeTab === 'tours' ? <GuidedTourManager /> : !loaded ? (!error && <p role="status">Cargando artistas…</p>) : (
         activeTab === 'artists' ? (
           <ArtistManager artists={artists} onChanged={reloadArtists} />
         ) : artists.length === 0 ? (

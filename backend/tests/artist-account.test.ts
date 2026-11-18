@@ -16,7 +16,7 @@ const { Artwork } = await import('../src/models/Artwork.js');
 const originals = { init: Artist.init, findArtist: Artist.findOne, findUser: User.findById, updateUser: User.findByIdAndUpdate, profile: Artist.findOneAndUpdate, exists: Artist.exists, create: Submission.create, review: Submission.findOneAndUpdate, approve: Submission.findByIdAndUpdate, publish: Artwork.updateOne };
 const id = '507f1f77bcf86cd799439011'; const csrf = 'artist-csrf';
 const token = jwt.sign({ id, username: 'artist', csrf }, process.env.JWT_SECRET, { expiresIn: '1h' });
-let role = 'artista'; let profileFilter: unknown; let submitted: Record<string, unknown> | undefined; let published = false; let reviewFilter: unknown;
+let role = 'artista'; let profileFilter: unknown; let submitted: Record<string, unknown> | undefined; let published = false; let reviewFilter: unknown; let publishedArtwork: Record<string, unknown> | undefined;
 const auth = (req: request.Test) => req.set('Cookie', `token=${token}`).set('X-CSRF-Token', csrf);
 beforeEach(() => {
   Artist.init = (async () => Artist) as typeof Artist.init;
@@ -27,9 +27,9 @@ beforeEach(() => {
   Artist.findOneAndUpdate = (async (filter: unknown, update: { $set: object }) => { profileFilter = filter; return { ...update.$set, id: `artist-${id}` }; }) as unknown as typeof Artist.findOneAndUpdate;
   Artist.exists = (async () => ({ _id: id })) as unknown as typeof Artist.exists;
   Submission.create = (async (value: Record<string, unknown>) => { submitted = value; return value; }) as unknown as typeof Submission.create;
-  Submission.findOneAndUpdate = (async (filter: unknown) => { reviewFilter = filter; return { id, title: 'Obra', artistId: `artist-${id}`, medium: 'Pintura', year: 2026, imageUrl: '/images/test.webp' }; }) as unknown as typeof Submission.findOneAndUpdate;
+  Submission.findOneAndUpdate = (async (filter: unknown) => { reviewFilter = filter; return { id, title: 'Obra', artistId: `artist-${id}`, medium: 'Pintura', year: 2026, imageUrl: '/images/test.webp', images: ['/images/test-2.webp', '/images/test-3.webp'] }; }) as unknown as typeof Submission.findOneAndUpdate;
   Submission.findByIdAndUpdate = (async () => ({ status: 'approved' })) as unknown as typeof Submission.findByIdAndUpdate;
-  Artwork.updateOne = (async () => { published = true; return {}; }) as unknown as typeof Artwork.updateOne;
+  Artwork.updateOne = (async (_filter: unknown, update: { $setOnInsert: Record<string, unknown> }) => { published = true; publishedArtwork = update.$setOnInsert; return {}; }) as unknown as typeof Artwork.updateOne;
 });
 after(async () => {
   Artist.init = originals.init; Artist.findOne = originals.findArtist;
@@ -84,4 +84,26 @@ test('organizer approval publishes a deterministic artwork, rejection does not',
   published = false;
   assert.equal((await auth(request(app).post(`/api/submissions/${id}/review`)).send({ decision: 'rejected' })).status, 200);
   assert.equal(published, false); assert.deepEqual(reviewFilter, { _id: id, status: 'pending' });
+});
+test('submission accepts several distinct images uploaded by the same artist', async () => {
+  const [imageUrl, second, third] = [await upload(), await upload(), await upload()];
+  const r = await auth(request(app).post('/api/artist-account/submissions')).send({ title: 'Obra', medium: 'Pintura', year: 2026, imageUrl, images: [second, third] });
+  assert.equal(r.status, 201);
+  assert.deepEqual(submitted?.images, [second, third]);
+});
+test('submission rejects extra images that are foreign, repeated, malformed or too many', async () => {
+  const imageUrl = await upload(); const second = await upload();
+  const send = (images: unknown) => auth(request(app).post('/api/artist-account/submissions')).send({ title: 'Obra', medium: 'Pintura', year: 2026, imageUrl, images });
+  for (const images of [[`/images/uploads/other-${'a'.repeat(36)}.webp`], [second, second], [imageUrl], 'nope', [42]]) {
+    const r = await send(images);
+    assert.equal(r.status, 400, JSON.stringify(images));
+    assert.equal(submitted, undefined);
+  }
+  const many = []; for (let i = 0; i < 11; i += 1) many.push(await upload());
+  assert.equal((await send(many)).status, 400);
+});
+test('approval copies the extra images to the published artwork', async () => {
+  role = 'organizador';
+  assert.equal((await auth(request(app).post(`/api/submissions/${id}/review`)).send({ decision: 'approved' })).status, 200);
+  assert.deepEqual(publishedArtwork?.images, ['/images/test-2.webp', '/images/test-3.webp']);
 });

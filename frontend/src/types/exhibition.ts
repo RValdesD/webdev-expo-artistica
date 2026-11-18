@@ -15,6 +15,9 @@ export interface ExhibitionInput {
   // Fechas como texto: "2027-06-12" en el formulario; el backend responde en formato ISO.
   startDate: string;
   endDate: string;
+  // Planifica tu visita: horario de esta exposición y recomendaciones.
+  visitHours: string;
+  visitNotes: string;
 }
 export interface Exhibition extends Partial<ExhibitionInput> {
   id: string;

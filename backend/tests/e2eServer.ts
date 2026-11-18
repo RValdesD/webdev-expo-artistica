@@ -1,10 +1,15 @@
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 // Servidor para las pruebas E2E: usa una base de datos en memoria (no toca la real)
 // y sirve el frontend compilado (frontend/dist) en el mismo puerto que la API.
 process.env.NODE_ENV = 'test';
 process.env.JWT_SECRET ||= 'e2e-tests-secret';
+// Las imágenes que suben las pruebas van a una carpeta temporal, no a backend/uploads.
+process.env.UPLOAD_DIR = await mkdtemp(join(tmpdir(), 'expo-e2e-uploads-'));
 const port = Number(process.env.E2E_PORT ?? 3002);
 
 const mongo = await MongoMemoryServer.create();
@@ -17,6 +22,7 @@ async function stop() {
   server.close();
   await mongoose.disconnect();
   await mongo.stop();
+  await rm(process.env.UPLOAD_DIR!, { recursive: true, force: true });
   process.exit(0);
 }
 process.on('SIGINT', stop);

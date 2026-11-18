@@ -11,11 +11,15 @@ The fishes then gobbled and ate.
 I reeled it up, eating was my wish.
 The fish was delish and it made quite a dish.`,
     theme: 'sea', imageUrl: '/images/FISH.png', imageAlt: 'Ilustración de un pez', caption: 'Fish', order: 0,
+    startDate: new Date('2027-06-12T12:00:00-04:00'), endDate: new Date('2027-08-31T12:00:00-04:00'),
+    visitHours: 'Martes a domingo, 10:00 a 19:00', visitNotes: 'El recorrido completo toma unos 40 minutos. Hay bancas a lo largo de la sala y se permite fotografiar sin flash.',
   },
   {
     id: 'arte-indigena', title: 'Arte indígena', heading: 'Arte, territorio y memoria',
     description: 'Un espacio dedicado al arte indígena y a las distintas formas de expresar la relación con el territorio, la memoria y la comunidad.',
     theme: 'green', imageUrl: '', imageAlt: '', caption: '', order: 1,
+    startDate: new Date('2027-06-12T12:00:00-04:00'), endDate: new Date('2027-08-31T12:00:00-04:00'),
+    visitHours: 'Martes a domingo, 10:00 a 19:00', visitNotes: 'Algunas piezas son ceremoniales: te pedimos no tocarlas ni fotografiarlas con flash. El recorrido toma unos 30 minutos.',
   },
   // "Otras exposiciones": no van grandes en el inicio (featured: false).
   {

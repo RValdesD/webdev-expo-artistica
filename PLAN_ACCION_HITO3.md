@@ -73,7 +73,12 @@ Se deben crear **al menos dos stores**:
 - [x] **2.1** Que los botones **back** y **forward** del navegador funcionan correctamente entre vistas (no se pierda estado ni se rompa la navegación)
 - [x] **2.2** Que **F5 (reload)** en cualquier ruta (incluidas `/catalog/abc123`, `/artists/slug`, `/mi-visita`) recarga correctamente gracias al SPA fallback del servidor o de Vite
 - [x] **2.3** Que después del login, el usuario vuelve a la ruta desde la que fue redirigido (el `state.from` en `Login.tsx`)
-- [ ] **2.4** En producción/deploy: verificar que el servidor sirve `index.html` para cualquier ruta (SPA fallback), o las rutas directas darán 404
+- [x] **2.4** En producción/deploy: verificar que el servidor sirve `index.html` para cualquier ruta (SPA fallback), o las rutas directas darán 404
+  - Verificado con `npm run build` + `npm start` (`NODE_ENV=production`): Express sirve `frontend/dist` y devuelve `index.html` para las rutas de la app (`/catalog/:id`, `/mi-visita`, `/gestion/envios`, ...).
+  - Corregido: un archivo inexistente (`/assets/*.js` viejo tras un redeploy, `/images/uploads/*.png`) respondía 200 con HTML; ahora responde 404.
+  - `index.html` sale con `Cache-Control: no-cache` y los assets con hash se cachean un año (`immutable`).
+  - Cubierto por `e2etests/router.spec.ts` → "Servidor de producción".
+  - Falta probarlo en el servidor real de `fullstack.dcc.uchile.cl` (paso 3 de la fase 3).
 
 > [!IMPORTANT]
 > Punto 2.4 es crítico para el deploy en `fullstack.dcc.uchile.cl`. Si se sirve con Express, se necesita un catch-all que devuelva el `index.html` del build de Vite.

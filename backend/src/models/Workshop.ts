@@ -13,7 +13,8 @@ export interface WorkshopData {
   registrations: { userId: string; name: string; username: string }[];
 }
 
-const registrationSchema = new Schema({
+// Inscripción de una persona; también la usan las visitas guiadas.
+export const registrationSchema = new Schema({
   userId: { type: String, required: true },
   name: { type: String, required: true, trim: true, maxlength: 120 },
   username: { type: String, required: true, trim: true, lowercase: true, maxlength: 40 },

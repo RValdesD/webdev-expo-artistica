@@ -32,7 +32,7 @@ router.post('/:id/review', async (req, res, next) => {
     await Artwork.updateOne({ id: `submission-${submission.id}` }, { $setOnInsert: {
       title: submission.title, artistId: submission.artistId, medium: submission.medium,
       year: submission.year, description: submission.description, imageUrl: submission.imageUrl,
-      previewImageUrl: submission.imageUrl, images: [], inSlideshow: false,
+      previewImageUrl: submission.imageUrl, images: submission.images ?? [], inSlideshow: false,
     } }, { upsert: true, runValidators: true });
     const approved = await Submission.findByIdAndUpdate(submission.id, { $set: { status: 'approved' } }, { new: true });
     res.json(approved);

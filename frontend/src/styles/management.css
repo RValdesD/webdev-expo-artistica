@@ -242,15 +242,18 @@
 }
 
 /* Etiqueta que solo leen los lectores de pantalla. */
+/* Oculto a la vista pero accesible. !important: las reglas de formulario (p. ej. width: 100%)
+   no deben agrandarlo, porque un input absoluto de ancho completo desborda la página. */
 .visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
 }
 
 .management-form .management-slideshow-check { display: flex; align-items: center; gap: 12px; text-transform: none; letter-spacing: normal; }

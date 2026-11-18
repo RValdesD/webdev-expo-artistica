@@ -9,6 +9,8 @@ import { sampleArtists } from './data/sampleArtists.js';
 import { sampleArtworks } from './data/sampleArtworks.js';
 import { sampleExpo } from './data/sampleExpo.js';
 import { sampleWorkshops } from './data/sampleWorkshops.js';
+import { GuidedTour } from './models/GuidedTour.js';
+import { sampleGuidedTours } from './data/sampleGuidedTours.js';
 import { MONGODB_DBNAME, MONGODB_URI } from './utils/config.js';
 
 async function insertMissing<T extends { id: string }>(
@@ -28,16 +30,12 @@ try {
   if (invalidRelations.length) throw new Error(`Hay datos asociados a artistas inexistentes: ${invalidRelations.map(item => item.id).join(', ')}`);
 
   await insertMissing(sampleArtworks, value => Artwork.updateOne({ id: value.id }, { $setOnInsert: value }, { upsert: true, runValidators: true }));
-  // Obras de ejemplo creadas antes de que existieran las imágenes extra: se les agregan, sin tocar las que ya tienen.
-  for (const value of sampleArtworks) {
-    await Artwork.updateOne(
-      { id: value.id, isSample: true, $or: [{ images: { $exists: false } }, { images: { $size: 0 } }] },
-      { $set: { images: value.images ?? [] } },
-      { runValidators: true },
-    );
-  }
   await insertMissing(sampleWorkshops, value => Workshop.updateOne({ id: value.id }, { $setOnInsert: value }, { upsert: true, runValidators: true }));
   for (const item of sampleExhibitions) await Exhibition.updateOne({ id: item.id }, { $setOnInsert: item }, { upsert: true, runValidators: true });
+  // Solo para exposiciones que existen (el organizador pudo borrar alguna de ejemplo).
+  const exhibitionIds = new Set((await Exhibition.find().select('id -_id').lean()).map(item => item.id));
+  await insertMissing(sampleGuidedTours.filter(item => exhibitionIds.has(item.exhibitionId)),
+    value => GuidedTour.updateOne({ id: value.id }, { $setOnInsert: value }, { upsert: true, runValidators: true }));
   console.log('Seed completado. Los documentos existentes se conservaron.');
 } catch (error: unknown) {
   console.error(error);

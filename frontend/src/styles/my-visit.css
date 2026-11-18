@@ -45,8 +45,8 @@
   background: transparent;
 }
 
-.visit-registration h2 {
-  font-size: clamp(1.5rem, 3vw, 2.4rem);
+.visit-registration h3 {
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
   margin-bottom: 10px;
 }
 
@@ -69,6 +69,29 @@
 
 .my-visit__empty {
   padding-block: 50px;
+}
+
+.my-visit__empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.my-visit__group + .my-visit__group {
+  margin-top: 48px;
+}
+
+.my-visit__group-title {
+  margin: 0;
+  padding-bottom: 12px;
+  font-size: 11px;
+  font-family: var(--body-font);
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
 }
 
 .my-visit__error {

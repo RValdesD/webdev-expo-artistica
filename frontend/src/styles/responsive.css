@@ -115,7 +115,8 @@ button, .button { max-width: 100%; white-space: normal; overflow-wrap: anywhere;
   .slideshow-viewer > .slideshow-arrow:last-child { justify-self: end; }
   .slideshow-image-wrapper { max-height: none; }
   .slideshow-title { font-size: 1.8rem; }
-  .expo-editor fieldset, .other-expos__card { padding: 18px; }
+  .expo-editor fieldset { padding: 18px; }
+  .other-expos__card { --card-pad: 18px; }
   .management-tabs { gap: 4px; }
   .management-tabs button { flex: 1 1 140px; padding-inline: 12px; }
   .management-form__row, .management-item, .visit-registration,

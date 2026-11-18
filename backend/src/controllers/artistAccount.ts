@@ -7,6 +7,7 @@ import { ensureArtistSlug } from '../utils/artistSlug.js';
 import { Submission } from '../models/Submission.js';
 import { withUser } from '../utils/middleware.js';
 import { ownsImage, saveImage, uploadDirectory } from '../utils/uploads.js';
+import { MAX_ARTWORK_IMAGES } from '../models/Artwork.js';
 const router = Router();
 router.use(withUser);
 router.use(async (req, res, next) => {
@@ -55,9 +56,15 @@ router.post('/submissions', async (req, res, next) => {
   try {
     const artistId = `artist-${req.userId}`;
     if (!await Artist.exists({ id: artistId })) { res.status(400).json({ error: 'Guarda primero tu perfil de artista.' }); return; }
-    const { title, medium, year, description, imageUrl } = req.body ?? {};
-    if (!ownsImage(imageUrl, req.userId!) || !existsSync(join(uploadDirectory, basename(imageUrl)))) { res.status(400).json({ error: 'Sube una imagen propia para esta obra.' }); return; }
-    res.status(201).json(await Submission.create({ userId: req.userId, artistId, title, medium, year, description, imageUrl, status: 'pending' }));
+    const { title, medium, year, description, imageUrl, images = [] } = req.body ?? {};
+    const isOwnUpload = (url: unknown): url is string => ownsImage(url, req.userId!) && existsSync(join(uploadDirectory, basename(url)));
+    if (!isOwnUpload(imageUrl)) { res.status(400).json({ error: 'Sube una imagen propia para esta obra.' }); return; }
+    const imagesError = !Array.isArray(images) ? 'Las imágenes adicionales deben ser una lista.'
+      : images.length > MAX_ARTWORK_IMAGES ? `Puedes agregar hasta ${MAX_ARTWORK_IMAGES} imágenes adicionales.`
+      : !images.every(isOwnUpload) ? 'Sube tus propias imágenes adicionales desde este formulario.'
+      : new Set([imageUrl, ...images]).size !== images.length + 1 ? 'Cada imagen de la obra debe ser distinta.' : '';
+    if (imagesError) { res.status(400).json({ error: imagesError, fields: { images: imagesError } }); return; }
+    res.status(201).json(await Submission.create({ userId: req.userId, artistId, title, medium, year, description, imageUrl, images, status: 'pending' }));
   } catch (error) { next(error); }
 });
 export default router;

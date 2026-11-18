@@ -38,7 +38,7 @@ export default function Information() {
               <p className="texti">Exposición: {item.title}</p>
               <Heading id={`expo-${item.id}`} className="expo-item__title">{item.heading === 'Un viaje inagualable' ? <>Un viaje in<em>agua</em>lable</> : item.heading}</Heading>
               <p className="expo-item__description">{item.description}</p>
-              <Link className="button" to="/visitas">Visitas</Link>
+              <Link className="button" to={`/visitas/${encodeURIComponent(item.id)}`}>Planifica tu visita</Link>
             </div>
             {item.imageUrl ? <figure className="hero-figure">
               <img className="hero-image" src={item.imageUrl} alt={item.imageAlt} />

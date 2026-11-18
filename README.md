@@ -172,6 +172,13 @@ playwright.config.ts     configuración de Playwright
 - `useAuthStore` (`frontend/src/stores/authStore.ts`): usuario conectado, `loading`, `unavailable` y las acciones `login`, `logout` y `refresh`. Al abrir o recargar la página, `main.tsx` llama a `refresh()` para restaurar la sesión desde la cookie. Lo usan `AuthNav`, `ProtectedRoute`, `Login`, `MyVisit`, `Workshops`, `WorkshopCard` y otras vistas.
 - `useArtistsStore` (`frontend/src/stores/artistsStore.ts`): lista de artistas compartida por `/artists`, `/gestion`, `/gestion/exposiciones` y `/otras-exposiciones`. Si la lista se cargó hace menos de un minuto, no se vuelve a pedir; después de crear, editar o borrar un artista se recarga con `load(true)`.
 
+## Portadas, imágenes de obras y visitas
+
+- **Portadas de exposiciones:** en Gestión → Exposiciones se elige la portada entre las imágenes de `frontend/public/images/` (sin subcarpetas). Para agregar una, copia el archivo a esa carpeta y recarga Gestión; en producción hay que volver a compilar (`npm run build`). El servidor rechaza una portada que no esté en la carpeta.
+- **Imágenes de obras:** al enviar una obra desde Mi perfil, el artista sube la imagen principal y hasta 10 imágenes adicionales. Al aprobarla, todas pasan a la galería de `/catalog/:id`.
+- **Planifica tu visita:** `/visitas` lista las exposiciones con sus visitas guiadas; `/visitas/:id` muestra sala, fechas, horario y recomendaciones de esa exposición (se editan en Gestión → Exposiciones) y sus visitas guiadas.
+- **Visitas guiadas:** se programan en Gestión → Visitas guiadas. Se reservan con una cuenta, con cupos que no se pueden sobrepasar, y aparecen en Mi visita junto a los talleres. Una exposición con visitas guiadas no se puede eliminar hasta borrar sus visitas.
+
 ## Verificación
 
 ```sh
@@ -193,7 +200,10 @@ No hace falta tener levantados el backend ni MongoDB: Playwright compila el fron
 |---|---|
 | `e2etests/auth.spec.ts` | Login y acceso a `/mi-visita` (ruta protegida); la sesión sigue tras F5; sin sesión redirige a `/login`; contraseña incorrecta; un visitante no entra a `/gestion` |
 | `e2etests/artists-crud.spec.ts` | CRUD de artistas desde `/gestion`: crear, verlo en `/artists`, editar y eliminar |
-| `e2etests/router.spec.ts` | Atrás, adelante y F5 en `/artists/:id`; ruta inexistente; la lista de artistas sale del store sin pedirla otra vez |
+| `e2etests/covers.spec.ts` | El organizador elige la portada de una exposición entre las imágenes de `frontend/public/images/` y se ve en el inicio y en Visitas |
+| `e2etests/artwork-images.spec.ts` | Un artista envía una obra con varias imágenes, el organizador la aprueba y la galería de la obra muestra las tres |
+| `e2etests/visits.spec.ts` | Visita por exposición desde el inicio, índice de Visitas, reservar y cancelar una visita guiada (también en Mi visita) y crear una visita guiada desde Gestión |
+| `e2etests/router.spec.ts` | Atrás, adelante y F5 en `/artists/:id`; ruta inexistente; la lista de artistas sale del store sin pedirla otra vez; el servidor devuelve `index.html` en las rutas de la app, 404 en archivos inexistentes y los encabezados de caché correctos |
 
 Para ver las pruebas en el navegador: `npx playwright test --headed` o `npx playwright test --ui`.
 
