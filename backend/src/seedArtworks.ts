@@ -32,6 +32,10 @@ try {
     );
     inserted += result.upsertedCount;
   }
+  // Obras de ejemplo creadas antes de tener imágenes extra: se les agregan solo si siguen sin ninguna.
+  for (const artwork of sampleArtworks) {
+    await Artwork.updateOne({ id: artwork.id, isSample: true, images: { $size: 0 } }, { $set: { images: artwork.images ?? [] } }, { runValidators: true });
+  }
 
   console.log(`${inserted} obras agregadas. Las obras existentes se conservaron.`);
 } catch (error: unknown) {

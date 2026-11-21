@@ -12,7 +12,12 @@ const allowed = ['id', 'name', 'bio', 'discipline', 'imageUrl', 'socials', 'soci
 
 
 artistsRouter.get('/', async (_req, res, next) => {
-  try { res.json(await Artist.find().select(publicFields).sort({ name: 1 }).lean()); }
+  try {
+    const artists = await Artist.find().select(publicFields).sort({ name: 1 }).lean();
+    // Artistas anteriores al slug: se les asigna uno (a partir del nombre) la primera vez que se listan.
+    for (const artist of artists) if (!artist.slug) artist.slug = await ensureArtistSlug(artist.id, artist.name);
+    res.json(artists);
+  }
   catch (error: unknown) { next(error); }
 });
 

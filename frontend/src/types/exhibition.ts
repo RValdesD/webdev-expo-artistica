@@ -1,8 +1,10 @@
+import type { ExhibitionTheme } from '../exhibitionThemes';
+
 export interface ExhibitionInput {
   title: string;
   heading: string;
   description: string;
-  theme: 'sea' | 'green';
+  theme: ExhibitionTheme;
   imageUrl: string;
   imageAlt: string;
   caption: string;
@@ -24,7 +26,7 @@ export interface Exhibition extends Partial<ExhibitionInput> {
   title: string;
   heading: string;
   description: string;
-  theme: 'sea' | 'green';
+  theme: ExhibitionTheme;
   imageUrl: string;
   imageAlt: string;
   caption: string;

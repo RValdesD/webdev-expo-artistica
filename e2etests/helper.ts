@@ -27,9 +27,15 @@ export async function resetDatabase(request: APIRequestContext, artists: object[
   expect(response.ok()).toBeTruthy();
 }
 
-// Inicia sesión desde el formulario y espera a que el menú muestre "Cerrar sesión".
+// Inicia sesión desde el formulario.
 export async function loginWith(page: Page, username: string, password: string) {
   await page.getByLabel('Usuario o correo').fill(username);
   await page.getByLabel('Contraseña').fill(password);
   await page.getByRole('button', { name: 'Iniciar sesión' }).click();
+}
+
+// Abre el menú de la cuenta (avatar del header) y elige una opción: "Mi visita", "Publicar", "Cerrar sesión"...
+export async function chooseAccountMenu(page: Page, option: string) {
+  await page.getByRole('button', { name: 'Abrir menú de cuenta' }).click();
+  await page.getByRole('menuitem', { name: option }).click();
 }

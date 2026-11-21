@@ -29,6 +29,14 @@ test.describe('Navegación', () => {
     await expect(page.getByRole('heading', { name: artist.name, level: 1 })).toBeVisible();
   });
 
+  test('hacer clic en la foto de un artista abre su perfil', async ({ page }) => {
+    await page.goto('/artists');
+    // La foto es un atajo solo para el mouse (oculto a lectores de pantalla), así que se busca por clase.
+    await page.locator('.artist-card', { hasText: artist.name }).locator('.artist-card__media').click();
+    await expect(page).toHaveURL(`/artists/${artist.id}`);
+    await expect(page.getByRole('heading', { name: artist.name, level: 1 })).toBeVisible();
+  });
+
   test('al volver a Artistas la lista sale del store, sin pedirla otra vez al servidor', async ({ page }) => {
     let requests = 0;
     page.on('request', request => { if (new URL(request.url()).pathname === '/api/artists') requests += 1; });

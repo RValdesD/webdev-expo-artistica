@@ -32,4 +32,22 @@ test.describe('Portadas de exposiciones', () => {
     await page.goto('/visitas');
     await expect(page.locator('.visit-expo', { hasText: exhibition.title }).getByRole('img', { name: 'Peces dibujados a mano' })).toBeVisible();
   });
+
+  test('cambiar el tema de una exposición cambia sus colores en el inicio y en Visitas', async ({ page }) => {
+    await page.locator('.expo-editor__list li', { hasText: exhibition.title }).getByRole('button', { name: 'Editar' }).click();
+    const theme = page.getByLabel('Tema');
+    await expect(theme.locator('option')).toHaveCount(8);
+    await theme.selectOption({ label: 'Violeta' });
+    await page.getByRole('button', { name: 'Guardar cambios' }).click();
+    await expect(page.getByText('Exposición guardada en la página de inicio.')).toBeVisible();
+
+    await page.goto('/');
+    const block = page.locator('.expo-item', { hasText: exhibition.heading });
+    await expect(block).toHaveClass(/theme--violet/);
+    // El acento del tema llega al botón de la exposición.
+    await expect(block.getByRole('link', { name: 'Planifica tu visita' })).toHaveCSS('background-color', 'rgb(167, 139, 250)');
+
+    await page.goto('/visitas');
+    await expect(page.locator('.visit-expo', { hasText: exhibition.title })).toHaveClass(/theme--violet/);
+  });
 });

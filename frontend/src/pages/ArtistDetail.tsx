@@ -87,9 +87,9 @@ function ArtistProfile({ id }: { id: string | undefined }) {
             <section className="artist-socials" aria-label="Redes y enlaces del artista">
               <h2>Redes y enlaces</h2>
               <div className="artist-socials-links">
-                {socialPlatforms.map(({ key, label }) => {
+                {socialPlatforms.map(({ key, label, icon }) => {
                   const href = result.artist.socials?.[key];
-                  const content = <><SocialImage src={result.artist.socialImages?.[key]} fallback={<span aria-hidden="true">▧</span>} /><span>{label}</span></>;
+                  const content = <><SocialImage src={result.artist.socialImages?.[key]} fallback={icon} /><span>{label}</span></>;
                   return href ? (
                     <a key={key} href={href} target="_blank" rel="noopener noreferrer"
                       className="artist-social-link artist-social-link--image" aria-label={`${label} de ${result.artist.name} (abre en otra pestaña)`}>{content}</a>

@@ -6,6 +6,7 @@ const socialLabels = {
   website: 'sitio web',
   twitter: 'X / Twitter',
   behance: 'Behance',
+  pixiv: 'Pixiv',
 } as const;
 
 export type SocialKey = keyof typeof socialLabels;

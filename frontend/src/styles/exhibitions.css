@@ -46,18 +46,6 @@
   color: var(--muted);
 }
 
-.expo-item--green {
-  --accent: #52b788;
-  --accent-hover: #74c69d;
-  background: radial-gradient(circle at 80% 20%, rgba(82, 183, 136, 0.08), transparent 60%), #0d1310;
-  color: #e0eadb;
-}
-
-.expo-item--green .texti,
-.expo-item--green .expo-item__title {
-  color: #a4c89b;
-}
-
 .expo-item__type-panel {
   min-height: 380px;
   border: 1px solid var(--border-gold);
@@ -75,7 +63,7 @@
   content: '';
   position: absolute;
   inset: 12px;
-  border: 1px dashed rgba(197, 160, 89, 0.2);
+  border: 1px dashed var(--border-gold);
   pointer-events: none;
 }
 

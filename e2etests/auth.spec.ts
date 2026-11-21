@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { loginWith, resetDatabase, visitor } from './helper';
+import { chooseAccountMenu, loginWith, resetDatabase, visitor } from './helper';
 
 // Caso 1: login + acceso a una ruta protegida.
 test.describe('Login y rutas protegidas', () => {
@@ -25,7 +25,7 @@ test.describe('Login y rutas protegidas', () => {
     await expect(page.getByRole('heading', { name: `Tu recorrido, ${visitor.name}.` })).toBeVisible();
 
     // Al cerrar sesión, la ruta protegida vuelve a pedir login.
-    await page.getByRole('button', { name: 'Cerrar sesión' }).click();
+    await chooseAccountMenu(page, 'Cerrar sesión');
     await expect(page.getByRole('link', { name: 'Iniciar sesión' })).toBeVisible();
     await page.goto('/mi-visita');
     await expect(page).toHaveURL(/\/login$/);
@@ -36,7 +36,7 @@ test.describe('Login y rutas protegidas', () => {
     await loginWith(page, visitor.username, 'clave-equivocada');
 
     await expect(page.getByText('Usuario, correo o contraseña incorrectos.')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Cerrar sesión' })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Abrir menú de cuenta' })).toHaveCount(0);
   });
 
   test('un visitante no puede entrar a gestión', async ({ page }) => {

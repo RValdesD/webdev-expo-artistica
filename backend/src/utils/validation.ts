@@ -7,7 +7,7 @@ const LABELS: Record<string, string> = {
   description: 'descripción', bio: 'biografía', discipline: 'disciplina', imageUrl: 'imagen',
   images: 'imágenes', imageAlt: 'descripción de la imagen', caption: 'pie de imagen', theme: 'tema',
   order: 'orden', date: 'fecha', durationMinutes: 'duración', location: 'lugar', capacity: 'cupos',
-  room: 'sala', instagram: 'Instagram', website: 'sitio web', behance: 'Behance', twitter: 'X / Twitter', startDate: 'fecha de inicio', endDate: 'fecha de término', socials: 'redes',
+  room: 'sala', instagram: 'Instagram', website: 'sitio web', behance: 'Behance', pixiv: 'Pixiv', twitter: 'X / Twitter', startDate: 'fecha de inicio', endDate: 'fecha de término', socials: 'redes',
   slug: 'identificador', edition: 'edición', introduction: 'introducción', dateLabel: 'fechas',
   hours: 'horario', venue: 'lugar', address: 'dirección', admission: 'entrada', transport: 'cómo llegar',
   accessibility: 'accesibilidad', faqs: 'preguntas frecuentes',

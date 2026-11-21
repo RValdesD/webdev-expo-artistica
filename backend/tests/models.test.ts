@@ -85,3 +85,15 @@ test('una obra rechaza imágenes extra peligrosas o demasiadas', async () => {
   await assert.rejects(new Artwork({ ...artworkBase, images: ['javascript:alert(1)'] }).validate());
   await assert.rejects(new Artwork({ ...artworkBase, images: Array(MAX_ARTWORK_IMAGES + 1).fill('/images/a.jpg') }).validate());
 });
+
+test('Pixiv se guarda como red y exige https', async () => {
+  const artist = new Artist({ id: 'test-artist-5', name: 'X', bio: 'Y', discipline: 'Z', socials: { pixiv: 'https://www.pixiv.net/users/123' } });
+  await artist.validate();
+  assert.deepEqual(artist.toObject().socials, { pixiv: 'https://www.pixiv.net/users/123' });
+
+  const insecure = new Artist({ id: 'test-artist-6', name: 'X', bio: 'Y', discipline: 'Z', socials: { pixiv: 'http://www.pixiv.net/users/123' } });
+  await assert.rejects(insecure.validate(), (error: Error & { errors: Record<string, { message: string }> }) => {
+    assert.equal(error.errors['socials.pixiv'].message, 'El enlace de Pixiv debe ser una URL segura (https://...).');
+    return true;
+  });
+});

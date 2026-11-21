@@ -188,7 +188,8 @@ p {
   transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.site-header nav a:hover::after {
+.site-header nav a:hover::after,
+.site-header nav a:focus-visible::after {
   width: 100%;
 }
 

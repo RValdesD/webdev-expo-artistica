@@ -2,11 +2,13 @@ import type { ArtworkData } from '../models/Artwork.js';
 
 // Fictional examples linked to the demonstration artists from step 2.
 // Imágenes: fotos de licencia libre de Unsplash (unsplash.com/license).
+// Las imágenes extra (`images`) son recortes de detalle de la misma foto, en frontend/public/images/samples/.
 // Están en el slideshow del Catálogo para que no quede vacío en una instalación nueva.
 
 export const sampleArtworks: ArtworkData[] = [
   {
     id: 'demo-ventana',
+    images: ['/images/samples/demo-ventana-detalle-1.webp', '/images/samples/demo-ventana-detalle-2.webp'],
     title: 'La ventana quieta',
     artistId: 'demo-elena-rios',
     medium: 'Pintura',
@@ -18,6 +20,7 @@ export const sampleArtworks: ArtworkData[] = [
   },
   {
     id: 'demo-equilibrio',
+    images: ['/images/samples/demo-equilibrio-detalle-1.webp', '/images/samples/demo-equilibrio-detalle-2.webp'],
     title: 'Equilibrio de formas',
     artistId: 'demo-tomas-vidal',
     medium: 'Escultura',
@@ -29,6 +32,7 @@ export const sampleArtworks: ArtworkData[] = [
   },
   {
     id: 'demo-pasaje',
+    images: ['/images/samples/demo-pasaje-detalle-1.webp', '/images/samples/demo-pasaje-detalle-2.webp'],
     title: 'Pasaje al atardecer',
     artistId: 'demo-ines-soto',
     medium: 'Fotografía',
@@ -40,6 +44,7 @@ export const sampleArtworks: ArtworkData[] = [
   },
   {
     id: 'demo-memoria',
+    images: ['/images/samples/demo-memoria-detalle-1.webp', '/images/samples/demo-memoria-detalle-2.webp'],
     title: 'Memoria del jardín',
     artistId: 'demo-elena-rios',
     medium: 'Pintura',

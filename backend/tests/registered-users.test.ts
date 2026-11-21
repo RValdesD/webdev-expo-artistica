@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 process.env.JWT_SECRET = 'registered-users-tests';
 const { default: app } = await import('../src/app.js');
 const { User } = await import('../src/models/User.js');
+const { Artist } = await import('../src/models/Artist.js');
 const csrf = 'users-csrf';
 const token = jwt.sign({ id: '507f1f77bcf86cd799439011', username: 'admin', csrf }, process.env.JWT_SECRET);
 const auth = (r: request.Test) => r.set('Cookie', `token=${token}`).set('X-CSRF-Token', csrf);
@@ -23,12 +24,20 @@ test('directory includes explicit safe fields and labels legacy origin unknown',
     { _id: '1', username: 'admin', name: 'Admin', role: 'organizador', createdVia: 'console', passwordHash: 'NEVER RETURN' },
     { _id: '2', username: 'visitor', name: 'Visitor', email: 'v@example.com', role: 'visitante', createdVia: 'registration' },
     { _id: '3', username: 'legacy', name: 'Legacy', role: 'artista' },
+    { _id: '4', username: 'painter', name: 'Painter', role: 'artista', createdVia: 'console' },
   ];
   t.mock.method(User, 'find', () => ({ select: () => ({ sort: () => ({ lean: async () => rows }) }) }));
+  // Solo "painter" guardó su perfil de artista.
+  t.mock.method(Artist, 'find', (filter: { id: { $in: string[] } }) => {
+    assert.deepEqual(filter, { id: { $in: ['artist-3', 'artist-4'] } });
+    return { select: () => ({ lean: async () => [{ id: 'artist-4', slug: 'painter' }] }) };
+  });
   const response = await auth(request(app).get('/api/users'));
   assert.equal(response.status, 200);
   assert.equal(response.headers['cache-control'], 'no-store');
-  assert.deepEqual(response.body.map((u: { createdVia: string }) => u.createdVia), ['console', 'registration', 'unknown']);
+  assert.deepEqual(response.body.map((u: { createdVia: string }) => u.createdVia), ['console', 'registration', 'unknown', 'console']);
+  // Las cuentas de artista indican si ya tienen perfil público; las demás no llevan el campo.
+  assert.deepEqual(response.body.map((u: { artistProfile?: unknown }) => u.artistProfile), [undefined, undefined, null, { id: 'artist-4', slug: 'painter' }]);
   assert.equal(JSON.stringify(response.body).includes('passwordHash'), false);
   assert.deepEqual(Object.keys(response.body[0]).sort(), ['createdVia', 'id', 'name', 'role', 'username']);
 });

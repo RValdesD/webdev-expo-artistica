@@ -140,11 +140,10 @@
   font-style: italic;
 }
 
-.artwork-card__count {
+.artwork-card__count.MuiChip-root {
   position: absolute;
   right: 12px;
   bottom: 12px;
-  padding: 5px 12px;
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -153,7 +152,10 @@
   background: rgba(12, 13, 16, 0.85);
   backdrop-filter: blur(8px);
   border: 1px solid var(--border-gold);
-  border-radius: 2px;
+}
+
+.artwork-card__count .MuiChip-icon {
+  color: var(--accent);
 }
 
 .artwork-card__body {
@@ -250,26 +252,20 @@
   font-family: var(--heading-font);
 }
 
-.gallery__arrow {
+.gallery__arrow.MuiIconButton-root {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   width: 48px;
   height: 48px;
-  font-size: 28px;
-  line-height: 1;
   color: #f4f2ec;
   background: rgba(12, 13, 16, 0.75);
   backdrop-filter: blur(8px);
   border: 1px solid var(--border-gold);
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
   transition: all 0.25s ease;
 }
 
-.gallery__arrow:hover {
+.gallery__arrow.MuiIconButton-root:hover {
   background: var(--accent);
   color: #0c0d10;
   border-color: var(--accent);
@@ -284,6 +280,38 @@
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 16px;
+}
+
+.gallery__zoom {
+  display: block;
+  width: 100%;
+  cursor: zoom-in;
+}
+
+.gallery__zoom-hint {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  color: #f4f2ec;
+  background: rgba(12, 13, 16, 0.75);
+  border: 1px solid var(--border-gold);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.gallery__zoom:hover .gallery__zoom-hint,
+.gallery__zoom.Mui-focusVisible .gallery__zoom-hint {
+  opacity: 1;
+}
+
+.gallery__zoom.Mui-focusVisible {
+  outline: 2px solid var(--accent);
+  outline-offset: -4px;
 }
 
 .gallery__thumb {
@@ -317,8 +345,9 @@
   opacity: 1;
 }
 
-.gallery button:focus-visible,
-.artwork-card__media:focus-visible {
+.gallery__thumb.Mui-focusVisible,
+.gallery__arrow.Mui-focusVisible,
+.artwork-card__media.Mui-focusVisible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
@@ -363,9 +392,60 @@
   outline-offset: 4px;
 }
 
-.gallery__counter {
+.gallery__counter.MuiTypography-root {
   margin: 14px 0;
   font-size: 13.5px;
   color: var(--muted);
   letter-spacing: 0.05em;
+}
+
+/* Imagen ampliada (Dialog de MUI a pantalla completa) */
+.gallery-lightbox.MuiPaper-root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 72px;
+  background: #07080a;
+  touch-action: pan-y;
+}
+
+.gallery-lightbox__image {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 112px);
+  object-fit: contain;
+}
+
+.gallery-lightbox__close.MuiIconButton-root {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  color: #f4f2ec;
+}
+
+.gallery-lightbox__counter.MuiTypography-root {
+  position: absolute;
+  bottom: 18px;
+  left: 0;
+  right: 0;
+  max-width: none;
+  text-align: center;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 700px) {
+  .gallery-lightbox.MuiPaper-root {
+    padding: 56px 8px;
+  }
+
+  .gallery-lightbox .gallery__arrow.MuiIconButton-root {
+    top: auto;
+    bottom: 8px;
+    transform: none;
+  }
+
+  .gallery-lightbox .gallery__arrow.MuiIconButton-root:hover {
+    transform: none;
+  }
 }

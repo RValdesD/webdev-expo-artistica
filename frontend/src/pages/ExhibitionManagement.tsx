@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
+import { exhibitionThemes, themeClass } from '../exhibitionThemes';
 import { Link } from 'react-router-dom';
 import service from '../services/exhibitions';
 import { useArtistsStore } from '../stores/artistsStore';
@@ -65,7 +66,12 @@ export default function ExhibitionManagement() {
         <label>Nombre<input id="exhibition-title" {...fieldProps(fields, 'title', 'exhibition-title')} required maxLength={160} value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} /></label><FieldError fields={fields} name="title" id="exhibition-title" />
         <label>Título principal<input id="exhibition-heading" {...fieldProps(fields, 'heading', 'exhibition-heading')} required maxLength={200} value={form.heading} onChange={e => setForm({ ...form, heading: e.target.value })} /></label><FieldError fields={fields} name="heading" id="exhibition-heading" />
         <label>Descripción<textarea id="exhibition-description" {...fieldProps(fields, 'description', 'exhibition-description')} rows={7} maxLength={5000} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} /></label><FieldError fields={fields} name="description" id="exhibition-description" />
-        <label>Tema<select id="exhibition-theme" {...fieldProps(fields, 'theme', 'exhibition-theme')} value={form.theme} onChange={e => setForm({ ...form, theme: e.target.value as ExhibitionInput['theme'] })}><option value="sea">Mar / azul</option><option value="green">Verde</option></select></label><FieldError fields={fields} name="theme" id="exhibition-theme" />
+        <label>Tema<select id="exhibition-theme" {...fieldProps(fields, 'theme', 'exhibition-theme')} value={form.theme} onChange={e => setForm({ ...form, theme: e.target.value as ExhibitionInput['theme'] })}>{exhibitionThemes.map(theme => <option key={theme.value} value={theme.value}>{theme.label}</option>)}</select></label><FieldError fields={fields} name="theme" id="exhibition-theme" />
+        <div className={`theme-preview ${themeClass(form.theme)}`} aria-hidden="true">
+          <span className="theme-preview__eyebrow">Exposición</span>
+          <span className="theme-preview__title">{form.heading || 'Vista previa del tema'}</span>
+          <span className="theme-preview__button">Planifica tu visita</span>
+        </div>
         <label>Orden (menor primero)<input id="exhibition-order" {...fieldProps(fields, 'order', 'exhibition-order')} type="number" min={0} max={10000} step={1} required value={form.order} onChange={e => setForm({ ...form, order: Number(e.target.value) })} /></label><FieldError fields={fields} name="order" id="exhibition-order" />
         <CoverPicker value={form.imageUrl} error={fields.imageUrl} onChange={imageUrl => setForm({ ...form, imageUrl })} /><FieldError fields={fields} name="imageUrl" id="exhibition-imageUrl" />
         {form.imageUrl && <>

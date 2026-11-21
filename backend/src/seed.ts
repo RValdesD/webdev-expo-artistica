@@ -30,6 +30,8 @@ try {
   if (invalidRelations.length) throw new Error(`Hay datos asociados a artistas inexistentes: ${invalidRelations.map(item => item.id).join(', ')}`);
 
   await insertMissing(sampleArtworks, value => Artwork.updateOne({ id: value.id }, { $setOnInsert: value }, { upsert: true, runValidators: true }));
+  // Obras de ejemplo creadas antes de tener imágenes extra: se les agregan solo si siguen sin ninguna.
+  await insertMissing(sampleArtworks, value => Artwork.updateOne({ id: value.id, isSample: true, images: { $size: 0 } }, { $set: { images: value.images ?? [] } }, { runValidators: true }));
   await insertMissing(sampleWorkshops, value => Workshop.updateOne({ id: value.id }, { $setOnInsert: value }, { upsert: true, runValidators: true }));
   for (const item of sampleExhibitions) await Exhibition.updateOne({ id: item.id }, { $setOnInsert: item }, { upsert: true, runValidators: true });
   // Solo para exposiciones que existen (el organizador pudo borrar alguna de ejemplo).

@@ -121,11 +121,6 @@
   transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.visit-expo--green {
-  --accent: #52b788;
-  --accent-hover: #74c69d;
-}
-
 .visit-expo:hover,
 .visit-expo:focus-within {
   transform: translateY(-4px);
@@ -211,11 +206,6 @@
 }
 
 /* Detalle de la visita de una exposición */
-.visit-detail--green {
-  --accent: #52b788;
-  --accent-hover: #74c69d;
-}
-
 .visit-detail__hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 420px);

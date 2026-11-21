@@ -26,8 +26,10 @@ export default function Management() {
         <p className="eyebrow">EXPO / GESTIÓN</p>
         <h1 id="management-title">Panel de gestión</h1>
         <p>Crea, edita y elimina el contenido publicado de la exposición.</p>
-        <Link className="button" to="/gestion/envios">Revisar obras de artistas</Link>
-        <Link className="button" to="/gestion/exposiciones">Gestionar exposiciones del inicio</Link>
+        <div className="management-heading__actions">
+          <Link className="button" to="/gestion/envios">Revisar obras de artistas</Link>
+          <Link className="button" to="/gestion/exposiciones">Gestionar exposiciones del inicio</Link>
+        </div>
       </header>
 
       <div className="management-tabs" role="tablist" aria-label="Tipo de contenido">

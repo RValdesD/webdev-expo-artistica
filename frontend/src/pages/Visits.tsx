@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { themeClass } from '../exhibitionThemes';
 import { Link, useParams } from 'react-router-dom';
 import Faq from '../components/Faq';
 import GuidedTourCard, { formatTourDate } from '../components/GuidedTourCard';
@@ -104,7 +105,7 @@ export default function Visits() {
             {exhibitions.map(item => {
               const own = next.filter(tour => tour.exhibitionId === item.id);
               const meta = [item.room, dateRange(item)].filter(Boolean).join(' · ');
-              return <li key={item.id} className={`visit-expo visit-expo--${item.theme}`}>
+              return <li key={item.id} className={`visit-expo ${themeClass(item.theme)}`}>
                 {item.imageUrl
                   ? <img className="visit-expo__cover" src={item.imageUrl} alt={item.imageAlt} loading="lazy" />
                   : <div className="visit-expo__cover visit-expo__cover--empty" aria-hidden="true"><span>{item.title}</span></div>}
@@ -138,7 +139,7 @@ export function ExhibitionVisit() {
   const dates = dateRange(item);
   const exhibitionLink = item.featured === false ? `/otras-exposiciones/${encodeURIComponent(item.id)}` : '/';
   return (
-    <section className={`visits visit-detail visit-detail--${item.theme}`} aria-labelledby="visit-title">
+    <section className={`visits visit-detail ${themeClass(item.theme)}`} aria-labelledby="visit-title">
       <Link to="/visitas">← Todas las exposiciones</Link>
       <header className="visit-detail__hero">
         <div>

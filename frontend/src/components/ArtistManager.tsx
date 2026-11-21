@@ -1,8 +1,10 @@
 import { useState, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import artistsService from '../services/artists';
 import { apiError } from '../services/auth';
 import { hasSocials, type Artist, type ArtistInput } from '../types/artist';
 import SocialImage from './SocialImage';
+import PendingArtistAccounts from './PendingArtistAccounts';
 import '../styles/artists.css';
 import { socialPlatforms } from './socialPlatforms';
 
@@ -117,7 +119,7 @@ export default function ArtistManager({ artists, onChanged }: Props) {
 
         <fieldset className="management-form__group" disabled={saving}>
           <legend>Redes y enlaces (URLs completas)</legend>
-          {socialPlatforms.map(({ key, label, inputLabel, placeholder }) => (
+          {socialPlatforms.map(({ key, label, inputLabel, placeholder, icon }) => (
             <div key={key}>
               <label htmlFor={`artist-social-${key}`}>{inputLabel}</label>
               <input id={`artist-social-${key}`} type="url" placeholder={placeholder} pattern="https://.+"
@@ -129,7 +131,7 @@ export default function ArtistManager({ artists, onChanged }: Props) {
                 }))} />
               <label htmlFor={`artist-social-image-${key}`}>Imagen de {label}</label>
               <input id={`artist-social-image-${key}`} maxLength={1000}
-                placeholder="/images/instagram.png o https://..."
+                placeholder="/images/... o https://..."
                 aria-describedby={`artist-social-help-${key}`}
                 value={form.socialImages?.[key] ?? ''}
                 onChange={event => setForm(current => ({
@@ -137,10 +139,10 @@ export default function ArtistManager({ artists, onChanged }: Props) {
                   socialImages: { ...current.socialImages, [key]: event.target.value },
                 }))} />
               <small id={`artist-social-help-${key}`}>
-                Deja la imagen vacía para mostrar un espacio genérico. Completa la URL de la red para que sea clickeable.
+                Deja la imagen vacía para mostrar el ícono de la red. Completa la URL de la red para que sea clickeable.
               </small>
               <div className="artist-social-preview" aria-label={`Vista previa de ${label}`}>
-                <SocialImage src={form.socialImages?.[key]} fallback={<span aria-hidden="true">▧</span>} />
+                <SocialImage src={form.socialImages?.[key]} fallback={icon} />
                 <span>{label}</span>
               </div>
             </div>
@@ -159,7 +161,7 @@ export default function ArtistManager({ artists, onChanged }: Props) {
             <div>
               <h3>{artist.name}</h3>
               <p>
-                {artist.discipline} · <code>{artist.id}</code>
+                {artist.discipline} · <Link to={`/artists/${artist.slug ?? artist.id}`}>/artists/{artist.slug ?? artist.id}</Link>
                 {hasSocials(artist.socials) && ' · Tiene redes vinculadas'}
               </p>
             </div>
@@ -171,6 +173,7 @@ export default function ArtistManager({ artists, onChanged }: Props) {
             </div>
           </article>
         ))}
+        <PendingArtistAccounts reloadWhen={artists} />
       </div>
       {error && <p className="management-message management-message--error" role="alert">{error}</p>}
       {message && <p className="management-message" role="status">{message}</p>}

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { exhibition, guidedTour, loginWith, organizer, resetDatabase, visitor } from './helper';
+import { chooseAccountMenu, exhibition, guidedTour, loginWith, organizer, resetDatabase, visitor } from './helper';
 
 // Planifica tu visita: información por exposición y reserva de visitas guiadas.
 test.describe('Visitas', () => {
@@ -47,7 +47,7 @@ test.describe('Visitas', () => {
     await page.reload();
     await expect(page.getByRole('button', { name: 'Cancelar reserva' })).toBeVisible();
 
-    await page.getByRole('link', { name: 'Mi visita' }).first().click();
+    await chooseAccountMenu(page, 'Mi visita');
     await expect(page.getByRole('heading', { name: 'Visitas guiadas' })).toBeVisible();
     const booking = page.locator('.visit-registration', { hasText: `Visita guiada: ${exhibition.title}` });
     await expect(booking).toBeVisible();

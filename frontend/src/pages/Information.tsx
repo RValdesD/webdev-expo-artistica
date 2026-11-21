@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useState } from 'react';
+import { themeClass } from '../exhibitionThemes';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import exhibitionsService from '../services/exhibitions';
@@ -33,7 +34,7 @@ export default function Information() {
         const Heading = index === 0 ? 'h1' : 'h2';
         return <Fragment key={item.id}>
           {index > 0 && <div className="expo-divider" aria-hidden="true" />}
-          <section className={`hero expo-item expo-item--${item.theme}`} aria-labelledby={`expo-${item.id}`}>
+          <section className={`hero expo-item ${themeClass(item.theme)}`} aria-labelledby={`expo-${item.id}`}>
             <div className="hero-copy">
               <p className="texti">Exposición: {item.title}</p>
               <Heading id={`expo-${item.id}`} className="expo-item__title">{item.heading === 'Un viaje inagualable' ? <>Un viaje in<em>agua</em>lable</> : item.heading}</Heading>

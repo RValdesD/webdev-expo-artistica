@@ -42,6 +42,12 @@
   transition: all 0.2s ease;
 }
 
+.auth-nav__name {
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
 .auth-nav button:hover:not(:disabled) {
   border-color: var(--accent);
   color: var(--accent);
@@ -127,4 +133,85 @@
 
 .auth-form p a:hover {
   color: var(--accent-hover);
+}
+
+/* Menú de cuenta (avatar) */
+.auth-nav__avatar-button.MuiIconButton-root {
+  padding: 0;
+  border: 0;
+}
+
+.auth-nav__avatar-button.Mui-focusVisible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.auth-nav .header-avatar.MuiAvatar-root {
+  width: 44px;
+  height: 44px;
+  font-family: var(--heading-font);
+  font-size: 1.1rem;
+  color: var(--accent);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-gold);
+  transition: border-color 0.2s ease;
+}
+
+.auth-nav__avatar-button:hover .header-avatar.MuiAvatar-root,
+.auth-nav__avatar-button[aria-expanded='true'] .header-avatar.MuiAvatar-root {
+  border-color: var(--accent);
+}
+
+.account-menu.MuiPaper-root {
+  min-width: 220px;
+  max-width: calc(100vw - 32px);
+  margin-top: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+}
+
+.account-menu__identity {
+  display: grid;
+  gap: 2px;
+  padding: 10px 18px 12px;
+  list-style: none;
+}
+
+.account-menu__identity .auth-nav__name {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.account-menu__identity small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.account-menu .MuiMenuItem-root {
+  min-height: 44px;
+  padding-inline: 18px;
+  font-size: 12.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.account-menu .MuiMenuItem-root:hover,
+.account-menu .MuiMenuItem-root.Mui-focusVisible {
+  color: var(--accent);
+  background: rgba(197, 160, 89, 0.08);
+}
+
+.account-menu .MuiListItemIcon-root {
+  min-width: 30px;
+  color: inherit;
+}
+
+.account-menu .MuiDivider-root {
+  margin-block: 6px;
+  border-color: var(--border);
 }

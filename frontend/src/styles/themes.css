@@ -1,0 +1,79 @@
+/* ==========================================================================
+   TEMAS DE EXPOSICIÓN
+   Cada tema redefine el acento (botones, enlaces, etiquetas) y el tinte de fondo.
+   "sea" (Clásico) usa los colores base del sitio. Lista y nombres: src/exhibitionThemes.ts.
+   ========================================================================== */
+.theme--ocean {
+  --accent: #5fa8d3; --accent-hover: #8cc4e6; --border-gold: rgba(95, 168, 211, 0.28);
+  --theme-glow: rgba(95, 168, 211, 0.09); --theme-bg: #0b1117; --theme-text: #dde8ef; --theme-title: #a9cfe6;
+}
+.theme--green {
+  --accent: #52b788; --accent-hover: #74c69d; --border-gold: rgba(82, 183, 136, 0.28);
+  --theme-glow: rgba(82, 183, 136, 0.08); --theme-bg: #0d1310; --theme-text: #e0eadb; --theme-title: #a4c89b;
+}
+.theme--terracotta {
+  --accent: #d97d54; --accent-hover: #ea9974; --border-gold: rgba(217, 125, 84, 0.28);
+  --theme-glow: rgba(217, 125, 84, 0.09); --theme-bg: #140f0c; --theme-text: #f0e2da; --theme-title: #e8b49a;
+}
+.theme--violet {
+  --accent: #a78bfa; --accent-hover: #c4b5fd; --border-gold: rgba(167, 139, 250, 0.28);
+  --theme-glow: rgba(167, 139, 250, 0.09); --theme-bg: #110f17; --theme-text: #e6e1f5; --theme-title: #cbbff5;
+}
+.theme--crimson {
+  --accent: #e06c75; --accent-hover: #ef9aa1; --border-gold: rgba(224, 108, 117, 0.28);
+  --theme-glow: rgba(224, 108, 117, 0.09); --theme-bg: #150c0e; --theme-text: #f2e0e2; --theme-title: #eba9ae;
+}
+.theme--sand {
+  --accent: #d8b98a; --accent-hover: #e8d2ae; --border-gold: rgba(216, 185, 138, 0.28);
+  --theme-glow: rgba(216, 185, 138, 0.08); --theme-bg: #13110d; --theme-text: #efe7da; --theme-title: #e6d5b8;
+}
+.theme--mono {
+  --accent: #d6d3cc; --accent-hover: #f4f2ec; --border-gold: rgba(214, 211, 204, 0.25);
+  --theme-glow: rgba(214, 211, 204, 0.06); --theme-bg: #0e0e0f; --theme-text: #ece9e2; --theme-title: #f4f2ec;
+}
+
+/* Bloque grande de la exposición en el inicio */
+.expo-item:not(.theme--sea) {
+  background: radial-gradient(circle at 80% 20%, var(--theme-glow), transparent 60%), var(--theme-bg);
+  color: var(--theme-text);
+}
+.expo-item:not(.theme--sea) .texti,
+.expo-item:not(.theme--sea) .expo-item__title {
+  color: var(--theme-title);
+}
+
+/* Vista previa del tema en Gestionar exposiciones */
+.theme-preview {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  margin: 4px 0 20px;
+  padding: 20px 24px;
+  border: 1px solid var(--border-gold);
+  border-radius: 4px;
+  background: radial-gradient(circle at 85% 15%, var(--theme-glow, rgba(197, 160, 89, 0.08)), transparent 65%), var(--theme-bg, var(--surface));
+}
+.theme-preview__eyebrow {
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.theme-preview__title {
+  font-family: var(--heading-font);
+  font-size: 1.6rem;
+  line-height: 1.2;
+  color: var(--theme-title, var(--text));
+  overflow-wrap: anywhere;
+}
+.theme-preview__button {
+  padding: 8px 16px;
+  color: #0c0d10;
+  background: var(--accent);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 2px;
+}

@@ -1,14 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import axiosSecure from '../utils/axiosSecure';
+import usersService, { type Account } from '../services/users';
 import { apiError } from '../services/auth';
 import '../styles/registered-users.css';
 
-type Account = {
-  id: string; username: string; name: string; email?: string;
-  role: 'organizador' | 'artista' | 'visitante';
-  createdVia: 'console' | 'registration' | 'unknown';
-};
 const roles = { organizador: 'Administrador', artista: 'Artista', visitante: 'Visitante' };
 const origins = { console: 'Consola', registration: 'Registro público', unknown: 'No registrado' };
 
@@ -24,8 +20,8 @@ export default function RegisteredUsers() {
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true); setError('');
-    axiosSecure.get<Account[]>('/api/users', { signal: controller.signal })
-      .then(({ data }) => { if (!controller.signal.aborted) setUsers(data); })
+    usersService.getAll(controller.signal)
+      .then(data => { if (!controller.signal.aborted) setUsers(data); })
       .catch(reason => { if (!controller.signal.aborted) setError(apiError(reason)); })
       .finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();
@@ -64,6 +60,7 @@ export default function RegisteredUsers() {
               <dt>Correo</dt><dd>{user.email || 'Sin correo registrado'}</dd>
               <dt>Rol</dt><dd>{roles[user.role]}</dd>
               <dt>Origen</dt><dd>{origins[user.createdVia]}</dd>
+              {user.role === 'artista' && <><dt>Perfil público</dt><dd>{user.artistProfile ? 'Publicado' : 'Pendiente: aún no lo guarda'}</dd></>}
             </dl>
             <button className="button button--secondary registered-users__delete" type="button"
               disabled={deleting !== null || user.id === currentUser?.id}

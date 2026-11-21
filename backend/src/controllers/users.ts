@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { isObjectIdOrHexString } from "mongoose";
 import { Workshop } from "../models/Workshop.js";
 import { User } from "../models/User.js";
+import { Artist } from "../models/Artist.js";
 import { ADMIN_EMAIL_DOMAIN, isAdminEmail, isArtistEmail } from "../utils/config.js";
 import { requireSameOrigin, withUser, requireOrganizer } from "../utils/middleware.js";
 
@@ -12,11 +13,19 @@ usersRouter.get('/', withUser, requireOrganizer, async (_req, res, next) => {
   try {
     res.set('Cache-Control', 'no-store');
     const users = await User.find().select('_id username name email role createdVia createdAt').sort({ createdAt: -1, _id: -1 }).lean();
+    // El perfil público de una cuenta de artista se crea recién cuando la cuenta lo guarda (id "artist-<userId>").
+    const artistIds = users.filter(user => user.role === 'artista').map(user => `artist-${String(user._id)}`);
+    const profiles = await Artist.find({ id: { $in: artistIds } }).select('id slug -_id').lean();
+    const profileById = new Map(profiles.map(profile => [profile.id, profile]));
     // Explicit response fields prevent authentication data from leaking.
-    res.json(users.map(user => ({
-      id: String(user._id), username: user.username, name: user.name,
-      email: user.email, role: user.role, createdVia: user.createdVia ?? 'unknown',
-    })));
+    res.json(users.map(user => {
+      const profile = user.role === 'artista' ? profileById.get(`artist-${String(user._id)}`) : undefined;
+      return {
+        id: String(user._id), username: user.username, name: user.name,
+        email: user.email, role: user.role, createdVia: user.createdVia ?? 'unknown',
+        ...(user.role === 'artista' && { artistProfile: profile ? { id: profile.id, slug: profile.slug ?? profile.id } : null }),
+      };
+    }));
   } catch (error) { next(error); }
 });
 

@@ -1,12 +1,15 @@
 import { Schema, model } from 'mongoose';
 import { COVER_URL } from '../utils/coverImages.js';
 
+// Temas de color disponibles; la lista con nombres y colores está en frontend/src/exhibitionThemes.ts.
+export const exhibitionThemes = ['sea', 'ocean', 'green', 'terracotta', 'violet', 'crimson', 'sand', 'mono'] as const;
+
 const exhibitionSchema = new Schema({
   id: { type: String, required: true, unique: true },
   title: { type: String, required: true, trim: true, maxlength: 160 },
   heading: { type: String, required: true, trim: true, maxlength: 200 },
   description: { type: String, default: '', maxlength: 5000 },
-  theme: { type: String, enum: ['sea', 'green'], default: 'sea' },
+  theme: { type: String, enum: { values: exhibitionThemes, message: 'Elige un tema de la lista.' }, default: 'sea' },
   // Portada: una imagen de frontend/public/images/ (el controlador comprueba que exista).
   imageUrl: { type: String, default: '', maxlength: 1000,
     validate: { validator: (value: string) => !value || COVER_URL.test(value), message: 'Elige una portada de la carpeta public/images.' } },
