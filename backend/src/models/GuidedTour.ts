@@ -1,3 +1,4 @@
+import '../utils/collections.js';
 import { Schema, model } from 'mongoose';
 import { registrationSchema } from './Workshop.js';
 

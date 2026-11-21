@@ -1,3 +1,4 @@
+import '../utils/collections.js';
 import { Schema, model } from 'mongoose';
 import { COVER_URL } from '../utils/coverImages.js';
 

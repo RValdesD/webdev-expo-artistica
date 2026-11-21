@@ -1,3 +1,4 @@
+import '../utils/collections.js';
 import { Schema, model } from 'mongoose';
 
 // Spanish names used in validation messages; the keys are the supported platforms.

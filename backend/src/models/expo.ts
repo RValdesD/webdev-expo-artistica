@@ -1,3 +1,4 @@
+import '../utils/collections.js';
 import { Schema, model, type InferSchemaType } from 'mongoose';
 
 const requiredText = { type: String, required: true, trim: true } as const;

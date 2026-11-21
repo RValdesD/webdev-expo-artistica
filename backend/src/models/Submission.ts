@@ -1,3 +1,4 @@
+import '../utils/collections.js';
 import { Schema, model } from 'mongoose';
 import { MAX_ARTWORK_IMAGES } from './Artwork.js';
 const schema = new Schema({
