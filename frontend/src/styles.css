@@ -724,3 +724,11 @@ p {
     scroll-behavior: smooth;
   }
 }
+
+.expo-item.expo-item--first .expo-item__title {
+  color: #ffffff;
+}
+
+.expo-item.expo-item--first .expo-item__title em {
+  color: #78bdff;
+}
