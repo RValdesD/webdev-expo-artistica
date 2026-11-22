@@ -25,7 +25,6 @@ export default function App() {
       <header className="site-header">
         <Link className="brand" to="/" aria-label="Expo Artística, inicio"> EXPO ARTÍSTICA SANTIAGO</Link>
         <nav aria-label="Navegación principal">
-          <Link to="/information">Información</Link>
           <Link to="/artists">Artistas</Link>
           <Link to="/catalog">Catálogo</Link>
           <Link to="/workshops">Workshops</Link>

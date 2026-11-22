@@ -77,3 +77,18 @@
   text-transform: uppercase;
   border-radius: 2px;
 }
+
+/* First featured exhibition: blue copy, including Los Grandes Mares. */
+.expo-item.expo-item--first {
+  --accent: #60b5ff;
+  --accent-hover: #93ceff;
+  --agua: #60b5ff;
+  --agua-texto: #93ceff;
+  --border-gold: rgba(96, 181, 255, 0.3);
+}
+.expo-item.expo-item--first .texti,
+.expo-item.expo-item--first .expo-item__title,
+.expo-item.expo-item--first .expo-item__title em,
+.expo-item.expo-item--first .expo-item__description {
+  color: #78bdff;
+}
